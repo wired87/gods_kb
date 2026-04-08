@@ -1,0 +1,24 @@
+# Secrets — never bake into image
+.env
+
+# Python artifacts
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.idea/
+.vscode/
+
+# Generated output
+output/
+
+# VCS
+.git/
+.gitignore
+
+# Docs (not needed at runtime)
+*.md
