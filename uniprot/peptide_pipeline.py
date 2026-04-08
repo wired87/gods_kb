@@ -106,12 +106,38 @@ async def _classify_with_gemini(
     )
 
     prompt = (
-        f"User query: \"{user_prompt}\"\n\n"
-        f"From the UniProt feature fields below, pick the 3 most relevant field_ids "
-        f"for this query.\n"
-        f"Respond with ONLY a JSON array of exactly 3 field_id strings: "
-        f'["ft_peptide", "ft_signal", "ft_chain"]\n\n'
-        f"Fields:\n{catalog}"
+        f"You are an expert in protein annotation and UniProt feature selection.\n\n"
+
+        f"## USER QUERY\n"
+        f"{user_prompt}\n\n"
+
+        f"## TASK\n"
+        f"Select the 3 MOST RELEVANT UniProt feature field_ids that best match the query.\n\n"
+
+        f"## FIELD CATALOG\n"
+        f"{catalog}\n\n"
+
+        f"## SELECTION CRITERIA\n"
+        f"- Match biological intent of the query (function, structure, processing, localization)\n"
+        f"- Prioritize direct semantic relevance over keyword overlap\n"
+        f"- Prefer specific features over generic ones\n"
+        f"- Avoid redundant or overlapping fields\n\n"
+
+        f"## OUTPUT RULES (STRICT)\n"
+        f"- Return EXACTLY 3 field_id strings\n"
+        f"- Return ONLY valid field_ids from the catalog\n"
+        f"- NO explanations\n"
+        f"- NO extra text\n"
+        f"- NO duplicates\n"
+        f"- Output MUST be valid JSON\n\n"
+
+        f"## OUTPUT FORMAT\n"
+        f'["field_id_1", "field_id_2", "field_id_3"]\n\n'
+
+        f"## VALIDATION (INTERNAL)\n"
+        f"- Ensure all 3 fields are distinct\n"
+        f"- Ensure each field directly contributes to answering the query\n"
+        f"- If uncertain, prefer most biologically informative features\n"
     )
 
     try:
@@ -266,10 +292,48 @@ async def _gem_harmony_request(
     )
 
     prompt = (
-        f"Goal: {goal}\n\n"
-        f"Score each peptide 0.0–1.0 for relevance to the goal.\n"
-        f"Respond with ONLY valid JSON mapping accession to score.\n\n"
-        f"Peptides:\n{summaries}"
+        f"You are a conservative biomedical relevance scoring system.\n\n"
+
+        f"## GOAL\n"
+        f"{goal}\n\n"
+
+        f"## TASK\n"
+        f"Score each peptide for DIRECT and EVIDENCE-BASED relevance to the goal.\n\n"
+
+        f"## PEPTIDES\n"
+        f"{summaries}\n\n"
+
+        f"## SCORING RULES (STRICT)\n"
+        f"- 1.0 = strong, direct, well-established relevance\n"
+        f"- 0.7–0.9 = likely relevance with biological support\n"
+        f"- 0.4–0.6 = weak or indirect relevance\n"
+        f"- 0.1–0.3 = speculative or minimal connection\n"
+        f"- 0.0 = no clear or safe connection\n\n"
+
+        f"## SAFETY FILTER (CRITICAL)\n"
+        f"- ONLY assign >0.7 if mechanism is known and biologically plausible\n"
+        f"- If uncertain → score ≤0.4\n"
+        f"- Avoid assumptions, extrapolations, or hypothetical effects\n"
+        f"- Prefer UNDERestimation over overestimation\n\n"
+
+        f"## EVALUATION CRITERIA\n"
+        f"- Known function (UniProt-level evidence)\n"
+        f"- Target interaction (receptor, enzyme, pathway)\n"
+        f"- Biological pathway relevance\n"
+        f"- Tissue specificity (if applicable)\n"
+        f"- Stability / activity context (if known)\n\n"
+
+        f"## OUTPUT RULES (STRICT)\n"
+        f"- Return ONLY valid JSON\n"
+        f"- Format: {{\"accession\": score}}\n"
+        f"- Scores must be floats (0.0–1.0)\n"
+        f"- No explanations\n"
+        f"- No extra text\n\n"
+
+        f"## VALIDATION (INTERNAL)\n"
+        f"- Ensure all peptides are scored\n"
+        f"- Ensure no score exceeds justified confidence\n"
+        f"- Ensure conservative bias is maintained\n"
     )
 
     try:
