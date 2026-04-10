@@ -1,18 +1,21 @@
 FROM python:3.11-slim
 
-# Non-root user for security
 RUN useradd --create-home appuser
 WORKDIR /app
 
-# Install dependencies before copying source (layer cache)
+# System libs for pyscf (BLAS/LAPACK) and matplotlib (freetype)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libopenblas-dev liblapack-dev gfortran libfreetype6-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source (secrets are injected at runtime, not baked in)
 COPY . .
 
-# Ensure output directory exists and is writable by appuser
-RUN mkdir -p output/fasta && chown -R appuser:appuser /app
+# Directories used by the server at runtime
+RUN mkdir -p data docs && chown -R appuser:appuser /app
 
 USER appuser
 

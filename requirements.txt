@@ -33,7 +33,6 @@ pydantic
 pydantic_core
 pyparsing
 python-dotenv
-pywin32
 httpx
 networkx
 numpy
