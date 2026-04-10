@@ -1,0 +1,6 @@
+>A00001 | Residue Scaffold Alpha | category=Chain | harmony=0.920 | fragments=Chain:1-10
+ACDEFGHIKLMNPQRSTVWY
+>A00002 | Residue Scaffold Beta | category=Domain | harmony=0.810 | fragments=Domain:1-16
+GGGGCCCCAAAATTTT
+>TRANSFORMED_ACID_STRUCTURE | total_length=26 | goal=acid validation goal
+ACDEFGHIKLGGGGCCCCAAAATTTT

@@ -2,11 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(python -c \"import ast; ast.parse\\(open\\('server.py'\\).read\\(\\)\\); print\\('server.py OK'\\)\")",
-      "Bash(python -c \"import ast; ast.parse\\(open\\('uniprot/peptide_pipeline.py'\\).read\\(\\)\\); print\\('pipeline OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('uniprot/master_workflow.py'\\).read\\(\\)\\); print\\('pipeline OK'\\)\")",
       "Bash(python -c \"import ast; ast.parse\\(open\\('wf.py'\\).read\\(\\)\\); print\\('wf.py OK'\\)\")",
       "Bash(python -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('main.py OK'\\)\")",
       "Bash(python3 -c \"import ast; ast.parse\\(open\\('server.py'\\).read\\(\\)\\); print\\('server.py OK'\\)\")",
-      "Bash(python3 -c \"import ast; ast.parse\\(open\\('uniprot/peptide_pipeline.py'\\).read\\(\\)\\); print\\('pipeline OK'\\)\")",
+      "Bash(python3 -c \"import ast; ast.parse\\(open\\('uniprot/master_workflow.py'\\).read\\(\\)\\); print\\('pipeline OK'\\)\")",
       "Bash(python3 -c \"import ast; ast.parse\\(open\\('wf.py'\\).read\\(\\)\\); print\\('wf.py OK'\\)\")",
       "Bash(python3 -c \"import ast; ast.parse\\(open\\('main.py'\\).read\\(\\)\\); print\\('main.py OK'\\)\")",
       "Bash(.venv/Scripts/python.exe -c ':*)",

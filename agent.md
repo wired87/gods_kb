@@ -1,7 +1,7 @@
-# Acid Master — Peptide Pipeline Agent
+# Acid Master — Merged Workflow Agent
 
-FastMCP server that resolves UniProt peptide data live, scores relevance with Google Gemini,
-assembles a structural sequence from all stack nodes, and exports FASTA + JSON.
+FastMCP server that routes one biological query into a peptide or amino-acid workflow,
+builds a firegraph-backed runtime knowledge graph, and exports case-specific FASTA + JSON artifacts.
 
 ## Quick start
 
@@ -21,12 +21,10 @@ docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
 
 | Tool | Input | Output | Source |
 |------|-------|--------|--------|
-| `get_uniprot_fields` | — | `list[{field_id, label, group}]` | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
-| `classify_query` | `prompt: str` | `list[{field_id, label, group}]` ×3 | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
-| `fetch_peptides` | `prompt`, `max_per_category` | peptide list (no sequences) | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
-| `score_peptide_harmony` | `prompt`, `max_per_category` | ranked peptide list + harmony scores | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
-| `assemble_structural_sequence` | `prompt`, `max_per_category` | `{structural_sequence, node_order, …}` | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
-| `generate_peptide_fasta` ⭐ | `prompt`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) |
+| `generate_case_fasta` ⭐ | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
+| `inspect_case` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | structured workflow result | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
+| `generate_peptide_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
+| `generate_acid_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
 
 ---
 
@@ -35,18 +33,21 @@ docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
 ```
 prompt
   │
-  ├─[1]─ UniProt /configure/uniprotkb/result-fields   →  live ft_* field catalog
+  ├─[1]─ 5 transformed query variants                  → broader retrieval coverage
   │
-  ├─[2]─ Gemini classify                               →  3 UniProtField objects
+  ├─[2]─ token split + token embeddings                → word-level context
   │
-  ├─[3]─ UniProt /uniprotkb/search (×3 categories)    →  PeptideRecord list
+  ├─[3]─ workflow routing                              → peptide or acid branch
   │
-  ├─[4]─ Gemini harmony scoring                        →  stack sorted by score
+  ├─[4]─ live UniProt field scoring                    → labels kept at threshold-aware relevance
   │
-  ├─[5]─ Gemini structural ordering                    →  ordered sequence assembly
+  ├─[5]─ UniProt retrieval                             → record set
   │
-  └─[6]─ _save_fasta()                                 →  output/fasta/*.fasta
-                                                           output/fasta/*.json  ← "sequence": str
+  ├─[6]─ firegraph runtime knowledge graph             → structured biological context
+  │
+  ├─[7]─ branch-specific sequence generation           → peptide or amino-acid result
+  │
+  └─[8]─ case-specific artifact export                 → data/<workflow>/<case>/*
 ```
 
 ---
@@ -55,10 +56,11 @@ prompt
 
 | File | Role |
 |------|------|
-| [`server.py`](server.py) | FastMCP server — one `@mcp.tool()` per pipeline step |
-| [`uniprot/peptide_pipeline.py`](uniprot/peptide_pipeline.py) | Core async pipeline logic |
-| [`wf.py`](wf.py) | CLI workflow wrapper (loads `.env`, calls pipeline) |
-| [`main.py`](main.py) | CLI entry point → `wf.run()` |
+| [`server.py`](server.py) | FastMCP server for the merged master workflow |
+| [`uniprot/master_workflow.py`](uniprot/master_workflow.py) | Core async merged pipeline logic |
+| [`master.py`](master.py) | Root workflow router for local execution |
+| [`wf.py`](wf.py) | Compatibility wrapper around `master.run()` |
+| [`main.py`](main.py) | CLI entry point |
 | [`Dockerfile`](Dockerfile) | Minimal Python 3.11-slim image, exposes port 8000 |
 | [`.env`](.env) | `GEMINI_API_KEY=…` (never committed) |
 
@@ -74,12 +76,17 @@ prompt
 
 ## Output
 
-Each run writes two files to `output/fasta/`:
+Each run writes a case-specific artifact set to `data/`:
 
 ```
-output/fasta/
-  peptide_stack_<slug>_<timestamp>.fasta   ← individual + composite FASTA entries
-  peptide_stack_<slug>_<timestamp>.json    ← { "sequence": "MKTL…", "nodes": […] }
+data/
+  <workflow>/
+    <case>/
+      *.fasta
+      *.json
+      *.graph.json
+      *.graph.summary.json
+      prompt_trace.json
 ```
 
 ### FASTA format

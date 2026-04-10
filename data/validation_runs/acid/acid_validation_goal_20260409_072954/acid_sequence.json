@@ -1,0 +1,325 @@
+{
+  "workflow_type": "acid",
+  "goal": "acid validation goal",
+  "query_transform": {
+    "original_query": "Create an amino acid structure focused on residue balance and composition",
+    "workflow_type": "acid",
+    "transformed_queries": [
+      "Create an amino acid structure focused on residue balance and composition",
+      "Create an amino acid structure focused on residue balance and composition broader interpretation",
+      "Create an amino acid structure focused on residue balance and composition structural focus",
+      "Create an amino acid structure focused on residue balance and composition conservative formulation",
+      "Create an amino acid structure focused on residue balance and composition retrieval-oriented formulation"
+    ],
+    "tokenized_words": [
+      "create",
+      "an",
+      "amino",
+      "acid",
+      "structure",
+      "focused",
+      "on",
+      "residue",
+      "balance",
+      "and",
+      "composition",
+      "broader",
+      "interpretation",
+      "structural",
+      "focus",
+      "conservative",
+      "formulation",
+      "retrieval-oriented"
+    ],
+    "goal_summary": "acid validation goal",
+    "retrieval_query": "Create an amino acid structure focused on residue balance and composition",
+    "ranking_focus": [
+      "direct relevance"
+    ],
+    "transformation_focus": [
+      "preserve supported biology"
+    ],
+    "sequence_constraints": [
+      "keep sequence assembly deterministic"
+    ],
+    "exclusions": [
+      "avoid unsupported claims"
+    ]
+  },
+  "selected_fields": [
+    {
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "group": "Processing"
+    },
+    {
+      "field_id": "ft_domain",
+      "label": "Domain",
+      "group": "Structure"
+    }
+  ],
+  "field_scores": [
+    {
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "model_score": 0.91,
+      "embedding_score": 0.74,
+      "final_score": 0.91
+    },
+    {
+      "field_id": "ft_domain",
+      "label": "Domain",
+      "model_score": 0.82,
+      "embedding_score": 0.71,
+      "final_score": 0.82
+    },
+    {
+      "field_id": "ft_peptide",
+      "label": "Peptide",
+      "model_score": 0.44,
+      "embedding_score": 0.4,
+      "final_score": 0.44
+    },
+    {
+      "field_id": "ft_signal",
+      "label": "Signal peptide",
+      "model_score": 0.3,
+      "embedding_score": 0.28,
+      "final_score": 0.3
+    }
+  ],
+  "source_candidates": [
+    {
+      "accession": "A00001",
+      "name": "Residue Scaffold Alpha",
+      "gene_names": [
+        "RSA"
+      ],
+      "category": "Chain",
+      "sequence_length": 20,
+      "harmony_score": 0.92,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock acid scaffold support"
+      }
+    },
+    {
+      "accession": "A00002",
+      "name": "Residue Scaffold Beta",
+      "gene_names": [
+        "RSB"
+      ],
+      "category": "Domain",
+      "sequence_length": 16,
+      "harmony_score": 0.81,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock acid fragment support"
+      }
+    }
+  ],
+  "used_candidates": [
+    {
+      "accession": "A00001",
+      "name": "Residue Scaffold Alpha",
+      "gene_names": [
+        "RSA"
+      ],
+      "category": "Chain",
+      "sequence_length": 20,
+      "harmony_score": 0.92,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock acid scaffold support"
+      }
+    },
+    {
+      "accession": "A00002",
+      "name": "Residue Scaffold Beta",
+      "gene_names": [
+        "RSB"
+      ],
+      "category": "Domain",
+      "sequence_length": 16,
+      "harmony_score": 0.81,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock acid fragment support"
+      }
+    }
+  ],
+  "fragments": [
+    {
+      "accession": "A00001",
+      "mode": "feature_segments",
+      "start": 1,
+      "end": 10,
+      "label": "Chain",
+      "length": 10
+    },
+    {
+      "accession": "A00002",
+      "mode": "full_sequence",
+      "start": 1,
+      "end": 16,
+      "label": "Domain",
+      "length": 16
+    }
+  ],
+  "transformed_sequence": "ACDEFGHIKLGGGGCCCCAAAATTTT",
+  "amino_acid_frequency": {
+    "A": {
+      "count": 5,
+      "frequency": 0.192308
+    },
+    "C": {
+      "count": 5,
+      "frequency": 0.192308
+    },
+    "D": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "E": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "F": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "G": {
+      "count": 5,
+      "frequency": 0.192308
+    },
+    "H": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "I": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "K": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "L": {
+      "count": 1,
+      "frequency": 0.038462
+    },
+    "M": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "N": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "P": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "Q": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "R": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "S": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "T": {
+      "count": 4,
+      "frequency": 0.153846
+    },
+    "V": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "W": {
+      "count": 0,
+      "frequency": 0.0
+    },
+    "Y": {
+      "count": 0,
+      "frequency": 0.0
+    }
+  },
+  "structure_plan": {
+    "structure_name": "acid validation structure",
+    "structure_summary": "Mocked acid plan",
+    "steps": [
+      {
+        "accession": "A00001",
+        "mode": "feature_segments",
+        "reason": "Primary scaffold"
+      },
+      {
+        "accession": "A00002",
+        "mode": "full_sequence",
+        "reason": "Supportive tail"
+      }
+    ]
+  },
+  "assembly_notes": [
+    "A00001: Primary scaffold",
+    "A00002: Supportive tail"
+  ],
+  "graph": {
+    "prompt_trace_path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\prompt_trace.json",
+    "graph_path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\acid_sequence.graph.json",
+    "graph_summary_path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\acid_sequence.graph.summary.json",
+    "graph_node_count": 63,
+    "graph_edge_count": 77,
+    "graph_summary": {
+      "run_id": "acid_20260409_072954_df50d6cd",
+      "workflow_type": "acid",
+      "goal_summary": "acid validation goal",
+      "node_count": 63,
+      "edge_count": 77,
+      "node_types": {
+        "ACID_SCORE": 2,
+        "ARTIFACT": 3,
+        "CASE_RUN": 1,
+        "CATEGORY_SCORE": 4,
+        "FRAGMENT": 2,
+        "FREQUENCY_PROFILE": 1,
+        "GOAL": 1,
+        "PLAN_STEP": 2,
+        "PROTEIN_ENTRY": 2,
+        "QUERY_TRANSFORM": 1,
+        "QUERY_VARIANT": 5,
+        "TOKEN": 18,
+        "TOKEN_EMBEDDING": 18,
+        "TRANSFORMED_SEQUENCE": 1,
+        "UNIPROT_FIELD": 2
+      },
+      "edge_relations": {
+        "contains_token": 18,
+        "contributes_to_transformed_sequence": 2,
+        "defines_plan_step": 2,
+        "evaluates_candidate": 2,
+        "expands_into_variant": 5,
+        "extracts_fragment": 2,
+        "focuses_on": 2,
+        "has_embedding": 18,
+        "has_frequency_profile": 1,
+        "has_goal": 1,
+        "next_fragment": 1,
+        "produces_sequence": 1,
+        "retrieves_candidate": 4,
+        "scored_as": 2,
+        "scores_category": 4,
+        "selects_field": 4,
+        "supports_goal": 2,
+        "targets_candidate": 2,
+        "transforms_into": 1,
+        "writes_artifact": 3
+      }
+    }
+  }
+}

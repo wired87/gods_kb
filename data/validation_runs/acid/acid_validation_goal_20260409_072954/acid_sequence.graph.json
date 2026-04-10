@@ -1,0 +1,1779 @@
+{
+  "directed": false,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "CASE_RUN",
+      "workflow_type": "acid",
+      "run_id": "acid_20260409_072954_df50d6cd",
+      "created_at": "2026-04-09T07:29:54.128894",
+      "id": "acid_20260409_072954_df50d6cd:case_run:root"
+    },
+    {
+      "type": "GOAL",
+      "text": "acid validation goal",
+      "original_query": "Create an amino acid structure focused on residue balance and composition",
+      "workflow_type": "acid",
+      "case_dir": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954",
+      "id": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal"
+    },
+    {
+      "type": "QUERY_TRANSFORM",
+      "goal_summary": "acid validation goal",
+      "retrieval_query": "Create an amino acid structure focused on residue balance and composition",
+      "ranking_focus": [
+        "direct relevance"
+      ],
+      "transformation_focus": [
+        "preserve supported biology"
+      ],
+      "sequence_constraints": [
+        "keep sequence assembly deterministic"
+      ],
+      "exclusions": [
+        "avoid unsupported claims"
+      ],
+      "id": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 0,
+      "text": "Create an amino acid structure focused on residue balance and composition",
+      "id": "acid_20260409_072954_df50d6cd:query_variant:0_Create_an_amino_acid_structure_focused_o"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 1,
+      "text": "Create an amino acid structure focused on residue balance and composition broader interpretation",
+      "id": "acid_20260409_072954_df50d6cd:query_variant:1_Create_an_amino_acid_structure_focused_o"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 2,
+      "text": "Create an amino acid structure focused on residue balance and composition structural focus",
+      "id": "acid_20260409_072954_df50d6cd:query_variant:2_Create_an_amino_acid_structure_focused_o"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 3,
+      "text": "Create an amino acid structure focused on residue balance and composition conservative formulation",
+      "id": "acid_20260409_072954_df50d6cd:query_variant:3_Create_an_amino_acid_structure_focused_o"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 4,
+      "text": "Create an amino acid structure focused on residue balance and composition retrieval-oriented formulation",
+      "id": "acid_20260409_072954_df50d6cd:query_variant:4_Create_an_amino_acid_structure_focused_o"
+    },
+    {
+      "type": "TOKEN",
+      "token": "create",
+      "id": "acid_20260409_072954_df50d6cd:token:create"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "create",
+      "vector": [
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:create"
+    },
+    {
+      "type": "TOKEN",
+      "token": "an",
+      "id": "acid_20260409_072954_df50d6cd:token:an"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "an",
+      "vector": [
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:an"
+    },
+    {
+      "type": "TOKEN",
+      "token": "amino",
+      "id": "acid_20260409_072954_df50d6cd:token:amino"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "amino",
+      "vector": [
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.2,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:amino"
+    },
+    {
+      "type": "TOKEN",
+      "token": "acid",
+      "id": "acid_20260409_072954_df50d6cd:token:acid"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "acid",
+      "vector": [
+        0.25,
+        0.0,
+        0.25,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:acid"
+    },
+    {
+      "type": "TOKEN",
+      "token": "structure",
+      "id": "acid_20260409_072954_df50d6cd:token:structure"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "structure",
+      "vector": [
+        0.0,
+        0.0,
+        0.1111111111111111,
+        0.0,
+        0.1111111111111111,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2222222222222222,
+        0.1111111111111111,
+        0.2222222222222222,
+        0.2222222222222222,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:structure"
+    },
+    {
+      "type": "TOKEN",
+      "token": "focused",
+      "id": "acid_20260409_072954_df50d6cd:token:focused"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "focused",
+      "vector": [
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:focused"
+    },
+    {
+      "type": "TOKEN",
+      "token": "on",
+      "id": "acid_20260409_072954_df50d6cd:token:on"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "on",
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5,
+        0.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:on"
+    },
+    {
+      "type": "TOKEN",
+      "token": "residue",
+      "id": "acid_20260409_072954_df50d6cd:token:residue"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "residue",
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:residue"
+    },
+    {
+      "type": "TOKEN",
+      "token": "balance",
+      "id": "acid_20260409_072954_df50d6cd:token:balance"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "balance",
+      "vector": [
+        0.2857142857142857,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:balance"
+    },
+    {
+      "type": "TOKEN",
+      "token": "and",
+      "id": "acid_20260409_072954_df50d6cd:token:and"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "and",
+      "vector": [
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:and"
+    },
+    {
+      "type": "TOKEN",
+      "token": "composition",
+      "id": "acid_20260409_072954_df50d6cd:token:composition"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "composition",
+      "vector": [
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.18181818181818182,
+        0.0,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.2727272727272727,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:composition"
+    },
+    {
+      "type": "TOKEN",
+      "token": "broader",
+      "id": "acid_20260409_072954_df50d6cd:token:broader"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "broader",
+      "vector": [
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:broader"
+    },
+    {
+      "type": "TOKEN",
+      "token": "interpretation",
+      "id": "acid_20260409_072954_df50d6cd:token:interpretation"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "interpretation",
+      "vector": [
+        0.07142857142857142,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.07142857142857142,
+        0.07142857142857142,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.21428571428571427,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:interpretation"
+    },
+    {
+      "type": "TOKEN",
+      "token": "structural",
+      "id": "acid_20260409_072954_df50d6cd:token:structural"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "structural",
+      "vector": [
+        0.1,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.1,
+        0.2,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:structural"
+    },
+    {
+      "type": "TOKEN",
+      "token": "focus",
+      "id": "acid_20260409_072954_df50d6cd:token:focus"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "focus",
+      "vector": [
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:focus"
+    },
+    {
+      "type": "TOKEN",
+      "token": "conservative",
+      "id": "acid_20260409_072954_df50d6cd:token:conservative"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "conservative",
+      "vector": [
+        0.08333333333333333,
+        0.0,
+        0.08333333333333333,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:conservative"
+    },
+    {
+      "type": "TOKEN",
+      "token": "formulation",
+      "id": "acid_20260409_072954_df50d6cd:token:formulation"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "formulation",
+      "vector": [
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:formulation"
+    },
+    {
+      "type": "TOKEN",
+      "token": "retrieval-oriented",
+      "id": "acid_20260409_072954_df50d6cd:token:retrieval-oriented"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "retrieval-oriented",
+      "vector": [
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.058823529411764705,
+        0.23529411764705882,
+        0.0,
+        0.0,
+        0.0,
+        0.11764705882352941,
+        0.0,
+        0.0,
+        0.058823529411764705,
+        0.0,
+        0.058823529411764705,
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.17647058823529413,
+        0.0,
+        0.11764705882352941,
+        0.0,
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "acid_20260409_072954_df50d6cd:token_embedding:retrieval-oriented"
+    },
+    {
+      "type": "UNIPROT_FIELD",
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "group": "Processing",
+      "id": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain"
+    },
+    {
+      "type": "UNIPROT_FIELD",
+      "field_id": "ft_domain",
+      "label": "Domain",
+      "group": "Structure",
+      "id": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_chain",
+      "field_label": "Chain",
+      "model_score": 0.91,
+      "embedding_score": 0.74,
+      "final_score": 0.91,
+      "selected": true,
+      "id": "acid_20260409_072954_df50d6cd:category_score:ft_chain"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_domain",
+      "field_label": "Domain",
+      "model_score": 0.82,
+      "embedding_score": 0.71,
+      "final_score": 0.82,
+      "selected": true,
+      "id": "acid_20260409_072954_df50d6cd:category_score:ft_domain"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_peptide",
+      "field_label": "Peptide",
+      "model_score": 0.44,
+      "embedding_score": 0.4,
+      "final_score": 0.44,
+      "selected": false,
+      "id": "acid_20260409_072954_df50d6cd:category_score:ft_peptide"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_signal",
+      "field_label": "Signal peptide",
+      "model_score": 0.3,
+      "embedding_score": 0.28,
+      "final_score": 0.3,
+      "selected": false,
+      "id": "acid_20260409_072954_df50d6cd:category_score:ft_signal"
+    },
+    {
+      "type": "PROTEIN_ENTRY",
+      "accession": "A00001",
+      "name": "Residue Scaffold Alpha",
+      "gene_names": [
+        "RSA"
+      ],
+      "category": "Chain",
+      "sequence_length": 20,
+      "sequence_preview": "ACDEFGHIKLMNPQRSTVWY",
+      "functional_specs": {
+        "function": "Mock acid scaffold support"
+      },
+      "id": "acid_20260409_072954_df50d6cd:protein_entry:A00001"
+    },
+    {
+      "type": "ACID_SCORE",
+      "accession": "A00001",
+      "score": 0.92,
+      "id": "acid_20260409_072954_df50d6cd:acid_score:A00001"
+    },
+    {
+      "type": "PROTEIN_ENTRY",
+      "accession": "A00002",
+      "name": "Residue Scaffold Beta",
+      "gene_names": [
+        "RSB"
+      ],
+      "category": "Domain",
+      "sequence_length": 16,
+      "sequence_preview": "GGGGCCCCAAAATTTT",
+      "functional_specs": {
+        "function": "Mock acid fragment support"
+      },
+      "id": "acid_20260409_072954_df50d6cd:protein_entry:A00002"
+    },
+    {
+      "type": "ACID_SCORE",
+      "accession": "A00002",
+      "score": 0.81,
+      "id": "acid_20260409_072954_df50d6cd:acid_score:A00002"
+    },
+    {
+      "type": "TRANSFORMED_SEQUENCE",
+      "sequence": "ACDEFGHIKLGGGGCCCCAAAATTTT",
+      "total_length": 26,
+      "used_candidate_count": 2,
+      "id": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence"
+    },
+    {
+      "type": "PLAN_STEP",
+      "index": 0,
+      "accession": "A00001",
+      "mode": "feature_segments",
+      "reason": "Primary scaffold",
+      "id": "acid_20260409_072954_df50d6cd:plan_step:0_A00001"
+    },
+    {
+      "type": "PLAN_STEP",
+      "index": 1,
+      "accession": "A00002",
+      "mode": "full_sequence",
+      "reason": "Supportive tail",
+      "id": "acid_20260409_072954_df50d6cd:plan_step:1_A00002"
+    },
+    {
+      "type": "FRAGMENT",
+      "accession": "A00001",
+      "mode": "feature_segments",
+      "start": 1,
+      "end": 10,
+      "fragment_label": "Chain",
+      "length": 10,
+      "id": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10"
+    },
+    {
+      "type": "FRAGMENT",
+      "accession": "A00002",
+      "mode": "full_sequence",
+      "start": 1,
+      "end": 16,
+      "fragment_label": "Domain",
+      "length": 16,
+      "id": "acid_20260409_072954_df50d6cd:fragment:A00002_1_16"
+    },
+    {
+      "type": "FREQUENCY_PROFILE",
+      "amino_acid_frequency": {
+        "A": {
+          "count": 5,
+          "frequency": 0.192308
+        },
+        "C": {
+          "count": 5,
+          "frequency": 0.192308
+        },
+        "D": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "E": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "F": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "G": {
+          "count": 5,
+          "frequency": 0.192308
+        },
+        "H": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "I": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "K": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "L": {
+          "count": 1,
+          "frequency": 0.038462
+        },
+        "M": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "N": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "P": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "Q": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "R": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "S": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "T": {
+          "count": 4,
+          "frequency": 0.153846
+        },
+        "V": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "W": {
+          "count": 0,
+          "frequency": 0.0
+        },
+        "Y": {
+          "count": 0,
+          "frequency": 0.0
+        }
+      },
+      "id": "acid_20260409_072954_df50d6cd:frequency_profile:acid_frequency"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "acid_fasta",
+      "path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\acid_sequence.fasta",
+      "id": "acid_20260409_072954_df50d6cd:artifact:acid_sequence_fasta"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "acid_json_sidecar",
+      "path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\acid_sequence.json",
+      "id": "acid_20260409_072954_df50d6cd:artifact:acid_sequence_json"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "prompt_trace",
+      "path": "data\\validation_runs\\acid\\acid_validation_goal_20260409_072954\\prompt_trace.json",
+      "id": "acid_20260409_072954_df50d6cd:artifact:prompt_trace_json"
+    }
+  ],
+  "edges": [
+    {
+      "rel": "has_goal",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "GOAL",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_has_goal_acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "type": "CASE_RUN_has_goal_GOAL",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_selects_field_acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "type": "CASE_RUN_selects_field_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_selects_field_acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "type": "CASE_RUN_selects_field_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_retrieves_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "type": "CASE_RUN_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_retrieves_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "type": "CASE_RUN_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_writes_artifact_acid_20260409_072954_df50d6cd:artifact:acid_sequence_fasta",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:artifact:acid_sequence_fasta",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_writes_artifact_acid_20260409_072954_df50d6cd:artifact:acid_sequence_json",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:artifact:acid_sequence_json",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "acid_20260409_072954_df50d6cd:case_run:root_writes_artifact_acid_20260409_072954_df50d6cd:artifact:prompt_trace_json",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "acid_20260409_072954_df50d6cd:case_run:root",
+      "target": "acid_20260409_072954_df50d6cd:artifact:prompt_trace_json",
+      "key": 0
+    },
+    {
+      "rel": "transforms_into",
+      "src_layer": "GOAL",
+      "trgt_layer": "QUERY_TRANSFORM",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_transforms_into_acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "type": "GOAL_transforms_into_QUERY_TRANSFORM",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "key": 0
+    },
+    {
+      "rel": "focuses_on",
+      "src_layer": "GOAL",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_focuses_on_acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "type": "GOAL_focuses_on_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "focuses_on",
+      "src_layer": "GOAL",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_focuses_on_acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "type": "GOAL_focuses_on_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_scores_category_acid_20260409_072954_df50d6cd:category_score:ft_chain",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_scores_category_acid_20260409_072954_df50d6cd:category_score:ft_domain",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_domain",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_scores_category_acid_20260409_072954_df50d6cd:category_score:ft_peptide",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_peptide",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_scores_category_acid_20260409_072954_df50d6cd:category_score:ft_signal",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_signal",
+      "key": 0
+    },
+    {
+      "rel": "supports_goal",
+      "src_layer": "GOAL",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_supports_goal_acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "type": "GOAL_supports_goal_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "key": 0
+    },
+    {
+      "rel": "supports_goal",
+      "src_layer": "GOAL",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_supports_goal_acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "type": "GOAL_supports_goal_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "key": 0
+    },
+    {
+      "rel": "produces_sequence",
+      "src_layer": "GOAL",
+      "trgt_layer": "TRANSFORMED_SEQUENCE",
+      "eid": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal_produces_sequence_acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "type": "GOAL_produces_sequence_TRANSFORMED_SEQUENCE",
+      "source": "acid_20260409_072954_df50d6cd:goal:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 0,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_expands_into_variant_acid_20260409_072954_df50d6cd:query_variant:0_Create_an_amino_acid_structure_focused_o",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_variant:0_Create_an_amino_acid_structure_focused_o",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 1,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_expands_into_variant_acid_20260409_072954_df50d6cd:query_variant:1_Create_an_amino_acid_structure_focused_o",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_variant:1_Create_an_amino_acid_structure_focused_o",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 2,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_expands_into_variant_acid_20260409_072954_df50d6cd:query_variant:2_Create_an_amino_acid_structure_focused_o",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_variant:2_Create_an_amino_acid_structure_focused_o",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 3,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_expands_into_variant_acid_20260409_072954_df50d6cd:query_variant:3_Create_an_amino_acid_structure_focused_o",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_variant:3_Create_an_amino_acid_structure_focused_o",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 4,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_expands_into_variant_acid_20260409_072954_df50d6cd:query_variant:4_Create_an_amino_acid_structure_focused_o",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:query_variant:4_Create_an_amino_acid_structure_focused_o",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:create",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:create",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:an",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:an",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:amino",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:amino",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:acid",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:acid",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:structure",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:structure",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:focused",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:focused",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:on",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:on",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:residue",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:residue",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:balance",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:balance",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:and",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:and",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:composition",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:composition",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:broader",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:broader",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:interpretation",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:interpretation",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:structural",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:structural",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:focus",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:focus",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:conservative",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:conservative",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:formulation",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:formulation",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_contains_token_acid_20260409_072954_df50d6cd:token:retrieval-oriented",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:token:retrieval-oriented",
+      "key": 0
+    },
+    {
+      "rel": "evaluates_candidate",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "ACID_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_evaluates_candidate_acid_20260409_072954_df50d6cd:acid_score:A00001",
+      "type": "QUERY_TRANSFORM_evaluates_candidate_ACID_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:acid_score:A00001",
+      "key": 0
+    },
+    {
+      "rel": "evaluates_candidate",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "ACID_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_evaluates_candidate_acid_20260409_072954_df50d6cd:acid_score:A00002",
+      "type": "QUERY_TRANSFORM_evaluates_candidate_ACID_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:acid_score:A00002",
+      "key": 0
+    },
+    {
+      "rel": "defines_plan_step",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "PLAN_STEP",
+      "order": 0,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_defines_plan_step_acid_20260409_072954_df50d6cd:plan_step:0_A00001",
+      "type": "QUERY_TRANSFORM_defines_plan_step_PLAN_STEP",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:plan_step:0_A00001",
+      "key": 0
+    },
+    {
+      "rel": "defines_plan_step",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "PLAN_STEP",
+      "order": 1,
+      "eid": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal_defines_plan_step_acid_20260409_072954_df50d6cd:plan_step:1_A00002",
+      "type": "QUERY_TRANSFORM_defines_plan_step_PLAN_STEP",
+      "source": "acid_20260409_072954_df50d6cd:query_transform:acid_validation_goal",
+      "target": "acid_20260409_072954_df50d6cd:plan_step:1_A00002",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:create_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:create",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:create",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:create",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:an_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:an",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:an",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:an",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:amino_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:amino",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:amino",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:amino",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:acid_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:acid",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:acid",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:acid",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:structure_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:structure",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:structure",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:structure",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:focused_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:focused",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:focused",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:focused",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:on_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:on",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:on",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:on",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:residue_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:residue",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:residue",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:residue",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:balance_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:balance",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:balance",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:balance",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:and_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:and",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:and",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:and",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:composition_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:composition",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:composition",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:composition",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:broader_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:broader",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:broader",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:broader",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:interpretation_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:interpretation",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:interpretation",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:interpretation",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:structural_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:structural",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:structural",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:structural",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:focus_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:focus",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:focus",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:focus",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:conservative_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:conservative",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:conservative",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:conservative",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:formulation_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:formulation",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:formulation",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:formulation",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "acid_20260409_072954_df50d6cd:token:retrieval-oriented_has_embedding_acid_20260409_072954_df50d6cd:token_embedding:retrieval-oriented",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "acid_20260409_072954_df50d6cd:token:retrieval-oriented",
+      "target": "acid_20260409_072954_df50d6cd:token_embedding:retrieval-oriented",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CATEGORY_SCORE",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:category_score:ft_chain_selects_field_acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "type": "CATEGORY_SCORE_selects_field_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "UNIPROT_FIELD",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain_retrieves_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "type": "UNIPROT_FIELD_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:uniprot_field:ft_chain",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CATEGORY_SCORE",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "acid_20260409_072954_df50d6cd:category_score:ft_domain_selects_field_acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "type": "CATEGORY_SCORE_selects_field_UNIPROT_FIELD",
+      "source": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "target": "acid_20260409_072954_df50d6cd:category_score:ft_domain",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "UNIPROT_FIELD",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain_retrieves_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "type": "UNIPROT_FIELD_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:uniprot_field:ft_domain",
+      "target": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "key": 0
+    },
+    {
+      "rel": "scored_as",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "ACID_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:protein_entry:A00001_scored_as_acid_20260409_072954_df50d6cd:acid_score:A00001",
+      "type": "PROTEIN_ENTRY_scored_as_ACID_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "target": "acid_20260409_072954_df50d6cd:acid_score:A00001",
+      "key": 0
+    },
+    {
+      "rel": "targets_candidate",
+      "src_layer": "PLAN_STEP",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:plan_step:0_A00001_targets_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "type": "PLAN_STEP_targets_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "target": "acid_20260409_072954_df50d6cd:plan_step:0_A00001",
+      "key": 0
+    },
+    {
+      "rel": "extracts_fragment",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "FRAGMENT",
+      "eid": "acid_20260409_072954_df50d6cd:protein_entry:A00001_extracts_fragment_acid_20260409_072954_df50d6cd:fragment:A00001_1_10",
+      "type": "PROTEIN_ENTRY_extracts_fragment_FRAGMENT",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00001",
+      "target": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10",
+      "key": 0
+    },
+    {
+      "rel": "scored_as",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "ACID_SCORE",
+      "eid": "acid_20260409_072954_df50d6cd:protein_entry:A00002_scored_as_acid_20260409_072954_df50d6cd:acid_score:A00002",
+      "type": "PROTEIN_ENTRY_scored_as_ACID_SCORE",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "target": "acid_20260409_072954_df50d6cd:acid_score:A00002",
+      "key": 0
+    },
+    {
+      "rel": "targets_candidate",
+      "src_layer": "PLAN_STEP",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "acid_20260409_072954_df50d6cd:plan_step:1_A00002_targets_candidate_acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "type": "PLAN_STEP_targets_candidate_PROTEIN_ENTRY",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "target": "acid_20260409_072954_df50d6cd:plan_step:1_A00002",
+      "key": 0
+    },
+    {
+      "rel": "extracts_fragment",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "FRAGMENT",
+      "eid": "acid_20260409_072954_df50d6cd:protein_entry:A00002_extracts_fragment_acid_20260409_072954_df50d6cd:fragment:A00002_1_16",
+      "type": "PROTEIN_ENTRY_extracts_fragment_FRAGMENT",
+      "source": "acid_20260409_072954_df50d6cd:protein_entry:A00002",
+      "target": "acid_20260409_072954_df50d6cd:fragment:A00002_1_16",
+      "key": 0
+    },
+    {
+      "rel": "contributes_to_transformed_sequence",
+      "src_layer": "FRAGMENT",
+      "trgt_layer": "TRANSFORMED_SEQUENCE",
+      "order": 0,
+      "eid": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10_contributes_to_transformed_sequence_acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "type": "FRAGMENT_contributes_to_transformed_sequence_TRANSFORMED_SEQUENCE",
+      "source": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "target": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10",
+      "key": 0
+    },
+    {
+      "rel": "contributes_to_transformed_sequence",
+      "src_layer": "FRAGMENT",
+      "trgt_layer": "TRANSFORMED_SEQUENCE",
+      "order": 1,
+      "eid": "acid_20260409_072954_df50d6cd:fragment:A00002_1_16_contributes_to_transformed_sequence_acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "type": "FRAGMENT_contributes_to_transformed_sequence_TRANSFORMED_SEQUENCE",
+      "source": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "target": "acid_20260409_072954_df50d6cd:fragment:A00002_1_16",
+      "key": 0
+    },
+    {
+      "rel": "has_frequency_profile",
+      "src_layer": "TRANSFORMED_SEQUENCE",
+      "trgt_layer": "FREQUENCY_PROFILE",
+      "eid": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence_has_frequency_profile_acid_20260409_072954_df50d6cd:frequency_profile:acid_frequency",
+      "type": "TRANSFORMED_SEQUENCE_has_frequency_profile_FREQUENCY_PROFILE",
+      "source": "acid_20260409_072954_df50d6cd:transformed_sequence:acid_sequence",
+      "target": "acid_20260409_072954_df50d6cd:frequency_profile:acid_frequency",
+      "key": 0
+    },
+    {
+      "rel": "next_fragment",
+      "src_layer": "FRAGMENT",
+      "trgt_layer": "FRAGMENT",
+      "order": 1,
+      "eid": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10_next_fragment_acid_20260409_072954_df50d6cd:fragment:A00002_1_16",
+      "type": "FRAGMENT_next_fragment_FRAGMENT",
+      "source": "acid_20260409_072954_df50d6cd:fragment:A00001_1_10",
+      "target": "acid_20260409_072954_df50d6cd:fragment:A00002_1_16",
+      "key": 0
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "workflow_type": "peptide",
+  "goal": "peptide validation goal",
+  "query_transform": {
+    "original_query": "Build a peptide stack for a signal peptide maturation workflow",
+    "workflow_type": "peptide",
+    "transformed_queries": [
+      "Build a peptide stack for a signal peptide maturation workflow",
+      "Build a peptide stack for a signal peptide maturation workflow broader interpretation",
+      "Build a peptide stack for a signal peptide maturation workflow structural focus",
+      "Build a peptide stack for a signal peptide maturation workflow conservative formulation",
+      "Build a peptide stack for a signal peptide maturation workflow retrieval-oriented formulation"
+    ],
+    "tokenized_words": [
+      "build",
+      "a",
+      "peptide",
+      "stack",
+      "for",
+      "signal",
+      "maturation",
+      "workflow",
+      "broader",
+      "interpretation",
+      "structural",
+      "focus",
+      "conservative",
+      "formulation",
+      "retrieval-oriented"
+    ],
+    "goal_summary": "peptide validation goal",
+    "retrieval_query": "Build a peptide stack for a signal peptide maturation workflow",
+    "ranking_focus": [
+      "direct relevance"
+    ],
+    "transformation_focus": [
+      "preserve supported biology"
+    ],
+    "sequence_constraints": [
+      "keep sequence assembly deterministic"
+    ],
+    "exclusions": [
+      "avoid unsupported claims"
+    ]
+  },
+  "selected_fields": [
+    {
+      "field_id": "ft_signal",
+      "label": "Signal peptide",
+      "group": "Processing"
+    },
+    {
+      "field_id": "ft_peptide",
+      "label": "Peptide",
+      "group": "Processing"
+    },
+    {
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "group": "Processing"
+    }
+  ],
+  "field_scores": [
+    {
+      "field_id": "ft_signal",
+      "label": "Signal peptide",
+      "model_score": 0.88,
+      "embedding_score": 0.69,
+      "final_score": 0.88
+    },
+    {
+      "field_id": "ft_peptide",
+      "label": "Peptide",
+      "model_score": 0.84,
+      "embedding_score": 0.66,
+      "final_score": 0.84
+    },
+    {
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "model_score": 0.76,
+      "embedding_score": 0.61,
+      "final_score": 0.76
+    },
+    {
+      "field_id": "ft_domain",
+      "label": "Domain",
+      "model_score": 0.33,
+      "embedding_score": 0.31,
+      "final_score": 0.33
+    }
+  ],
+  "stack": [
+    {
+      "accession": "P00001",
+      "name": "Signal Mock Protein",
+      "gene_names": [
+        "SMP"
+      ],
+      "category": "Signal peptide",
+      "sequence_length": 10,
+      "harmony_score": 0.93,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock entry for signal peptide validation"
+      }
+    },
+    {
+      "accession": "P00002",
+      "name": "Mature Mock Peptide",
+      "gene_names": [
+        "MMP"
+      ],
+      "category": "Peptide",
+      "sequence_length": 10,
+      "harmony_score": 0.89,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock mature peptide validation"
+      }
+    },
+    {
+      "accession": "P00003",
+      "name": "Chain Mock Protein",
+      "gene_names": [
+        "CMP"
+      ],
+      "category": "Chain",
+      "sequence_length": 12,
+      "harmony_score": 0.74,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock chain validation"
+      }
+    }
+  ],
+  "ordered_stack": [
+    {
+      "accession": "P00001",
+      "name": "Signal Mock Protein",
+      "gene_names": [
+        "SMP"
+      ],
+      "category": "Signal peptide",
+      "sequence_length": 10,
+      "harmony_score": 0.93,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock entry for signal peptide validation"
+      }
+    },
+    {
+      "accession": "P00002",
+      "name": "Mature Mock Peptide",
+      "gene_names": [
+        "MMP"
+      ],
+      "category": "Peptide",
+      "sequence_length": 10,
+      "harmony_score": 0.89,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock mature peptide validation"
+      }
+    },
+    {
+      "accession": "P00003",
+      "name": "Chain Mock Protein",
+      "gene_names": [
+        "CMP"
+      ],
+      "category": "Chain",
+      "sequence_length": 12,
+      "harmony_score": 0.74,
+      "feature_count": 1,
+      "functional_specs": {
+        "function": "Mock chain validation"
+      }
+    }
+  ],
+  "structural_sequence": "MKTLLVAAALQRSTVWYAAALLLFFFGGGCCC",
+  "total_length": 32,
+  "graph": {
+    "prompt_trace_path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\prompt_trace.json",
+    "graph_path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\peptide_sequence.graph.json",
+    "graph_summary_path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\peptide_sequence.graph.summary.json",
+    "graph_node_count": 58,
+    "graph_edge_count": 77,
+    "graph_summary": {
+      "run_id": "peptide_20260409_072954_72c45088",
+      "workflow_type": "peptide",
+      "goal_summary": "peptide validation goal",
+      "node_count": 58,
+      "edge_count": 77,
+      "node_types": {
+        "ARTIFACT": 3,
+        "CASE_RUN": 1,
+        "CATEGORY_SCORE": 4,
+        "FEATURE_SPAN": 3,
+        "GOAL": 1,
+        "PEPTIDE_SCORE": 3,
+        "PROTEIN_ENTRY": 3,
+        "QUERY_TRANSFORM": 1,
+        "QUERY_VARIANT": 5,
+        "STRUCTURAL_COMPOSITE": 1,
+        "TOKEN": 15,
+        "TOKEN_EMBEDDING": 15,
+        "UNIPROT_FIELD": 3
+      },
+      "edge_relations": {
+        "contains_token": 15,
+        "contributes_to_structural_sequence": 3,
+        "evaluates_candidate": 3,
+        "expands_into_variant": 5,
+        "focuses_on": 3,
+        "has_embedding": 15,
+        "has_feature": 3,
+        "has_goal": 1,
+        "precedes_in_stack": 2,
+        "produces_sequence": 1,
+        "retrieves_candidate": 6,
+        "scored_as": 3,
+        "scores_category": 4,
+        "selects_field": 6,
+        "supports_goal": 3,
+        "transforms_into": 1,
+        "writes_artifact": 3
+      }
+    }
+  }
+}

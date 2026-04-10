@@ -1,0 +1,1601 @@
+{
+  "directed": false,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "CASE_RUN",
+      "workflow_type": "peptide",
+      "run_id": "peptide_20260409_072954_72c45088",
+      "created_at": "2026-04-09T07:29:54.172419",
+      "id": "peptide_20260409_072954_72c45088:case_run:root"
+    },
+    {
+      "type": "GOAL",
+      "text": "peptide validation goal",
+      "original_query": "Build a peptide stack for a signal peptide maturation workflow",
+      "workflow_type": "peptide",
+      "case_dir": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954",
+      "id": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal"
+    },
+    {
+      "type": "QUERY_TRANSFORM",
+      "goal_summary": "peptide validation goal",
+      "retrieval_query": "Build a peptide stack for a signal peptide maturation workflow",
+      "ranking_focus": [
+        "direct relevance"
+      ],
+      "transformation_focus": [
+        "preserve supported biology"
+      ],
+      "sequence_constraints": [
+        "keep sequence assembly deterministic"
+      ],
+      "exclusions": [
+        "avoid unsupported claims"
+      ],
+      "id": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 0,
+      "text": "Build a peptide stack for a signal peptide maturation workflow",
+      "id": "peptide_20260409_072954_72c45088:query_variant:0_Build_a_peptide_stack_for_a_signal_pepti"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 1,
+      "text": "Build a peptide stack for a signal peptide maturation workflow broader interpretation",
+      "id": "peptide_20260409_072954_72c45088:query_variant:1_Build_a_peptide_stack_for_a_signal_pepti"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 2,
+      "text": "Build a peptide stack for a signal peptide maturation workflow structural focus",
+      "id": "peptide_20260409_072954_72c45088:query_variant:2_Build_a_peptide_stack_for_a_signal_pepti"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 3,
+      "text": "Build a peptide stack for a signal peptide maturation workflow conservative formulation",
+      "id": "peptide_20260409_072954_72c45088:query_variant:3_Build_a_peptide_stack_for_a_signal_pepti"
+    },
+    {
+      "type": "QUERY_VARIANT",
+      "index": 4,
+      "text": "Build a peptide stack for a signal peptide maturation workflow retrieval-oriented formulation",
+      "id": "peptide_20260409_072954_72c45088:query_variant:4_Build_a_peptide_stack_for_a_signal_pepti"
+    },
+    {
+      "type": "TOKEN",
+      "token": "build",
+      "id": "peptide_20260409_072954_72c45088:token:build"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "build",
+      "vector": [
+        0.0,
+        0.2,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:build"
+    },
+    {
+      "type": "TOKEN",
+      "token": "a",
+      "id": "peptide_20260409_072954_72c45088:token:a"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "a",
+      "vector": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:a"
+    },
+    {
+      "type": "TOKEN",
+      "token": "peptide",
+      "id": "peptide_20260409_072954_72c45088:token:peptide"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "peptide",
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:peptide"
+    },
+    {
+      "type": "TOKEN",
+      "token": "stack",
+      "id": "peptide_20260409_072954_72c45088:token:stack"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "stack",
+      "vector": [
+        0.2,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:stack"
+    },
+    {
+      "type": "TOKEN",
+      "token": "for",
+      "id": "peptide_20260409_072954_72c45088:token:for"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "for",
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:for"
+    },
+    {
+      "type": "TOKEN",
+      "token": "signal",
+      "id": "peptide_20260409_072954_72c45088:token:signal"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "signal",
+      "vector": [
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:signal"
+    },
+    {
+      "type": "TOKEN",
+      "token": "maturation",
+      "id": "peptide_20260409_072954_72c45088:token:maturation"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "maturation",
+      "vector": [
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.1,
+        0.1,
+        0.0,
+        0.0,
+        0.1,
+        0.0,
+        0.2,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:maturation"
+    },
+    {
+      "type": "TOKEN",
+      "token": "workflow",
+      "id": "peptide_20260409_072954_72c45088:token:workflow"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "workflow",
+      "vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.125,
+        0.125,
+        0.0,
+        0.0,
+        0.25,
+        0.0,
+        0.0,
+        0.125,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.25,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:workflow"
+    },
+    {
+      "type": "TOKEN",
+      "token": "broader",
+      "id": "peptide_20260409_072954_72c45088:token:broader"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "broader",
+      "vector": [
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.14285714285714285,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.2857142857142857,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:broader"
+    },
+    {
+      "type": "TOKEN",
+      "token": "interpretation",
+      "id": "peptide_20260409_072954_72c45088:token:interpretation"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "interpretation",
+      "vector": [
+        0.07142857142857142,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.14285714285714285,
+        0.07142857142857142,
+        0.07142857142857142,
+        0.0,
+        0.14285714285714285,
+        0.0,
+        0.21428571428571427,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:interpretation"
+    },
+    {
+      "type": "TOKEN",
+      "token": "structural",
+      "id": "peptide_20260409_072954_72c45088:token:structural"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "structural",
+      "vector": [
+        0.1,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.1,
+        0.2,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:structural"
+    },
+    {
+      "type": "TOKEN",
+      "token": "focus",
+      "id": "peptide_20260409_072954_72c45088:token:focus"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "focus",
+      "vector": [
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.2,
+        0.0,
+        0.2,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:focus"
+    },
+    {
+      "type": "TOKEN",
+      "token": "conservative",
+      "id": "peptide_20260409_072954_72c45088:token:conservative"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "conservative",
+      "vector": [
+        0.08333333333333333,
+        0.0,
+        0.08333333333333333,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.0,
+        0.0,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.08333333333333333,
+        0.0,
+        0.16666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:conservative"
+    },
+    {
+      "type": "TOKEN",
+      "token": "formulation",
+      "id": "peptide_20260409_072954_72c45088:token:formulation"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "formulation",
+      "vector": [
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.18181818181818182,
+        0.0,
+        0.0,
+        0.09090909090909091,
+        0.0,
+        0.09090909090909091,
+        0.09090909090909091,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:formulation"
+    },
+    {
+      "type": "TOKEN",
+      "token": "retrieval-oriented",
+      "id": "peptide_20260409_072954_72c45088:token:retrieval-oriented"
+    },
+    {
+      "type": "TOKEN_EMBEDDING",
+      "token": "retrieval-oriented",
+      "vector": [
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.058823529411764705,
+        0.23529411764705882,
+        0.0,
+        0.0,
+        0.0,
+        0.11764705882352941,
+        0.0,
+        0.0,
+        0.058823529411764705,
+        0.0,
+        0.058823529411764705,
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.17647058823529413,
+        0.0,
+        0.11764705882352941,
+        0.0,
+        0.058823529411764705,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "id": "peptide_20260409_072954_72c45088:token_embedding:retrieval-oriented"
+    },
+    {
+      "type": "UNIPROT_FIELD",
+      "field_id": "ft_signal",
+      "label": "Signal peptide",
+      "group": "Processing",
+      "id": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal"
+    },
+    {
+      "type": "UNIPROT_FIELD",
+      "field_id": "ft_peptide",
+      "label": "Peptide",
+      "group": "Processing",
+      "id": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide"
+    },
+    {
+      "type": "UNIPROT_FIELD",
+      "field_id": "ft_chain",
+      "label": "Chain",
+      "group": "Processing",
+      "id": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_signal",
+      "field_label": "Signal peptide",
+      "model_score": 0.88,
+      "embedding_score": 0.69,
+      "final_score": 0.88,
+      "selected": true,
+      "id": "peptide_20260409_072954_72c45088:category_score:ft_signal"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_peptide",
+      "field_label": "Peptide",
+      "model_score": 0.84,
+      "embedding_score": 0.66,
+      "final_score": 0.84,
+      "selected": true,
+      "id": "peptide_20260409_072954_72c45088:category_score:ft_peptide"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_chain",
+      "field_label": "Chain",
+      "model_score": 0.76,
+      "embedding_score": 0.61,
+      "final_score": 0.76,
+      "selected": true,
+      "id": "peptide_20260409_072954_72c45088:category_score:ft_chain"
+    },
+    {
+      "type": "CATEGORY_SCORE",
+      "field_id": "ft_domain",
+      "field_label": "Domain",
+      "model_score": 0.33,
+      "embedding_score": 0.31,
+      "final_score": 0.33,
+      "selected": false,
+      "id": "peptide_20260409_072954_72c45088:category_score:ft_domain"
+    },
+    {
+      "type": "PROTEIN_ENTRY",
+      "accession": "P00001",
+      "name": "Signal Mock Protein",
+      "gene_names": [
+        "SMP"
+      ],
+      "category": "Signal peptide",
+      "sequence_length": 10,
+      "sequence_preview": "MKTLLVAAAL",
+      "functional_specs": {
+        "function": "Mock entry for signal peptide validation"
+      },
+      "id": "peptide_20260409_072954_72c45088:protein_entry:P00001"
+    },
+    {
+      "type": "FEATURE_SPAN",
+      "accession": "P00001",
+      "label": "Signal peptide",
+      "start": 1,
+      "end": 6,
+      "length": 6,
+      "sequence": "MKTLLV",
+      "id": "peptide_20260409_072954_72c45088:feature_span:P00001_Signal_peptide_1_6"
+    },
+    {
+      "type": "PEPTIDE_SCORE",
+      "accession": "P00001",
+      "score": 0.93,
+      "id": "peptide_20260409_072954_72c45088:peptide_score:P00001"
+    },
+    {
+      "type": "PROTEIN_ENTRY",
+      "accession": "P00002",
+      "name": "Mature Mock Peptide",
+      "gene_names": [
+        "MMP"
+      ],
+      "category": "Peptide",
+      "sequence_length": 10,
+      "sequence_preview": "QRSTVWYAAA",
+      "functional_specs": {
+        "function": "Mock mature peptide validation"
+      },
+      "id": "peptide_20260409_072954_72c45088:protein_entry:P00002"
+    },
+    {
+      "type": "FEATURE_SPAN",
+      "accession": "P00002",
+      "label": "Peptide",
+      "start": 2,
+      "end": 9,
+      "length": 8,
+      "sequence": "RSTVWYAA",
+      "id": "peptide_20260409_072954_72c45088:feature_span:P00002_Peptide_2_9"
+    },
+    {
+      "type": "PEPTIDE_SCORE",
+      "accession": "P00002",
+      "score": 0.89,
+      "id": "peptide_20260409_072954_72c45088:peptide_score:P00002"
+    },
+    {
+      "type": "PROTEIN_ENTRY",
+      "accession": "P00003",
+      "name": "Chain Mock Protein",
+      "gene_names": [
+        "CMP"
+      ],
+      "category": "Chain",
+      "sequence_length": 12,
+      "sequence_preview": "LLLFFFGGGCCC",
+      "functional_specs": {
+        "function": "Mock chain validation"
+      },
+      "id": "peptide_20260409_072954_72c45088:protein_entry:P00003"
+    },
+    {
+      "type": "FEATURE_SPAN",
+      "accession": "P00003",
+      "label": "Chain",
+      "start": 3,
+      "end": 11,
+      "length": 9,
+      "sequence": "LFFFGGGCC",
+      "id": "peptide_20260409_072954_72c45088:feature_span:P00003_Chain_3_11"
+    },
+    {
+      "type": "PEPTIDE_SCORE",
+      "accession": "P00003",
+      "score": 0.74,
+      "id": "peptide_20260409_072954_72c45088:peptide_score:P00003"
+    },
+    {
+      "type": "STRUCTURAL_COMPOSITE",
+      "sequence": "MKTLLVAAALQRSTVWYAAALLLFFFGGGCCC",
+      "total_length": 32,
+      "node_count": 3,
+      "id": "peptide_20260409_072954_72c45088:structural_composite:peptide_sequence"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "peptide_fasta",
+      "path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\peptide_sequence.fasta",
+      "id": "peptide_20260409_072954_72c45088:artifact:peptide_sequence_fasta"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "peptide_json_sidecar",
+      "path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\peptide_sequence.json",
+      "id": "peptide_20260409_072954_72c45088:artifact:peptide_sequence_json"
+    },
+    {
+      "type": "ARTIFACT",
+      "artifact_type": "prompt_trace",
+      "path": "data\\validation_runs\\peptide\\peptide_validation_goal_20260409_072954\\prompt_trace.json",
+      "id": "peptide_20260409_072954_72c45088:artifact:prompt_trace_json"
+    }
+  ],
+  "edges": [
+    {
+      "rel": "has_goal",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "GOAL",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_has_goal_peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "type": "CASE_RUN_has_goal_GOAL",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "type": "CASE_RUN_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "type": "CASE_RUN_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "type": "CASE_RUN_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "type": "CASE_RUN_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "type": "CASE_RUN_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "type": "CASE_RUN_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_writes_artifact_peptide_20260409_072954_72c45088:artifact:peptide_sequence_fasta",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:artifact:peptide_sequence_fasta",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_writes_artifact_peptide_20260409_072954_72c45088:artifact:peptide_sequence_json",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:artifact:peptide_sequence_json",
+      "key": 0
+    },
+    {
+      "rel": "writes_artifact",
+      "src_layer": "CASE_RUN",
+      "trgt_layer": "ARTIFACT",
+      "eid": "peptide_20260409_072954_72c45088:case_run:root_writes_artifact_peptide_20260409_072954_72c45088:artifact:prompt_trace_json",
+      "type": "CASE_RUN_writes_artifact_ARTIFACT",
+      "source": "peptide_20260409_072954_72c45088:case_run:root",
+      "target": "peptide_20260409_072954_72c45088:artifact:prompt_trace_json",
+      "key": 0
+    },
+    {
+      "rel": "transforms_into",
+      "src_layer": "GOAL",
+      "trgt_layer": "QUERY_TRANSFORM",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_transforms_into_peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "type": "GOAL_transforms_into_QUERY_TRANSFORM",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "key": 0
+    },
+    {
+      "rel": "focuses_on",
+      "src_layer": "GOAL",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_focuses_on_peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "type": "GOAL_focuses_on_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "key": 0
+    },
+    {
+      "rel": "focuses_on",
+      "src_layer": "GOAL",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_focuses_on_peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "type": "GOAL_focuses_on_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "key": 0
+    },
+    {
+      "rel": "focuses_on",
+      "src_layer": "GOAL",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_focuses_on_peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "type": "GOAL_focuses_on_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_scores_category_peptide_20260409_072954_72c45088:category_score:ft_signal",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_signal",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_scores_category_peptide_20260409_072954_72c45088:category_score:ft_peptide",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_peptide",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_scores_category_peptide_20260409_072954_72c45088:category_score:ft_chain",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "scores_category",
+      "src_layer": "GOAL",
+      "trgt_layer": "CATEGORY_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_scores_category_peptide_20260409_072954_72c45088:category_score:ft_domain",
+      "type": "GOAL_scores_category_CATEGORY_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_domain",
+      "key": 0
+    },
+    {
+      "rel": "supports_goal",
+      "src_layer": "GOAL",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_supports_goal_peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "type": "GOAL_supports_goal_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "key": 0
+    },
+    {
+      "rel": "evaluates_candidate",
+      "src_layer": "GOAL",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_evaluates_candidate_peptide_20260409_072954_72c45088:peptide_score:P00001",
+      "type": "GOAL_evaluates_candidate_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00001",
+      "key": 0
+    },
+    {
+      "rel": "supports_goal",
+      "src_layer": "GOAL",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_supports_goal_peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "type": "GOAL_supports_goal_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "key": 0
+    },
+    {
+      "rel": "evaluates_candidate",
+      "src_layer": "GOAL",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_evaluates_candidate_peptide_20260409_072954_72c45088:peptide_score:P00002",
+      "type": "GOAL_evaluates_candidate_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00002",
+      "key": 0
+    },
+    {
+      "rel": "supports_goal",
+      "src_layer": "GOAL",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_supports_goal_peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "type": "GOAL_supports_goal_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "key": 0
+    },
+    {
+      "rel": "evaluates_candidate",
+      "src_layer": "GOAL",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_evaluates_candidate_peptide_20260409_072954_72c45088:peptide_score:P00003",
+      "type": "GOAL_evaluates_candidate_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00003",
+      "key": 0
+    },
+    {
+      "rel": "produces_sequence",
+      "src_layer": "GOAL",
+      "trgt_layer": "STRUCTURAL_COMPOSITE",
+      "eid": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal_produces_sequence_peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "type": "GOAL_produces_sequence_STRUCTURAL_COMPOSITE",
+      "source": "peptide_20260409_072954_72c45088:goal:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 0,
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_expands_into_variant_peptide_20260409_072954_72c45088:query_variant:0_Build_a_peptide_stack_for_a_signal_pepti",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_variant:0_Build_a_peptide_stack_for_a_signal_pepti",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 1,
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_expands_into_variant_peptide_20260409_072954_72c45088:query_variant:1_Build_a_peptide_stack_for_a_signal_pepti",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_variant:1_Build_a_peptide_stack_for_a_signal_pepti",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 2,
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_expands_into_variant_peptide_20260409_072954_72c45088:query_variant:2_Build_a_peptide_stack_for_a_signal_pepti",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_variant:2_Build_a_peptide_stack_for_a_signal_pepti",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 3,
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_expands_into_variant_peptide_20260409_072954_72c45088:query_variant:3_Build_a_peptide_stack_for_a_signal_pepti",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_variant:3_Build_a_peptide_stack_for_a_signal_pepti",
+      "key": 0
+    },
+    {
+      "rel": "expands_into_variant",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "QUERY_VARIANT",
+      "order": 4,
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_expands_into_variant_peptide_20260409_072954_72c45088:query_variant:4_Build_a_peptide_stack_for_a_signal_pepti",
+      "type": "QUERY_TRANSFORM_expands_into_variant_QUERY_VARIANT",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:query_variant:4_Build_a_peptide_stack_for_a_signal_pepti",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:build",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:build",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:a",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:a",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:peptide",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:peptide",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:stack",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:stack",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:for",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:for",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:signal",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:signal",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:maturation",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:maturation",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:workflow",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:workflow",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:broader",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:broader",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:interpretation",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:interpretation",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:structural",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:structural",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:focus",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:focus",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:conservative",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:conservative",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:formulation",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:formulation",
+      "key": 0
+    },
+    {
+      "rel": "contains_token",
+      "src_layer": "QUERY_TRANSFORM",
+      "trgt_layer": "TOKEN",
+      "eid": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal_contains_token_peptide_20260409_072954_72c45088:token:retrieval-oriented",
+      "type": "QUERY_TRANSFORM_contains_token_TOKEN",
+      "source": "peptide_20260409_072954_72c45088:query_transform:peptide_validation_goal",
+      "target": "peptide_20260409_072954_72c45088:token:retrieval-oriented",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:build_has_embedding_peptide_20260409_072954_72c45088:token_embedding:build",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:build",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:build",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:a_has_embedding_peptide_20260409_072954_72c45088:token_embedding:a",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:a",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:a",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:peptide_has_embedding_peptide_20260409_072954_72c45088:token_embedding:peptide",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:peptide",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:peptide",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:stack_has_embedding_peptide_20260409_072954_72c45088:token_embedding:stack",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:stack",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:stack",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:for_has_embedding_peptide_20260409_072954_72c45088:token_embedding:for",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:for",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:for",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:signal_has_embedding_peptide_20260409_072954_72c45088:token_embedding:signal",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:signal",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:signal",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:maturation_has_embedding_peptide_20260409_072954_72c45088:token_embedding:maturation",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:maturation",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:maturation",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:workflow_has_embedding_peptide_20260409_072954_72c45088:token_embedding:workflow",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:workflow",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:workflow",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:broader_has_embedding_peptide_20260409_072954_72c45088:token_embedding:broader",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:broader",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:broader",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:interpretation_has_embedding_peptide_20260409_072954_72c45088:token_embedding:interpretation",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:interpretation",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:interpretation",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:structural_has_embedding_peptide_20260409_072954_72c45088:token_embedding:structural",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:structural",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:structural",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:focus_has_embedding_peptide_20260409_072954_72c45088:token_embedding:focus",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:focus",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:focus",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:conservative_has_embedding_peptide_20260409_072954_72c45088:token_embedding:conservative",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:conservative",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:conservative",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:formulation_has_embedding_peptide_20260409_072954_72c45088:token_embedding:formulation",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:formulation",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:formulation",
+      "key": 0
+    },
+    {
+      "rel": "has_embedding",
+      "src_layer": "TOKEN",
+      "trgt_layer": "TOKEN_EMBEDDING",
+      "eid": "peptide_20260409_072954_72c45088:token:retrieval-oriented_has_embedding_peptide_20260409_072954_72c45088:token_embedding:retrieval-oriented",
+      "type": "TOKEN_has_embedding_TOKEN_EMBEDDING",
+      "source": "peptide_20260409_072954_72c45088:token:retrieval-oriented",
+      "target": "peptide_20260409_072954_72c45088:token_embedding:retrieval-oriented",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CATEGORY_SCORE",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:category_score:ft_signal_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "type": "CATEGORY_SCORE_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_signal",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "UNIPROT_FIELD",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "type": "UNIPROT_FIELD_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_signal",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CATEGORY_SCORE",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:category_score:ft_peptide_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "type": "CATEGORY_SCORE_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_peptide",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "UNIPROT_FIELD",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "type": "UNIPROT_FIELD_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_peptide",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "key": 0
+    },
+    {
+      "rel": "selects_field",
+      "src_layer": "CATEGORY_SCORE",
+      "trgt_layer": "UNIPROT_FIELD",
+      "eid": "peptide_20260409_072954_72c45088:category_score:ft_chain_selects_field_peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "type": "CATEGORY_SCORE_selects_field_UNIPROT_FIELD",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "target": "peptide_20260409_072954_72c45088:category_score:ft_chain",
+      "key": 0
+    },
+    {
+      "rel": "retrieves_candidate",
+      "src_layer": "UNIPROT_FIELD",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "eid": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain_retrieves_candidate_peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "type": "UNIPROT_FIELD_retrieves_candidate_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:uniprot_field:ft_chain",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "key": 0
+    },
+    {
+      "rel": "has_feature",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "FEATURE_SPAN",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00001_has_feature_peptide_20260409_072954_72c45088:feature_span:P00001_Signal_peptide_1_6",
+      "type": "PROTEIN_ENTRY_has_feature_FEATURE_SPAN",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "target": "peptide_20260409_072954_72c45088:feature_span:P00001_Signal_peptide_1_6",
+      "key": 0
+    },
+    {
+      "rel": "scored_as",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00001_scored_as_peptide_20260409_072954_72c45088:peptide_score:P00001",
+      "type": "PROTEIN_ENTRY_scored_as_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00001",
+      "key": 0
+    },
+    {
+      "rel": "contributes_to_structural_sequence",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "STRUCTURAL_COMPOSITE",
+      "order": 0,
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00001_contributes_to_structural_sequence_peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "type": "PROTEIN_ENTRY_contributes_to_structural_sequence_STRUCTURAL_COMPOSITE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "target": "peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "key": 0
+    },
+    {
+      "rel": "precedes_in_stack",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "order": 0,
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00001_precedes_in_stack_peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "type": "PROTEIN_ENTRY_precedes_in_stack_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00001",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "key": 0
+    },
+    {
+      "rel": "has_feature",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "FEATURE_SPAN",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00002_has_feature_peptide_20260409_072954_72c45088:feature_span:P00002_Peptide_2_9",
+      "type": "PROTEIN_ENTRY_has_feature_FEATURE_SPAN",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "target": "peptide_20260409_072954_72c45088:feature_span:P00002_Peptide_2_9",
+      "key": 0
+    },
+    {
+      "rel": "scored_as",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00002_scored_as_peptide_20260409_072954_72c45088:peptide_score:P00002",
+      "type": "PROTEIN_ENTRY_scored_as_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00002",
+      "key": 0
+    },
+    {
+      "rel": "contributes_to_structural_sequence",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "STRUCTURAL_COMPOSITE",
+      "order": 1,
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00002_contributes_to_structural_sequence_peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "type": "PROTEIN_ENTRY_contributes_to_structural_sequence_STRUCTURAL_COMPOSITE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "target": "peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "key": 0
+    },
+    {
+      "rel": "precedes_in_stack",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "PROTEIN_ENTRY",
+      "order": 1,
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00002_precedes_in_stack_peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "type": "PROTEIN_ENTRY_precedes_in_stack_PROTEIN_ENTRY",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00002",
+      "target": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "key": 0
+    },
+    {
+      "rel": "has_feature",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "FEATURE_SPAN",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00003_has_feature_peptide_20260409_072954_72c45088:feature_span:P00003_Chain_3_11",
+      "type": "PROTEIN_ENTRY_has_feature_FEATURE_SPAN",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "target": "peptide_20260409_072954_72c45088:feature_span:P00003_Chain_3_11",
+      "key": 0
+    },
+    {
+      "rel": "scored_as",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "PEPTIDE_SCORE",
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00003_scored_as_peptide_20260409_072954_72c45088:peptide_score:P00003",
+      "type": "PROTEIN_ENTRY_scored_as_PEPTIDE_SCORE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "target": "peptide_20260409_072954_72c45088:peptide_score:P00003",
+      "key": 0
+    },
+    {
+      "rel": "contributes_to_structural_sequence",
+      "src_layer": "PROTEIN_ENTRY",
+      "trgt_layer": "STRUCTURAL_COMPOSITE",
+      "order": 2,
+      "eid": "peptide_20260409_072954_72c45088:protein_entry:P00003_contributes_to_structural_sequence_peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "type": "PROTEIN_ENTRY_contributes_to_structural_sequence_STRUCTURAL_COMPOSITE",
+      "source": "peptide_20260409_072954_72c45088:protein_entry:P00003",
+      "target": "peptide_20260409_072954_72c45088:structural_composite:peptide_sequence",
+      "key": 0
+    }
+  ]
+}
