@@ -1,158 +1,300 @@
 # Acid Master
 
-`Acid Master` is a biology-focused workflow that accepts one input query and decides whether the request should be processed as a peptide workflow or as an amino-acid workflow.
+> A biological knowledge-graph engine that turns a single plain-English request into a fully connected world of proteins, genes, molecules, drugs, foods, and quantum-level electron densities.
 
-The software is designed so that a non-technical user can ask for a biological sequence outcome, while the system still keeps a transparent internal structure that an LLM can reason over safely.
+You ask. The engine builds.
 
 ---
 
-## Server Layer (FastMCP Wrapper)
+## How It Works -- The Pipeline
 
-`server.py` wraps the workflow engine as a **FastMCP** server over SSE on port 8000.
+Think of it as a game engine that procedurally generates a living world -- except the world is biology, and every object in it is real.
 
-| MCP Tool | Input | Returns |
-|----------|-------|---------|
-| `generate_case_fasta` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | FASTA text |
-| `inspect_case` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | structured result dict |
-| `generate_peptide_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text |
-| `generate_acid_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text |
-| `solo` | *(none)* | full knowledge graph (nodes + edges + stats) |
+```
+    YOU
+     |
+     |   "Build me a peptide for signal maturation"
+     v
+ +-----------+
+ | THE INPUT |   Your request, in plain language.
+ +-----------+   No biology degree needed.
+     |
+     v
+```
 
-Every workflow tool resolves to `process_master_query()` internally. The `solo` tool builds the complete 18-phase UniProtKB knowledge graph and returns it as serialised nodes and edges.
+---
+
+### Stage 1 -- QUERY EXPANSION
+
+Your single sentence is expanded into **5 variations** so the engine can search broadly.
+
+```
+ Original:    "Build a peptide for signal maturation"
+     |
+     +---->  "...broader interpretation"
+     +---->  "...structural focus"
+     +---->  "...conservative formulation"
+     +---->  "...retrieval-oriented formulation"
+```
+
+> **Why?**  A single sentence can miss important angles.
+> Five perspectives guarantee nothing relevant gets overlooked.
+
+---
+
+### Stage 2 -- TOKEN SPLIT + WORD EMBEDDING
+
+Every word in the expanded queries is individually **tokenised** and embedded into a numeric vector -- a coordinate in meaning-space.
+
+```
+ "peptide"  -->  [0.23, -0.81, 0.44, ...]   768 dimensions
+ "signal"   -->  [0.11, -0.67, 0.39, ...]
+ "maturation" -> [0.09, -0.72, 0.51, ...]
+```
+
+> This lets the engine compare the *meaning* of your words
+> against every biological category it knows.
+
+---
+
+### Stage 3 -- WORKFLOW ROUTING
+
+The engine reads your intent and picks the right branch:
+
+```
+              your query
+                 |
+         +-------+-------+
+         |               |
+     PEPTIDE          AMINO ACID
+      branch            branch
+```
+
+| Branch | When it fires | What it does |
+|--------|---------------|--------------|
+| **Peptide** | You mention peptides, signals, chains, maturation | Builds ordered peptide stacks |
+| **Amino Acid** | You mention residues, composition, balance, motifs | Builds frequency-balanced acid structures |
+
+> The routing is automatic. You never have to choose.
+
+---
+
+### Stage 4 -- CATEGORY SCORING
+
+All known biological field categories are **scored** against your transformed queries. Each category gets a relevance score from 0 to 1:
+
+```
+ Signal peptide   0.88  ============================  SELECTED
+ Peptide          0.84  ===========================   SELECTED
+ Chain            0.76  ========================      SELECTED
+ Domain           0.33  ==========                    skipped
+```
+
+> Only categories that pass the **relevance threshold** (0.7) move forward.
+> Weak matches are filtered out to keep the result focused.
+
+---
+
+### Stage 5 -- LIVE DATA RETRIEVAL
+
+For every selected category, the engine fetches **real biological records** from the UniProt protein database -- the world's largest curated source of protein information.
+
+```
+ UniProt REST API  --->  up to 25 records per category
+                         real sequences, real annotations
+```
+
+> These are not generated or hallucinated.
+> Every record comes from peer-reviewed, experimentally validated data.
+
+---
+
+### Stage 6 -- KNOWLEDGE GRAPH CONSTRUCTION
+
+This is the core of the engine. All retrieved data is woven into a **knowledge graph** -- a connected network of biological entities and their relationships.
+
+The graph is built in **18 phases**, each one adding a new layer of knowledge:
+
+```
+ PHASE  1   Protein & Gene Ingestion .............. UniProt
+ PHASE  2   Deep Details (cofactors, pathways) .... UniProt
+ PHASE  3   Pharmacology .......................... ChEMBL + PubChem
+ PHASE  4   Molecular Structures (SMILES) ......... PubChem / ChEBI
+ PHASE  5   Nutritional Origins ................... Open Food Facts
+ PHASE  6   Genomic & Functional Data ............. Ensembl + Reactome
+ PHASE  7   Pharmacogenomics ...................... ClinPGx
+ PHASE  8   Bioelectric Properties ................ GtoPdb
+ PHASE  9   Microbiome Metabolism ................. VMH
+ PHASE 10   Cell-Type Expression .................. HPA + Cell Ontology
+ PHASE 10.5 Sequence Identity Hashing ............. SHA-256 (local)
+ PHASE 11   3D Structure Prediction ............... AlphaFold
+ PHASE 12   Domain Decomposition .................. InterPro
+ PHASE 13a  Functional Annotations (GO terms) ..... QuickGO
+ PHASE 13b  Subcellular Localisation .............. COMPARTMENTS
+ PHASE 13c  Causal Activity Models ................ GO-CAM
+ PHASE 14   Allergen Detection .................... UniProt
+ PHASE 15   Allergen Molecular Impact ............. CTD + Open Targets
+ PHASE 16   Allergen-Food Cross-Linking ........... (graph internal)
+ PHASE 17   Cellular Components + ncRNA ........... HPA + Ensembl
+ PHASE 18   Electron Density (quantum chem) ....... RDKit + PySCF
+```
+
+> Each phase queries a different scientific database.
+> The result is a single, unified graph where every piece of
+> information is connected to everything it relates to.
+
+---
+
+### Stage 7 -- GRAPH EMBEDDING
+
+Every node and every edge in the knowledge graph is converted into a **768-dimensional vector** using the Gemini embedding model. This gives the entire graph a searchable, semantic memory.
+
+```
+ [PROTEIN] id=P12345 | label=Insulin | description=...
+                   |
+                   v
+            [0.23, -0.81, 0.44, ... ]   768-dim vector
+
+ [EDGE:ENCODED_BY] P12345 -> INS_GENE
+                   |
+                   v
+            [0.11, -0.67, 0.39, ... ]   768-dim vector
+```
+
+> This is what makes the graph intelligent --
+> you can ask questions and find answers by *meaning*, not just keywords.
+
+---
+
+### Stage 8 -- SEQUENCE GENERATION
+
+The selected branch (peptide or amino acid) takes the knowledge graph context and produces the final biological sequence.
+
+| Branch | What happens |
+|--------|-------------|
+| **Peptide** | Candidates are ranked, strong ones are ordered into a structural peptide, written as FASTA |
+| **Amino Acid** | A conservative structure plan is created, fragments are extracted, assembled, frequencies computed, written as FASTA |
+
+```
+ >P12345 | Insulin | gene=INS | category=Peptide | harmony=0.923
+ MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKT...
+```
+
+> The harmony score tells you how well the final sequence
+> matches your original intent. Higher is better.
+
+---
+
+### Stage 9 -- ARTIFACT EXPORT
+
+Every run produces a **case folder** with all results:
+
+```
+ data/
+   peptide/
+     my_case/
+       sequence.fasta          <-- the biological sequence
+       sequence.json           <-- full structured result
+       sequence.graph.json     <-- the knowledge graph
+       sequence.graph.summary  <-- graph statistics
+       prompt_trace.json       <-- every decision the engine made
+```
+
+> The prompt trace is your audit log. It records every
+> query variant, every score, every decision -- fully transparent.
+
+---
+
+## The Knowledge Graph -- What's Inside
+
+The graph contains **8 layers** of biological knowledge:
+
+```
+ +------------------+-----------------------------------------------+
+ | LAYER            | WHAT IT CONTAINS                              |
+ +------------------+-----------------------------------------------+
+ | Core             | Proteins, Genes, Sequence Hashes              |
+ | Structure        | AlphaFold 3D, InterPro Domains, Density       |
+ | Chemistry        | Minerals, Molecules, Atoms, Drug Compounds    |
+ | Function         | GO Terms, Causal Models, Pathways, Evidence   |
+ | Biology          | Cell Types, Components, Compartments, ncRNA   |
+ | Clinical         | Annotations, Variants, Allergens, Diseases    |
+ | External         | Food Sources, Microbiome, Ion Channels        |
+ | Physics          | Excitation Frequencies (quantum-level)        |
+ +------------------+-----------------------------------------------+
+```
+
+Everything is linked by **relationship edges** -- proteins are encoded by genes, modulate drug targets, are expressed in cell types, trigger allergen responses, and resonate at specific quantum excitation frequencies. All in one connected graph.
+
+---
+
+## Available Commands
+
+| Command | What it does |
+|---------|-------------|
+| `generate_case_fasta` | Run the full pipeline, get a FASTA sequence back |
+| `inspect_case` | Run the full pipeline, get the complete structured result |
+| `generate_peptide_fasta` | Force the peptide branch |
+| `generate_acid_fasta` | Force the amino acid branch |
+| `solo` | Build the entire knowledge graph and return it raw |
+
+---
+
+## Running the Engine
 
 ```bash
-# Start server
-python server.py            # SSE on http://localhost:8000
+# Option A: Local
+pip install -r requirements.txt
+python server.py                # starts on http://localhost:8000
 
-# Docker
+# Option B: Docker (any OS)
 docker build -t acid-master .
 docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
+
+# Option C: CLI
+python main.py                  # interactive prompt
 ```
 
 ---
 
-## Workflow Engine
+## Configuration
 
-The engine follows this sequence:
+You need one key to run:
 
-1. Expand user query into 5 variants
-2. Token-split + embed each word
-3. Route to peptide or acid branch
-4. Score live UniProt fields against transformed queries
-5. Retrieve full biological records for selected labels
-6. Build a firegraph runtime knowledge graph
-7. Branch-specific sequence generation
-8. Export case-specific artifacts to `data/`
+| Variable | Required | What for |
+|----------|----------|----------|
+| `GEMINI_API_KEY` | yes | Powers the AI scoring, routing, harmony evaluation, and graph embedding |
 
-### Configuration
-
-`execution_cfg.py` holds hardcoded specs per category slug:
-
-| Category | Provider | Key Endpoints |
-|----------|----------|---------------|
-| `amino_acid` | UniProt | `rest.uniprot.org` |
-| `protein_structure` | RCSB PDB | `search.rcsb.org` |
-| `atom` | PubChem | `pubchem.ncbi.nlm.nih.gov` |
-| `chemical` | PubChem | `pubchem.ncbi.nlm.nih.gov` |
-
-Each category entry bundles API endpoints, routing keywords, retrieval defaults, scoring params, and output artifact naming.
-
----
-
-## UniProtKB -- 18-Phase Enrichment Pipeline
-
-`UniprotKB` (`uniprot_kb.py`) orchestrates the full graph build via `finalize_biological_graph()`:
-
-| Phase | Method | External API |
-|-------|--------|-------------|
-| 1 | `get_all_proteins` | UniProt Proteome |
-| 2 | `enrich_gene_nodes_deep` | UniProt (cofactors, pathways) |
-| 3 | `enrich_pharmacology_quantum_adme` | ChEMBL + PubChem |
-| 4 | `enrich_molecular_structures` | PubChem / ChEBI |
-| 5 | `enrich_food_sources` | Open Food Facts (DE) |
-| 6 | `enrich_genomic_data` + `enrich_functional_dynamics` | Ensembl + Reactome |
-| 7 | `enrich_pharmacogenomics` | ClinPGx |
-| 8 | `enrich_bioelectric_properties` | GtoPdb |
-| 9 | `enrich_microbiome_axis` | VMH |
-| 10 | `enrich_cell_type_expression` | HPA + Cell Ontology |
-| 10.5 | `compute_sequence_hashes` | -- (SHA-256 local) |
-| 11 | `enrich_structural_layer` | AlphaFold DB |
-| 12 | `enrich_domain_decomposition` | InterPro |
-| 13a | `enrich_go_semantic_layer` | QuickGO |
-| 13b | `enrich_compartment_localization` | COMPARTMENTS |
-| 13c | `enrich_gocam_activities` | GO-CAM |
-| 14 | `detect_allergen_proteins` | UniProt KW-0020 |
-| 15 | `enrich_allergen_molecular_impact` | CTD + Open Targets |
-| 16 | `crosslink_allergen_food_sources` | -- (graph internal) |
-| 17 | `enrich_cellular_components` | HPA + Ensembl ncRNA |
-| 18 | `compute_electron_density_matrices` | RDKit + PySCF (DFT) |
-
----
-
-## Runtime Knowledge Graph -- Node & Edge Layers
-
-### Node Types by Layer
-
-| Layer | Node Types |
-|-------|-----------|
-| **Core** | `PROTEIN`, `GENE`, `SEQUENCE_HASH` |
-| **Structure** | `ALPHAFOLD_STRUCTURE`, `INTERPRO_DOMAIN`, `DENSITY_MATRIX` |
-| **Chemistry** | `MINERAL`, `MOLECULE_CHAIN`, `ATOMIC_STRUCTURE`, `PHARMA_COMPOUND` |
-| **Function** | `GO_TERM`, `GOCAM_ACTIVITY`, `REACTOME_PATHWAY`, `ECO_EVIDENCE` |
-| **Biology** | `CELL_TYPE`, `CELLULAR_COMPONENT`, `COMPARTMENT`, `NC_GENE` |
-| **Clinical** | `CLINICAL_ANNOTATION`, `GENETIC_VARIANT`, `ALLERGEN`, `ALLERGEN_DISEASE` |
-| **External** | `FOOD_SOURCE`, `MICROBIOME_METABOLITE`, `ELECTRICAL_COMPONENT` |
-| **Physics** | `EXCITATION_FREQUENCY` |
-
-### Key Edge Relations
-
-`ENCODED_BY` | `MODULATES_TARGET` | `HAS_DOMAIN` | `ANNOTATED_WITH` | `EXPRESSED_IN` | `CLINICAL_SIGNIFICANCE` | `CONTAINS_NUTRIENT` | `DENSITY_COMPUTED` | `PHYSICAL_BINDING` | `PARTICIPATES_IN` | `VARIANT_OF` | `HAS_BIOPHYSICS`
-
----
-
-## File Layout
-
-| File | Purpose |
-|------|---------|
-| `main.py` | CLI entry point |
-| `server.py` | FastMCP server (SSE :8000) |
-| `uniprot_kb.py` | `UniprotKB` class -- 18-phase enrichment pipeline |
-| `execution_cfg.py` | Hardcoded API specs, routing keywords, scoring params per category |
-| `agent.md` | MCP agent descriptor for external consumers |
-| `Dockerfile` | Python 3.11-slim image, exposes port 8000 |
-| `.env` | `GEMINI_API_KEY=...` (never committed) |
-
----
-
-## Output Folder Structure
-
-Every request gets its own case-specific directory under `data/`.
+Create a `.env` file in the project root:
 
 ```
-data/
-  <workflow>/
-    <case>/
-      *.fasta
-      *.json
-      *.graph.json
-      *.graph.summary.json
-      prompt_trace.json
+GEMINI_API_KEY=your_key_here
 ```
 
 ---
 
-## Environment Variables
+## Data Sources
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `GEMINI_API_KEY` | yes | Google Gemini API key for classification, harmony scoring, and structural ordering |
+The engine queries **17 external scientific databases** in real time:
 
----
+| Source | What it provides |
+|--------|-----------------|
+| UniProt | Proteins, genes, cofactors, pathways, allergens |
+| ChEMBL | Drug-target pharmacology |
+| PubChem | Molecular structures, atomic properties |
+| ChEBI | Chemical ontology |
+| Open Food Facts | Nutritional composition |
+| Ensembl | Genomic coordinates, non-coding RNA |
+| Reactome | Biological pathways |
+| ClinPGx | Pharmacogenomic variant annotations |
+| GtoPdb | Ion channel biophysics |
+| VMH | Microbiome metabolic network |
+| HPA | Human cell-type expression atlas |
+| Cell Ontology | Standardised cell-type classification |
+| AlphaFold | Predicted 3D protein structures |
+| InterPro | Protein domain decomposition |
+| QuickGO / GO-CAM | Gene Ontology functional annotations |
+| COMPARTMENTS | Subcellular localisation |
+| CTD + Open Targets | Disease associations, allergen impact |
 
-## Quick Start
-
-```bash
-pip install -r requirements.txt
-python server.py            # MCP server on http://localhost:8000
-python main.py              # CLI mode
-```
+Plus local computation: **RDKit** for molecular geometry and **PySCF** for quantum-chemical electron density matrices (DFT / TD-DFT / ddCOSMO).
