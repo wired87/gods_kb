@@ -115,55 +115,40 @@ async def generate_acid_fasta(
     )
 
 @mcp.tool()
-async def solo(
-    scan_data: str,
-    skill_map: dict[str, int],
-    modality: str = "pet",
-) -> dict[str, Any]:
+async def solo() -> dict[str, Any]:
     """
-    Solo route: brain scan + skill map -> UniprotKB graph -> visual snapshot -> energy protocol.
-
-    Builds the full 18-phase knowledge graph, renders a live graph
-    visualisation (same format as docs/graph_layers.png), then runs
-    the BrainScan energy pipeline. Returns energy map + visual path.
+    Build the full 18-phase UniProtKB knowledge graph and return it.
     """
     from firegraph.graph import GUtils
     from uniprot_kb import UniprotKB
-    from visual import BrainScanIntegrator, render_live_graph
 
     g = GUtils()
     kb = UniprotKB(g)
-    integrator = BrainScanIntegrator(g)
     try:
-        # STEP 1 — BUILD KNOWLEDGE GRAPH
-        print("SOLO [1/4] UniprotKB graph build ...")
+        print("SOLO [1/2] UniprotKB graph build ...")
         await kb.finalize_biological_graph()
-        print(f"SOLO [1/4] DONE — {g.G.number_of_nodes()} nodes, {g.G.number_of_edges()} edges")
+        n_nodes = g.G.number_of_nodes()
+        n_edges = g.G.number_of_edges()
+        print(f"SOLO [1/2] DONE — {n_nodes} nodes, {n_edges} edges")
 
-        # STEP 2 — VISUAL SNAPSHOT OF THE LIVE GRAPH
-        print("SOLO [2/4] Rendering live graph visualisation ...")
-        visual_path = render_live_graph(g)
-        print(f"SOLO [2/4] DONE — {visual_path}")
+        # SERIALISE KNOWLEDGE GRAPH
+        print("SOLO [2/2] Serialising knowledge graph ...")
+        nodes = {
+            nid: dict(ndata) for nid, ndata in g.G.nodes(data=True)
+        }
+        edges = [
+            {"src": u, "dst": v, **dict(edata)}
+            for u, v, edata in g.G.edges(data=True)
+        ]
+        print(f"SOLO [2/2] DONE — returning {n_nodes} nodes, {n_edges} edges")
 
-        # STEP 3 — BRAIN SCAN ENERGY PIPELINE
-        print("SOLO [3/4] BrainScan energy pipeline ...")
-        result = await integrator.process_brain_scan(scan_data, skill_map, modality)
-        active = sum(1 for v in result.values() if v > 0)
-        print(f"SOLO [3/4] DONE — {active}/{len(result)} active positions")
-
-        # STEP 4 — RETURN
-        print(f"SOLO [4/4] Returning {len(result)} positions + visual")
         return {
-            "energy_map": result,
-            "visual_path": str(visual_path),
-            "graph_stats": {
-                "nodes": g.G.number_of_nodes(),
-                "edges": g.G.number_of_edges(),
-            },
+            "nodes": nodes,
+            "edges": edges,
+            "stats": {"nodes": n_nodes, "edges": n_edges},
         }
     finally:
         await kb.close()
-        await integrator.close()
 
 
 if __name__ == "__main__":

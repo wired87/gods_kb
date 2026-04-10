@@ -1,4 +1,4 @@
-# Acid Master — Merged Workflow Agent
+# Acid Master -- Merged Workflow Agent
 
 FastMCP server that routes one biological query into a peptide or amino-acid workflow,
 builds a firegraph-backed runtime knowledge graph, and exports case-specific FASTA + JSON artifacts.
@@ -21,10 +21,11 @@ docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
 
 | Tool | Input | Output | Source |
 |------|-------|--------|--------|
-| `generate_case_fasta` ⭐ | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
+| `generate_case_fasta` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
 | `inspect_case` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | structured workflow result | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
 | `generate_peptide_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
 | `generate_acid_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text (string) | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) |
+| `solo` | *(none)* | full knowledge graph `{nodes, edges, stats}` | [`uniprot_kb.py`](uniprot_kb.py) |
 
 ---
 
@@ -32,22 +33,22 @@ docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
 
 ```
 prompt
-  │
-  ├─[1]─ 5 transformed query variants                  → broader retrieval coverage
-  │
-  ├─[2]─ token split + token embeddings                → word-level context
-  │
-  ├─[3]─ workflow routing                              → peptide or acid branch
-  │
-  ├─[4]─ live UniProt field scoring                    → labels kept at threshold-aware relevance
-  │
-  ├─[5]─ UniProt retrieval                             → record set
-  │
-  ├─[6]─ firegraph runtime knowledge graph             → structured biological context
-  │
-  ├─[7]─ branch-specific sequence generation           → peptide or amino-acid result
-  │
-  └─[8]─ case-specific artifact export                 → data/<workflow>/<case>/*
+  |
+  +--[1]-- 5 transformed query variants                  -> broader retrieval coverage
+  |
+  +--[2]-- token split + token embeddings                -> word-level context
+  |
+  +--[3]-- workflow routing                              -> peptide or acid branch
+  |
+  +--[4]-- live UniProt field scoring                    -> labels kept at threshold-aware relevance
+  |
+  +--[5]-- UniProt retrieval                             -> record set
+  |
+  +--[6]-- firegraph runtime knowledge graph             -> structured biological context
+  |
+  +--[7]-- branch-specific sequence generation           -> peptide or amino-acid result
+  |
+  +--[8]-- case-specific artifact export                 -> data/<workflow>/<case>/*
 ```
 
 ---
@@ -57,12 +58,12 @@ prompt
 | File | Role |
 |------|------|
 | [`server.py`](server.py) | FastMCP server for the merged master workflow |
+| [`uniprot_kb.py`](uniprot_kb.py) | 18-phase UniProtKB enrichment pipeline + KG builder |
 | [`uniprot/master_workflow.py`](uniprot/master_workflow.py) | Core async merged pipeline logic |
-| [`master.py`](master.py) | Root workflow router for local execution |
-| [`wf.py`](wf.py) | Compatibility wrapper around `master.run()` |
 | [`main.py`](main.py) | CLI entry point |
+| [`execution_cfg.py`](execution_cfg.py) | Hardcoded API specs per category |
 | [`Dockerfile`](Dockerfile) | Minimal Python 3.11-slim image, exposes port 8000 |
-| [`.env`](.env) | `GEMINI_API_KEY=…` (never committed) |
+| [`.env`](.env) | `GEMINI_API_KEY=...` (never committed) |
 
 ---
 
@@ -70,7 +71,7 @@ prompt
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GEMINI_API_KEY` | ✅ | Google Gemini API key for classification, harmony scoring, and structural ordering |
+| `GEMINI_API_KEY` | yes | Google Gemini API key for classification, harmony scoring, and structural ordering |
 
 ---
 
@@ -95,7 +96,7 @@ data/
 >P12345 | Insulin | gene=INS | category=Peptide | harmony=0.923
 MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGG
 PGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN
-…
->STRUCTURAL_COMPOSITE | nodes=42 | total_length=18430 | goal=Analyze UniProt…
-MALWM…
+...
+>STRUCTURAL_COMPOSITE | nodes=42 | total_length=18430 | goal=Analyze UniProt...
+MALWM...
 ```

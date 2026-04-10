@@ -6,38 +6,19 @@ The software is designed so that a non-technical user can ask for a biological s
 
 ---
 
-## System Architecture
-
-![System Architecture](docs/system_architecture.png)
-
-### Agent Layer
-
-| File | Role |
-|------|------|
-| `main.py` | CLI entry point -- calls `master.run()` |
-| `wf.py` | Compatibility wrapper -- delegates to `master.run()` |
-| `master.py` | Root workflow router -- loads env, runs `process_master_query` |
-| `agent.md` | MCP agent descriptor for external consumers |
-
-The agent layer provides two equivalent ways to invoke the pipeline:
-
-```
-main.py  -->  master.run()  -->  process_master_query()
-wf.py    -->  master.run()  -->  process_master_query()
-```
-
-### Server Layer (FastMCP Wrapper)
+## Server Layer (FastMCP Wrapper)
 
 `server.py` wraps the workflow engine as a **FastMCP** server over SSE on port 8000.
 
-| MCP Tool | Hint | Returns |
-|----------|------|---------|
-| `generate_case_fasta` | auto / peptide / acid | FASTA text |
-| `inspect_case` | auto / peptide / acid | structured result dict |
-| `generate_peptide_fasta` | forced peptide | FASTA text |
-| `generate_acid_fasta` | forced acid | FASTA text |
+| MCP Tool | Input | Returns |
+|----------|-------|---------|
+| `generate_case_fasta` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | FASTA text |
+| `inspect_case` | `prompt`, `workflow_hint?`, `max_per_category`, `render_top_n` | structured result dict |
+| `generate_peptide_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text |
+| `generate_acid_fasta` | `prompt`, `max_per_category`, `render_top_n` | FASTA text |
+| `solo` | *(none)* | full knowledge graph (nodes + edges + stats) |
 
-Every tool call resolves to `process_master_query()` internally. The server runs `asyncio.to_thread` so the synchronous workflow does not block the event loop.
+Every workflow tool resolves to `process_master_query()` internally. The `solo` tool builds the complete 18-phase UniProtKB knowledge graph and returns it as serialised nodes and edges.
 
 ```bash
 # Start server
@@ -48,7 +29,9 @@ docker build -t acid-master .
 docker run -e GEMINI_API_KEY=your_key -p 8000:8000 acid-master
 ```
 
-### Workflow Engine
+---
+
+## Workflow Engine
 
 The engine follows this sequence:
 
@@ -77,8 +60,6 @@ Each category entry bundles API endpoints, routing keywords, retrieval defaults,
 ---
 
 ## UniProtKB -- 18-Phase Enrichment Pipeline
-
-![Workflow Phases](docs/workflow_phases.png)
 
 `UniprotKB` (`uniprot_kb.py`) orchestrates the full graph build via `finalize_biological_graph()`:
 
@@ -110,8 +91,6 @@ Each category entry bundles API endpoints, routing keywords, retrieval defaults,
 
 ## Runtime Knowledge Graph -- Node & Edge Layers
 
-![Graph Layers](docs/graph_layers.png)
-
 ### Node Types by Layer
 
 | Layer | Node Types |
@@ -131,76 +110,17 @@ Each category entry bundles API endpoints, routing keywords, retrieval defaults,
 
 ---
 
-## Prompt Design
-
-The system uses prompt stages instead of one single raw prompt.
-
-### 1. Query Expansion Prompt
-
-The original user query is expanded into 5 variants.
-
-### 2. Workflow Routing Prompt
-
-The expanded query set decides the branch: `peptide` or `acid`.
-
-### 3. Query Transform Prompt
-
-The selected branch receives a compact working brief with goal summary, retrieval query, ranking focus, transformation focus, sequence constraints, and exclusions.
-
-### 4. Category Scoring Prompt
-
-All live UniProt categories are scored against the transformed query set. Only strong categories pass.
-
-### 5. Sequence Generation Prompt
-
-The final step uses transformed queries, selected categories, retrieved candidates, and the firegraph runtime KG summary.
-
----
-
-## Workflow Branches
-
-### Peptide Branch
-
-Retrieves peptide-relevant records, scores for direct relevance, builds a ranked stack, orders strong candidates into a structural peptide sequence, writes FASTA + graph artifacts.
-
-### Amino-Acid Branch
-
-Retrieves amino-acid source candidates, builds a conservative structure plan, extracts feature-based or full-sequence fragments, assembles the transformed sequence, computes amino-acid frequencies, writes FASTA + graph artifacts.
-
----
-
 ## File Layout
-
-All source files live at the repository root (flat structure, no subdirectories for code).
 
 | File | Purpose |
 |------|---------|
 | `main.py` | CLI entry point |
-| `master.py` | Root workflow router and env loader |
 | `server.py` | FastMCP server (SSE :8000) |
-| `wf.py` | Compatibility wrapper around `master.run()` |
-| `uniprot_kb.py` | `UniprotKB` class -- 18-phase enrichment pipeline (~2600 LOC) |
+| `uniprot_kb.py` | `UniprotKB` class -- 18-phase enrichment pipeline |
 | `execution_cfg.py` | Hardcoded API specs, routing keywords, scoring params per category |
-| `visual.py` | Generates three publication-ready PNG diagrams into `docs/` |
 | `agent.md` | MCP agent descriptor for external consumers |
 | `Dockerfile` | Python 3.11-slim image, exposes port 8000 |
-| `.env` | `GEMINI_API_KEY=…` (never committed) |
-
----
-
-## Visual Diagrams
-
-`visual.py` generates three publication-ready PNG diagrams into `docs/`:
-
-```bash
-python visual.py
-```
-
-| Diagram | File | Content |
-|---------|------|---------|
-| Enrichment Pipeline | `docs/workflow_phases.png` | 18-phase UniProtKB pipeline with external APIs |
-| Graph Layers | `docs/graph_layers.png` | Node types, layers, edge relation legend |
-| System Architecture | `docs/system_architecture.png` | Agent / Server / Engine / Data integration map |
+| `.env` | `GEMINI_API_KEY=...` (never committed) |
 
 ---
 
@@ -235,5 +155,4 @@ data/
 pip install -r requirements.txt
 python server.py            # MCP server on http://localhost:8000
 python main.py              # CLI mode
-python visual.py            # generate architecture diagrams
 ```
