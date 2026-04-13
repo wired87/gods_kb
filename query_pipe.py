@@ -1,6 +1,18 @@
 """
 query_pipe — Biological Prompt Pipeline
 
+Prompt: include a step to analyze ``filter_physical_compound`` (``str`` or token ``list``)
+and classify it to ``ds.PHYSICAL_CATEGORY_ALIASES`` canonical entries (shared vocabulary in
+root ``ds.py`` to avoid circular imports).
+
+Prompt: remove ``db_targets`` from the Stage 1 tool schema; derive database / workflow
+slugs from ``EXECUTION_CFG`` at ``run_query_pipe`` start (project-wide categories), not
+from the model.
+
+Prompt: improve Stage 1 ``transformed_text`` instructions so the model infers the user’s
+underlying goal, expands implicit scope, and emits a structured, modular technical brief
+usable by later pipeline stages.
+
 INPUT TEXT → Gemini calls for transformation, word splitting, classification
 of prompt to database (e.g. PubChem, UniProt).
 Classify prompt to organ (fetches UniProt API with all available organs
@@ -12,7 +24,7 @@ list[str]), and outsrc criteria (disease, unwanted outcome, ...).
 Result is a cfg tool for Gem, a pipe that builds up on the next step
 and fetches new data resulting in a master prompt for Gem.
 
-Returns dict(organs=list, function_annotation=list, outsrc_criteria=list).
+Returns dict(organs, function_annotation, outsrc_criteria, filter_physical_compound, …).
 """
 from __future__ import annotations
 
@@ -25,6 +37,7 @@ from typing import Any
 import google.generativeai as genai
 import httpx
 
+from ds import resolve_physical_filter_canonical_list
 from execution_cfg import EXECUTION_CFG
 
 # ━━ ENDPOINTS (only hardcoded strings) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -206,58 +219,91 @@ def run_query_pipe(
     prompt: str,
     api_key: str,
     model: str = "gemini-2.5-flash",
-) -> dict[str, list[str]]:
+    filter_physical_compound: str | list[str] | None = None,
+) -> dict[str, Any]:
     """
-    5-stage sequential Gemini-tool pipeline.
+    5-stage sequential Gemini-tool pipeline (+ physical-filter classification).
 
-    Stage 1 — Deconstruct: word-split, transform, classify prompt to target DBs
+    Stage 1 — Deconstruct: word-split and transform (DB slugs come from ``EXECUTION_CFG``)
+    Stage 1b — Physical filter: resolve ``filter_physical_compound`` via ``ds`` aliases
     Stage 2 — Organ Resolve: match against live UniProt tissue vocabulary
     Stage 3 — Function Annotate: fetch UniProt functional data per organ
     Stage 4 — Outsrc Criteria: extract exclusion / disease / unwanted outcomes
     Stage 5 — Master Prompt: compose enriched master prompt for downstream Gem use
 
-    Returns dict(organs, function_annotation, outsrc_criteria).
+    Returns dict(organs, function_annotation, outsrc_criteria, filter_physical_compound, …).
     """
     genai.configure(api_key=api_key)
 
     routing_ctx = _build_routing_context()
+    # CHAR: fixed workflow slugs from project config — not model output (see Stage 1 tool).
+    db_targets = sorted(EXECUTION_CFG.keys())
 
     # ── STAGE 1: DECONSTRUCT ──────────────────────────────────────────
     s1_tools = [{
         "name": "split_transform_classify",
         "description": (
-            "Split the biological prompt into meaningful tokens, "
-            "transform compound terms into searchable form, and "
-            "classify which databases (e.g. uniprot, pubchem, rcsb_pdb) "
-            "each token maps to."
+            "Split the biological prompt into meaningful tokens and produce "
+            "transformed_text: a structured technical brief that states the inferred goal, "
+            "scope, modular tasks, and normalised terminology for downstream workflow stages."
         ),
         "properties": {
             "tokens": "array",
-            "db_targets": "array",
             "transformed_text": "string",
         },
         "prop_descriptions": {
-            "tokens": "list of meaningful biological tokens extracted from the prompt",
-            "db_targets": "list of database slugs (uniprot, pubchem, rcsb_pdb, atom) each token maps to",
-            "transformed_text": "the prompt rewritten with normalised scientific terminology",
+            "tokens": (
+                "Meaningful biological tokens (compounds and multi-word names as single tokens, "
+                "e.g. 'vitamin B12'). Include implied entities the user did not name explicitly "
+                "when they are required to interpret the goal."
+            ),
+            "transformed_text": (
+                "Single string, plain text, using this exact section header lines in order "
+                "(each header on its own line, followed by content):\n"
+                "INFERRED_GOAL: One or two sentences — the technical objective implied by the user "
+                "(what outcome the workflow should optimise for).\n"
+                "SCOPE_AND_CONTEXT: Short paragraph — organism/tissue hints, scale (molecular/cellular/"
+                "organ), domain (therapy, mechanism, biomarker, structure, …), and unstated assumptions "
+                "you reasonably infer.\n"
+                "MODULAR_TASKS: Bullet lines starting with '- ' — each line one atomic, executable "
+                "sub-problem a pipeline module could own (retrieve, annotate, filter, rank, validate); "
+                "no prose paragraphs in this section.\n"
+                "RETRIEVAL_HOOKS: Comma-separated dense list of search-ready terms, synonyms, and "
+                "standard names for genes, proteins, pathways, drugs, or anatomical keywords.\n"
+                "NORMALISED_QUERY: One cohesive paragraph restating the user request with normalised "
+                "scientific nomenclature (no section headers inside this paragraph).\n"
+                "Be concise but information-dense; downstream stages consume this as the canonical "
+                "expanded reading of the user prompt."
+            ),
         },
     }]
 
     s1_cfg = _make_tool_cfg(s1_tools, system=(
-        "You are a bioinformatics NLP preprocessor. "
-        "Given a biological prompt, split it into meaningful tokens, "
-        "normalise compound terms (e.g. 'vitamin B12' stays as one token), "
-        "and classify each token to a target database.\n\n"
-        f"Available databases:\n{routing_ctx}\n\n"
-        "Return ALL results via the split_transform_classify function."
+        "You are a senior bioinformatics prompt engineer. Given an informal or clinical biological "
+        "user prompt, you (1) extract tokens for lexical downstream use and (2) write "
+        "transformed_text as a modular technical brief.\n\n"
+        "Infer the user's underlying intent even when the wording is vague (e.g. colloquial drug "
+        "requests → molecular targets, pathways, safety constraints). Expand implicit scope only when "
+        "biologically standard (default human/clinical context when unspecified). Keep each "
+        "MODULAR_TASKS bullet a single clear action boundary so independent workflow steps could "
+        "implement it without rereading the original prompt.\n\n"
+        "Do not emit per-token database labels; fixed execution categories for this project are: "
+        f"{', '.join(db_targets)}.\n"
+        f"Category reference (keywords only):\n{routing_ctx}\n\n"
+        "Return ALL fields via the split_transform_classify function. transformed_text MUST follow "
+        "the section headers and order given in the tool schema for transformed_text."
     ))
 
     s1_result = _run_stage(model, s1_cfg, prompt)
     tokens = list(s1_result.get("tokens", []))
-    db_targets = list(s1_result.get("db_targets", []))
     transformed = s1_result.get("transformed_text", prompt)
 
-    print(f"[PIPE S1] tokens={len(tokens)}, db_targets={db_targets}, transformed={transformed[:80]}...")
+    print(f"[PIPE S1] tokens={len(tokens)}, db_targets (project)={db_targets}, transformed={transformed[:80]}...")
+
+    # ── STAGE 1b: PHYSICAL FILTER (classify str / tokens → canonical ds slots) ──
+    # CHAR: runs before organ resolve so logs show gating vocabulary early; idempotent for UniprotKB.
+    physical_resolved = resolve_physical_filter_canonical_list(filter_physical_compound)
+    print(f"[PIPE S1b] filter_physical_compound (canonical)={physical_resolved or '(none — full workflow)'}")
 
     # ── STAGE 2: ORGAN RESOLVE ────────────────────────────────────────
     tissue_vocab = _fetch_tissue_vocabulary()
@@ -292,7 +338,7 @@ def run_query_pipe(
         f"Original prompt: {prompt}\n"
         f"Transformed: {transformed}\n"
         f"Tokens: {json.dumps(tokens)}\n"
-        f"DB targets: {json.dumps(db_targets)}"
+        f"Project execution categories (fixed): {json.dumps(db_targets)}"
     )
     s2_result = _run_stage(model, s2_cfg, s2_input)
     organs = list(s2_result.get("organs", []))
@@ -382,7 +428,7 @@ def run_query_pipe(
     ), contents=(
         f"Original user query: {prompt}\n\n"
         f"Stage 1 — Tokens: {json.dumps(tokens)}\n"
-        f"Stage 1 — DB targets: {json.dumps(db_targets)}\n"
+        f"Stage 1 — Project DB / workflow slugs: {json.dumps(db_targets)}\n"
         f"Stage 1 — Transformed: {transformed}\n\n"
         f"Stage 2 — Organs: {json.dumps(organs)}\n\n"
         f"Stage 3 — Functional annotations:\n{json.dumps(function_annotation, indent=1)}\n\n"
@@ -396,6 +442,7 @@ def run_query_pipe(
         "organs": organs,
         "function_annotation": function_annotation,
         "outsrc_criteria": outsrc_criteria,
+        "filter_physical_compound": physical_resolved,
         "_master_prompt": master_prompt,
         "_tokens": tokens,
         "_db_targets": db_targets,
@@ -434,7 +481,7 @@ https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/READM
 
   import google.generativeai as genai
 Enter biological query: I need a drug that makes me smarter 
-[PIPE S1] tokens=1, db_targets=['chemical'], transformed=I need a drug that makes me smarter...
+[PIPE S1] tokens=1, db_targets (project)=['amino_acid', 'atom', 'chemical', 'protein_structure'], transformed=I need a drug that makes me smarter...
 [PIPE S2] organs=['Brain']
 [PIPE S3] function_annotation=50 entries
 [PIPE S4] outsrc_criteria=['Van Maldergem syndrome 2', 'Hennekam lymphangiectasia-lymphedema syndrome 2', 'Inhibition of neuroprogenitor cell proliferation and differentiation', 'Tremor, hereditary essential 1', 'Schizophrenia', 'Substance use disorders', 'Uncontrolled cell proliferation (through MAP kinase signaling)', 'Neurodevelopmental disorder, mitochondrial, with abnormal movements and lactic acidosis, with or without seizures', 'Parkinsonism-dystonia 3, childhood-onset', 'Snijders Blok-Fisher syndrome', 'Intellectual developmental disorder, autosomal dominant 62', 'Spinocerebellar ataxia 12', 'Proapoptotic activity leading to neuronal death', 'Neuronopathy, distal hereditary motor, autosomal dominant 14', 'Amyotrophic lateral sclerosis', 'Perry syndrome', 'Intellectual developmental disorder, autosomal dominant 10', 'Neurodevelopmental disorder with microcephaly, ataxia, and seizures', 'Intellectual developmental disorder with autism and speech delay', 'Increased formation of amyloid-beta (APP-beta)', 'Pitt-Hopkins-like syndrome 2', 'Schizophrenia 17', 'Host entry factor for influenza virus', 'Host entry factor for rabies virus', 'Host entry factor for SARS-CoV-2', 'Neurodevelopmental disorder, non-progressive, with spasticity and transient opisthotonus', 'Intellectual developmental disorder with neuropsychiatric features', 'Type 2 diabetes mellitus', 'Dystonia 2, torsion, autosomal recessive', 'Major depressive disorder', 'Attention deficit-hyperactivity disorder 7', 'Microcephaly-micromelia syndrome', 'Microcephaly, short stature, and limb abnormalities', 'Disruption of genome stability', 'Disruption of cell cycle checkpoints', 'Waardenburg syndrome 2E', 'Waardenburg syndrome 4C', 'Peripheral demyelinating neuropathy, central dysmyelinating leukodystrophy, Waardenburg syndrome and Hirschsprung disease', 'Highly potent vasoconstriction', 'Deafness, X-linked, 2', 'Opioid addiction/dependence', 'Opioid-related side effects (e.g., respiratory depression, constipation, sedation)', 'Involvement in feeding disorders', 'Neurodevelopmental disorder with speech impairment and with or without seizures', 'Off-target effects on cardiac nodal cells/pacemaking functions', 'Brown-Vialetto-Van Laere syndrome 2', 'Acting as a receptor for retroviruses (e.g., PERV-A)', 'Association with psychoactive substances (e.g., ergot alkaloids, DOI, LSD)', 'Psychotropic side effects (e.g., hallucinations)', 'Alterations in appetite and eating behavior', 'Altered responses to anxiogenic stimuli and stress', 'Impact on insulin sensitivity and glucose homeostasis']
@@ -557,7 +604,10 @@ RESULT:
     "drug"
   ],
   "_db_targets": [
-    "chemical"
+    "amino_acid",
+    "atom",
+    "chemical",
+    "protein_structure"
   ]
 }
 

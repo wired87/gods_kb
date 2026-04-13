@@ -283,6 +283,30 @@ _CHEMICAL_SPECS: dict = {
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# SCAN PIPELINE — modality-indexed term lists (no inline tables in enrich modules)
+# Phase 21: ranked anatomy query strings → OLS4 UBERON search (intensity tier → term).
+SCAN_ANATOMY_TERM_TIERS_BY_MODALITY: dict[str, list[str]] = {
+    "MRI": ["white matter", "gray matter", "cerebrospinal fluid"],
+    "MRI_T1": ["white matter", "gray matter", "cerebrospinal fluid"],
+    "MRI_T2": ["gray matter", "white matter", "cerebrospinal fluid"],
+    "CT": ["soft tissue", "bone", "air"],
+    "PET": ["metabolically active tissue", "soft tissue", "background"],
+    "ULTRASOUND": ["soft tissue", "fluid", "bone"],
+    "FMRI": ["cortex", "subcortical structure", "white matter"],
+}
+
+# Phase 22c: modality → HPO search term options (dominant feature dimension indexes into list).
+SCAN_PATHOLOGY_HPO_TERMS_BY_MODALITY: dict[str, list[str]] = {
+    "MRI": ["abnormal signal intensity", "brain lesion", "atrophy"],
+    "MRI_T1": ["white matter abnormality", "brain atrophy", "hypointensity"],
+    "MRI_T2": ["hyperintensity", "edema", "demyelination"],
+    "CT": ["calcification", "hyperdensity", "mass lesion"],
+    "PET": ["hypermetabolism", "hypometabolism", "abnormal uptake"],
+    "ULTRASOUND": ["echogenic lesion", "cyst", "mass"],
+    "FMRI": ["abnormal activation", "reduced connectivity", "cortical dysfunction"],
+}
+
+
 # MASTER CONFIG — single import point for the entire pipeline
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

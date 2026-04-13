@@ -1,8 +1,0 @@
->P00001 | Signal Mock Protein | gene=SMP | category=Signal peptide | harmony=0.930
-MKTLLVAAAL
->P00002 | Mature Mock Peptide | gene=MMP | category=Peptide | harmony=0.890
-QRSTVWYAAA
->P00003 | Chain Mock Protein | gene=CMP | category=Chain | harmony=0.740
-LLLFFFGGGCCC
->PEPTIDE_STRUCTURAL_SEQUENCE | nodes=3 | total_length=32 | goal=peptide validation goal
-MKTLLVAAALQRSTVWYAAALLLFFFGGGCCC

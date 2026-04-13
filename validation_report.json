@@ -1,0 +1,302 @@
+{
+  "timestamp": "2026-04-13T13:02:47.754410+00:00",
+  "total_queries": 3,
+  "total_elapsed_sec": 479.66,
+  "results": [
+    {
+      "name": "brain_neurotransmission",
+      "prompt": "Dopamine signaling in the brain and its role in Parkinson disease",
+      "cfg": {
+        "organs": [
+          "Brain"
+        ],
+        "filter_physical_compound": []
+      },
+      "nodes": 199,
+      "edges": 870,
+      "node_types": {
+        "DISEASE": 137,
+        "TISSUE": 30,
+        "TISSUE_2D_LAYER": 30,
+        "ORGAN": 2
+      },
+      "edge_relations": {
+        "NEIGHBOR_TISSUE": 435,
+        "TISSUE_ASSOCIATED_DISEASE": 168,
+        "PATHOLOGY_IN": 168,
+        "ANATOMY_HAS_TISSUE": 30,
+        "TISSUE_HAS_LAYER": 30,
+        "PART_OF_ORGAN": 30,
+        "ORGAN_ASSOCIATED_DISEASE": 9
+      },
+      "validation": [
+        "WARN: missing expected core types: {'GENE', 'PROTEIN'}",
+        "WARN: no INTERACTS_WITH edges (PPI layer empty)",
+        "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
+      ],
+      "status": "WARN",
+      "elapsed_sec": 142.65,
+      "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.json",
+      "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.html",
+      "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_tissue_hierarchy_map.json",
+      "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_filtered_tissue_hierarchy_map.json",
+      "pipeline_stats": {
+        "nodes": 199,
+        "edges": 870,
+        "node_types": {
+          "DISEASE": 137,
+          "TISSUE": 30,
+          "TISSUE_2D_LAYER": 30,
+          "ORGAN": 2
+        },
+        "edge_relations": {
+          "NEIGHBOR_TISSUE": 435,
+          "TISSUE_ASSOCIATED_DISEASE": 168,
+          "PATHOLOGY_IN": 168,
+          "ANATOMY_HAS_TISSUE": 30,
+          "TISSUE_HAS_LAYER": 30,
+          "PART_OF_ORGAN": 30,
+          "ORGAN_ASSOCIATED_DISEASE": 9
+        },
+        "tissue_map_nodes": 199,
+        "tissue_map_edges": 870,
+        "filtered_tissue_map_nodes": 97,
+        "filtered_tissue_map_edges": 614
+      },
+      "error": null,
+      "pipeline": {
+        "cfg": {
+          "organs": [
+            "Brain"
+          ],
+          "filter_physical_compound": []
+        },
+        "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.html",
+        "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.json",
+        "stats": {
+          "nodes": 199,
+          "edges": 870,
+          "node_types": {
+            "DISEASE": 137,
+            "TISSUE": 30,
+            "TISSUE_2D_LAYER": 30,
+            "ORGAN": 2
+          },
+          "edge_relations": {
+            "NEIGHBOR_TISSUE": 435,
+            "TISSUE_ASSOCIATED_DISEASE": 168,
+            "PATHOLOGY_IN": 168,
+            "ANATOMY_HAS_TISSUE": 30,
+            "TISSUE_HAS_LAYER": 30,
+            "PART_OF_ORGAN": 30,
+            "ORGAN_ASSOCIATED_DISEASE": 9
+          },
+          "tissue_map_nodes": 199,
+          "tissue_map_edges": 870,
+          "filtered_tissue_map_nodes": 97,
+          "filtered_tissue_map_edges": 614
+        },
+        "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_tissue_hierarchy_map.json",
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_filtered_tissue_hierarchy_map.json"
+      }
+    },
+    {
+      "name": "cardiac_ion_channels",
+      "prompt": "Calcium ion channel regulation in heart muscle contraction and arrhythmia",
+      "cfg": {
+        "organs": [
+          "Heart muscle"
+        ],
+        "filter_physical_compound": []
+      },
+      "nodes": 59,
+      "edges": 128,
+      "node_types": {
+        "DISEASE": 41,
+        "TISSUE": 8,
+        "TISSUE_2D_LAYER": 8,
+        "ORGAN": 2
+      },
+      "edge_relations": {
+        "TISSUE_ASSOCIATED_DISEASE": 33,
+        "PATHOLOGY_IN": 33,
+        "NEIGHBOR_TISSUE": 28,
+        "ORGAN_ASSOCIATED_DISEASE": 10,
+        "ANATOMY_HAS_TISSUE": 8,
+        "TISSUE_HAS_LAYER": 8,
+        "PART_OF_ORGAN": 8
+      },
+      "validation": [
+        "WARN: missing expected core types: {'GENE', 'PROTEIN'}",
+        "WARN: no node labels reference cfg organs ['Heart muscle']",
+        "WARN: no INTERACTS_WITH edges (PPI layer empty)",
+        "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
+      ],
+      "status": "WARN",
+      "elapsed_sec": 138.46,
+      "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.json",
+      "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.html",
+      "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_tissue_hierarchy_map.json",
+      "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_filtered_tissue_hierarchy_map.json",
+      "pipeline_stats": {
+        "nodes": 59,
+        "edges": 128,
+        "node_types": {
+          "DISEASE": 41,
+          "TISSUE": 8,
+          "TISSUE_2D_LAYER": 8,
+          "ORGAN": 2
+        },
+        "edge_relations": {
+          "TISSUE_ASSOCIATED_DISEASE": 33,
+          "PATHOLOGY_IN": 33,
+          "NEIGHBOR_TISSUE": 28,
+          "ORGAN_ASSOCIATED_DISEASE": 10,
+          "ANATOMY_HAS_TISSUE": 8,
+          "TISSUE_HAS_LAYER": 8,
+          "PART_OF_ORGAN": 8
+        },
+        "tissue_map_nodes": 59,
+        "tissue_map_edges": 128,
+        "filtered_tissue_map_nodes": 20,
+        "filtered_tissue_map_edges": 56
+      },
+      "error": null,
+      "pipeline": {
+        "cfg": {
+          "organs": [
+            "Heart muscle"
+          ],
+          "filter_physical_compound": []
+        },
+        "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.html",
+        "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.json",
+        "stats": {
+          "nodes": 59,
+          "edges": 128,
+          "node_types": {
+            "DISEASE": 41,
+            "TISSUE": 8,
+            "TISSUE_2D_LAYER": 8,
+            "ORGAN": 2
+          },
+          "edge_relations": {
+            "TISSUE_ASSOCIATED_DISEASE": 33,
+            "PATHOLOGY_IN": 33,
+            "NEIGHBOR_TISSUE": 28,
+            "ORGAN_ASSOCIATED_DISEASE": 10,
+            "ANATOMY_HAS_TISSUE": 8,
+            "TISSUE_HAS_LAYER": 8,
+            "PART_OF_ORGAN": 8
+          },
+          "tissue_map_nodes": 59,
+          "tissue_map_edges": 128,
+          "filtered_tissue_map_nodes": 20,
+          "filtered_tissue_map_edges": 56
+        },
+        "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_tissue_hierarchy_map.json",
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_filtered_tissue_hierarchy_map.json"
+      }
+    },
+    {
+      "name": "liver_drug_metabolism",
+      "prompt": "Cytochrome P450 enzymes in liver drug metabolism and hepatotoxicity risk",
+      "cfg": {
+        "organs": [
+          "Liver"
+        ],
+        "filter_physical_compound": []
+      },
+      "nodes": 142,
+      "edges": 591,
+      "node_types": {
+        "DISEASE": 86,
+        "TISSUE": 24,
+        "TISSUE_2D_LAYER": 24,
+        "CELL_TYPE": 6,
+        "ORGAN": 2
+      },
+      "edge_relations": {
+        "NEIGHBOR_TISSUE": 276,
+        "TISSUE_ASSOCIATED_DISEASE": 117,
+        "PATHOLOGY_IN": 117,
+        "ANATOMY_HAS_TISSUE": 24,
+        "TISSUE_HAS_LAYER": 24,
+        "PART_OF_ORGAN": 24,
+        "ORGAN_ASSOCIATED_DISEASE": 9
+      },
+      "validation": [
+        "WARN: missing expected core types: {'GENE', 'PROTEIN'}",
+        "WARN: no INTERACTS_WITH edges (PPI layer empty)",
+        "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
+      ],
+      "status": "WARN",
+      "elapsed_sec": 198.54,
+      "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.json",
+      "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.html",
+      "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_tissue_hierarchy_map.json",
+      "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_filtered_tissue_hierarchy_map.json",
+      "pipeline_stats": {
+        "nodes": 142,
+        "edges": 591,
+        "node_types": {
+          "DISEASE": 86,
+          "TISSUE": 24,
+          "TISSUE_2D_LAYER": 24,
+          "CELL_TYPE": 6,
+          "ORGAN": 2
+        },
+        "edge_relations": {
+          "NEIGHBOR_TISSUE": 276,
+          "TISSUE_ASSOCIATED_DISEASE": 117,
+          "PATHOLOGY_IN": 117,
+          "ANATOMY_HAS_TISSUE": 24,
+          "TISSUE_HAS_LAYER": 24,
+          "PART_OF_ORGAN": 24,
+          "ORGAN_ASSOCIATED_DISEASE": 9
+        },
+        "tissue_map_nodes": 136,
+        "tissue_map_edges": 591,
+        "filtered_tissue_map_nodes": 76,
+        "filtered_tissue_map_edges": 415
+      },
+      "error": null,
+      "pipeline": {
+        "cfg": {
+          "organs": [
+            "Liver"
+          ],
+          "filter_physical_compound": []
+        },
+        "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.html",
+        "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.json",
+        "stats": {
+          "nodes": 142,
+          "edges": 591,
+          "node_types": {
+            "DISEASE": 86,
+            "TISSUE": 24,
+            "TISSUE_2D_LAYER": 24,
+            "CELL_TYPE": 6,
+            "ORGAN": 2
+          },
+          "edge_relations": {
+            "NEIGHBOR_TISSUE": 276,
+            "TISSUE_ASSOCIATED_DISEASE": 117,
+            "PATHOLOGY_IN": 117,
+            "ANATOMY_HAS_TISSUE": 24,
+            "TISSUE_HAS_LAYER": 24,
+            "PART_OF_ORGAN": 24,
+            "ORGAN_ASSOCIATED_DISEASE": 9
+          },
+          "tissue_map_nodes": 136,
+          "tissue_map_edges": 591,
+          "filtered_tissue_map_nodes": 76,
+          "filtered_tissue_map_edges": 415
+        },
+        "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_tissue_hierarchy_map.json",
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_filtered_tissue_hierarchy_map.json"
+      }
+    }
+  ]
+}
