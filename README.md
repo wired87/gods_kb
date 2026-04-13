@@ -86,3 +86,11 @@ GEMINI_API_KEY=your_key_here
 ## Where the facts come from
 
 The graph is filled from many well-known open resources (protein catalogs, drug and small-molecule data, nutrition, genomics, pathways, cell atlases, structure predictions, and more). They all feed the **same** map — that is the point of Acid Master.
+
+---
+
+## TODO
+
+### Server
+- Classification of tissue and component classification
+- Tissue ontology mapping to AOMAR electron matrices

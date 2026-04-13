@@ -35,8 +35,12 @@ pyparsing
 python-dotenv
 httpx
 networkx
+nibabel
 numpy
+Pillow
+pydicom
 pyscf
+SimpleITK
 rdkit
 requests
 tqdm
