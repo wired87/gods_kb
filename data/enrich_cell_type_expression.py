@@ -1,6 +1,8 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
+Prompt (user): No-op unless ``UniprotKB.workflow_create_cell_type_nodes`` is True (default off).
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
@@ -31,6 +33,12 @@ async def enrich_cell_type_expression(self):
       1) HPA rtcte -> provisorische CELL_TYPE Nodes + EXPRESSED_IN_CELL Kanten
       2) OLS4 CL  -> description, CL-ID, parent + HAS_MARKER_GENE Rückverkettung
     """
+    if not getattr(self, "workflow_create_cell_type_nodes", False):
+        print(
+            "enrich_cell_type_expression: skipped (workflow_create_cell_type_nodes=False)",
+        )
+        return
+
     _seen: set[str] = set()
     _count = 0
 

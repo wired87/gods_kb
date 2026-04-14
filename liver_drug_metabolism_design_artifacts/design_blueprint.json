@@ -1,0 +1,9 @@
+{
+  "physical_backbone": {
+    "proteins_and_chains": []
+  },
+  "adjuvant_like_small_molecules": [],
+  "ontology_rationale": {
+    "note": "ontology neighbors on each backbone row explain graph-local annotation context"
+  }
+}

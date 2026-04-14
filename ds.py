@@ -47,6 +47,16 @@ PHYSICAL_CATEGORY_ALIASES: dict[str, str] = {
     "atomic": "atom",
     "food": "food",
     "foods": "food",
+    "vitamin": "vitamin",
+    "vitamins": "vitamin",
+    "fatty_acid": "fatty_acid",
+    "fatty_acids": "fatty_acid",
+    "fat_acid": "fatty_acid",
+    "cofactor": "cofactor",
+    "cofactors": "cofactor",
+    "co_factor": "cofactor",
+    "mineral": "mineral",
+    "minerals": "mineral",
 }
 
 

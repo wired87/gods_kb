@@ -1,6 +1,8 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
+Prompt (user): data-dir graph hardening — one-pass organ root discovery.
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
@@ -25,11 +27,13 @@ import numpy as np
 
 def build_tissue_hierarchy_map(self, cfg: dict | None = None) -> nx.Graph:
     """
-    Prompt: return a seamless map from organ layer to atomic structure / electron matrix.
+    Build an organ-centric subgraph for tissue cascade + Phase-18 quantum outputs.
 
-    Undirected BFS from ORGAN (or ANATOMY_PART fallback) roots matching cfg['organs'];
-    keeps only nodes in _ORGAN_TISSUE_CASCADE_TYPES plus any node carrying
-    electron_density_matrix / atom_decomposition (Phase 18 output).
+    Inputs: ``self.g.G``; optional ``cfg`` with ``organs`` list (string names, case-insensitive).
+    Outputs: undirected subgraph spanning BFS from matching ORGAN (or ANATOMY_PART fallback) roots
+    through nodes accepted by ``_node_in_organ_tissue_cascade`` plus electron-density carriers.
+    Side effects: none on the live graph; returns a new ``nx.Graph`` copy of the subgraph.
+    Empty result: returns ``nx.Graph()`` when no roots match.
     """
     G = self.g.G
     want = set()
@@ -37,27 +41,27 @@ def build_tissue_hierarchy_map(self, cfg: dict | None = None) -> nx.Graph:
         want = {str(o).strip().lower() for o in (cfg.get("organs") or []) if str(o).strip()}
 
     roots: set[str] = set()
+    all_organs: set[str] = set()
+    anatomy_fallback: set[str] = set()
+
     for nid, d in G.nodes(data=True):
-        if d.get("type") != "ORGAN":
-            continue
-        it = (d.get("input_term") or "").strip().lower()
-        if want and it in want:
-            roots.add(nid)
-    if want:
-        for nid, d in G.nodes(data=True):
-            if d.get("type") != "ORGAN":
-                continue
-            if (d.get("label") or "").strip().lower() in want:
-                roots.add(nid)
-    if not roots:
-        roots = {n for n, d in G.nodes(data=True) if d.get("type") == "ORGAN"}
-    if not roots and want:
-        for nid, d in G.nodes(data=True):
-            if d.get("type") != "ANATOMY_PART":
-                continue
+        t = d.get("type")
+        if t == "ORGAN":
+            all_organs.add(nid)
+            if want:
+                it = (d.get("input_term") or "").strip().lower()
+                lab = (d.get("label") or "").strip().lower()
+                if it in want or lab in want:
+                    roots.add(nid)
+        elif t == "ANATOMY_PART" and want:
             lab = (d.get("label") or "").strip().lower()
             if any(w == lab or w in lab or lab in w for w in want):
-                roots.add(nid)
+                anatomy_fallback.add(nid)
+
+    if not roots:
+        roots = set(all_organs)
+    if not roots and want:
+        roots = set(anatomy_fallback)
 
     if not roots:
         print("  Tissue hierarchy map: no organ roots — returning empty graph")

@@ -11,6 +11,8 @@ Query → query_pipe (Gemini NLP: organs, functions, outsrc — used for logging
 
 Prompt: ``GRAPH_HTML_BASENAME`` / ``GRAPH_JSON_BASENAME`` match the MCP server session layout
     ``output/<session_id>/graph.html`` and ``graph.json`` (tissue exports share the JSON stem).
+
+Prompt: optional ``designer`` stage after ctlr — ``design_output_dir`` / ``result_specs`` run ``designer.Designer`` on the filtered tissue graph and attach paths in the pipeline result.
 """
 from __future__ import annotations
 
@@ -20,6 +22,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from typing import Any, Sequence
 
 try:
     from dotenv import load_dotenv
@@ -58,6 +61,9 @@ async def run_graph_pipeline(
     dest_html: str | None = None,
     dest_json: str | None = None,
     filter_physical_compound: list[str] | None = None,
+    design_output_dir: str | Path | None = None,
+    result_specs: Sequence[Any] | None = None,
+    design_include_peptide_chains: bool = False,
 ) -> dict:
     """
     FULL PIPELINE: user prompt → query_pipe → UniprotKB → graph dict.
@@ -69,7 +75,13 @@ async def run_graph_pipeline(
     Returns dict with keys: cfg, nodes, edges, stats, html_path, json_path,
     tissue_hierarchy_map (node-link JSON), tissue_hierarchy_json_path,
     filtered_tissue_hierarchy_map, filtered_tissue_hierarchy_json_path,
+    design_artifact_paths, design_manifest_path (when ``design_output_dir`` or ``result_specs`` is set
+    after ctlr filtering),
+    workflow_phase_trace, graph_api_validation, workflow_api_manifest (when build completes),
     and ``scan_path`` when a 2D scan filesystem path was passed into the graph build.
+
+    Optional ``designer`` stage: pass ``result_specs`` (``designer.OrganDeliverySpec`` dicts) and/or
+    ``design_output_dir`` to emit per-node-type design JSON + blueprint beside the graph export.
     """
     from query_pipe import run_query_pipe
     from firegraph.graph import GUtils
@@ -198,6 +210,9 @@ async def run_graph_pipeline(
         tissue_link: dict = {"nodes": [], "links": []}
         filtered_tissue_link: dict = {"nodes": [], "links": []}
         filtered_tissue_hierarchy_json_path: str | None = None
+        filtered_mx = None
+        design_artifact_paths: dict[str, str] | None = None
+        design_manifest_path: str | None = None
         if tissue_mx is not None:
             t_tm = time.perf_counter()
             tissue_link = nx.node_link_data(tissue_mx)
@@ -225,6 +240,25 @@ async def run_graph_pipeline(
                     f"{filtered_mx.number_of_nodes()}N / {filtered_mx.number_of_edges()}E",
                 )
 
+                if design_output_dir is not None or result_specs:
+                    from designer import Designer, normalize_result_specs
+
+                    specs = normalize_result_specs(result_specs or [])
+                    d_base = Path(design_output_dir) if design_output_dir else _jp.parent / "design_artifacts"
+                    des = Designer(
+                        graph=filtered_mx,
+                        result_specs=specs,
+                        include_peptide_chains=design_include_peptide_chains,
+                    )
+                    t_des = time.perf_counter()
+                    design_artifact_paths = des.emit_node_type_artifacts(d_base)
+                    design_manifest_path = design_artifact_paths.get("__manifest__")
+                    _ok(
+                        "designer (substrate + formulation)",
+                        time.perf_counter() - t_des,
+                        str(d_base.resolve()),
+                    )
+
         result: dict = {
             "cfg": cfg,
             "pipe_result": {k: v for k, v in pipe_result.items() if not k.startswith("_")},
@@ -245,7 +279,17 @@ async def run_graph_pipeline(
             "tissue_hierarchy_json_path": tissue_hierarchy_json_path if tissue_mx is not None else None,
             "filtered_tissue_hierarchy_map": filtered_tissue_link,
             "filtered_tissue_hierarchy_json_path": filtered_tissue_hierarchy_json_path,
+            "design_artifact_paths": design_artifact_paths,
+            "design_manifest_path": design_manifest_path,
         }
+        if isinstance(build_result, dict):
+            for _k in (
+                "workflow_phase_trace",
+                "graph_api_validation",
+                "workflow_api_manifest",
+            ):
+                if _k in build_result:
+                    result[_k] = build_result[_k]
 
         total_sec = time.perf_counter() - t_total
         print(f"\n{'=' * _W}")

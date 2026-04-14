@@ -1,0 +1,29 @@
+# CI — fast unit tests with minimal dependencies (no full scientific stack).
+#
+# Prompt (user): Make this project a production ready system. Include test files if
+# needed inside a tests directory.
+
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: pip install -r requirements-test.txt
+
+      - name: Run pytest (integration tests skip without ACID_MASTER_E2E)
+        run: python -m pytest tests/ -v --tb=short

@@ -1,13 +1,14 @@
 """
 FULL PIPELINE VALIDATION — same path as server ``generation`` tool.
 
-Uses ``main.run_graph_pipeline`` (query_pipe -> UniprotKB.finalize_biological_graph -> serialize -> ctlr tissue filter) for each case, then loads the exported graph JSON for structural checks.
+Uses ``main.run_graph_pipeline`` (query_pipe -> UniprotKB.finalize_biological_graph -> serialize -> ctlr tissue filter -> designer) for each case, then loads the exported graph JSON for structural checks.
 
 Prompts: adapt the test workflow to serve the entire workflow same as in the server route;
 run the test.py workflow and store outs in project root.
 
 Optional per-query keys on ``VALIDATION_QUERIES`` entries: ``scan_path``, ``modality_hint``,
-``filter_physical_compound`` (same semantics as MCP ``generation`` / ``run_graph_pipeline``).
+``filter_physical_compound``, ``result_specs``, ``design_include_peptide_chains``
+(same semantics as MCP ``generation`` / ``run_graph_pipeline``).
 
 Artifacts (HTML/JSON, tissue maps, ``validation_report.json``) are written under the project root
 (same directory as this file), not a subfolder.
@@ -50,14 +51,23 @@ VALIDATION_QUERIES: list[dict] = [
     {
         "name": "brain_neurotransmission",
         "prompt": "Dopamine signaling in the brain and its role in Parkinson disease",
+        "result_specs": [
+            {"target_organs": ["brain"], "primary_route": "intravenous"},
+        ],
     },
     {
         "name": "cardiac_ion_channels",
         "prompt": "Calcium ion channel regulation in heart muscle contraction and arrhythmia",
+        "result_specs": [
+            {"target_organs": ["heart"], "primary_route": "intramuscular"},
+        ],
     },
     {
         "name": "liver_drug_metabolism",
         "prompt": "Cytochrome P450 enzymes in liver drug metabolism and hepatotoxicity risk",
+        "result_specs": [
+            {"target_organs": ["liver"], "primary_route": "oral"},
+        ],
     },
 ]
 
@@ -189,6 +199,9 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
     scan_path = entry.get("scan_path")
     modality_hint = entry.get("modality_hint")
     filter_physical = entry.get("filter_physical_compound")
+    result_specs = entry.get("result_specs")
+    design_include_peptide_chains = bool(entry.get("design_include_peptide_chains"))
+    design_dir = OUTPUT_DIR / f"{name}_design_artifacts"
 
     print(f"\n{'=' * _W}")
     print(f"  QUERY {idx}/{total}  [{name}]")
@@ -206,7 +219,7 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
     json_path = str(OUTPUT_DIR / f"{name}_graph.json")
     html_path = str(OUTPUT_DIR / f"{name}_graph.html")
 
-    t_step = _step(1, 2, "run_graph_pipeline — query_pipe -> UniprotKB -> ctlr (server route)")
+    t_step = _step(1, 2, "run_graph_pipeline — query_pipe -> UniprotKB -> ctlr -> designer (server route)")
     try:
         pr = await run_graph_pipeline(
             prompt=prompt,
@@ -215,6 +228,9 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
             dest_html=html_path,
             dest_json=json_path,
             filter_physical_compound=filter_physical,
+            design_output_dir=str(design_dir),
+            result_specs=result_specs,
+            design_include_peptide_chains=design_include_peptide_chains,
         )
         cfg = pr.get("cfg") or {}
         n_nodes = int(pr.get("stats", {}).get("nodes", 0))
@@ -232,6 +248,8 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
               f"filtered (ctlr): {st.get('filtered_tissue_map_nodes', 0)}N / "
               f"{st.get('filtered_tissue_map_edges', 0)}E")
         print(f"  Artifacts: {pr.get('html_path')}  |  {pr.get('json_path')}")
+        if pr.get("design_manifest_path"):
+            print(f"  Designer: {pr.get('design_manifest_path')}")
 
         if not cfg.get("organs"):
             _warn(f"[{name}] no organs extracted — graph may be very sparse")
@@ -287,6 +305,7 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
     pipeline_keys = (
         "cfg", "html_path", "json_path", "stats",
         "tissue_hierarchy_json_path", "filtered_tissue_hierarchy_json_path",
+        "design_manifest_path", "design_artifact_paths",
     )
     pipeline_subset = {k: pr[k] for k in pipeline_keys if k in pr} if pr else None
 
@@ -305,6 +324,8 @@ async def run_single_query(entry: dict, idx: int, total: int) -> dict:
         "html_path": pr.get("html_path") if pr and n_nodes > 0 else None,
         "tissue_hierarchy_json_path": pr.get("tissue_hierarchy_json_path") if pr else None,
         "filtered_tissue_hierarchy_json_path": pr.get("filtered_tissue_hierarchy_json_path") if pr else None,
+        "design_manifest_path": pr.get("design_manifest_path") if pr else None,
+        "design_artifact_dir": str(design_dir) if pr else None,
         "pipeline_stats": pr.get("stats") if pr else None,
         "error": error,
         "pipeline": pipeline_subset,

@@ -1,6 +1,8 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
+Prompt (user): data-dir graph hardening — structured QuickGO logging + stub batch visibility.
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
@@ -22,6 +24,8 @@ import google.generativeai as genai
 import httpx
 import networkx as nx
 import numpy as np
+
+from data.graph_identity import go_term_node_id, phase_http_log, phase_log, timed_ms
 
 async def _wire_go_hierarchy(self):
     """
@@ -48,20 +52,26 @@ async def _wire_go_hierarchy(self):
         if not ids_csv:
             continue
 
+        url = f"{_CHILDREN_BASE}/{quote(ids_csv, safe='')}/children"
+        t0 = timed_ms()
         try:
             res = await self.client.get(
-                f"{_CHILDREN_BASE}/{quote(ids_csv, safe='')}/children",
+                url,
                 headers={"Accept": "application/json"},
                 timeout=25.0,
             )
             if res.status_code != 200:
+                phase_http_log(
+                    "phase13a_pp_go_hierarchy", "quickgo_children",
+                    url, status_code=res.status_code, elapsed_ms=timed_ms() - t0,
+                )
                 continue
 
             for term in res.json().get("results", []):
                 parent_go = term.get("id")
                 if not parent_go:
                     continue
-                parent_node_id = f"GO_{parent_go.replace(':', '_')}"
+                parent_node_id = go_term_node_id(parent_go)
                 # Parent is always one of our queried nodes, so it must be in graph
                 if parent_node_id not in go_ids_in_graph:
                     continue
@@ -72,7 +82,7 @@ async def _wire_go_hierarchy(self):
                     if not child_go or relation not in _VALID_RELS:
                         continue
 
-                    child_node_id = f"GO_{child_go.replace(':', '_')}"
+                    child_node_id = go_term_node_id(child_go)
 
                     # STUB PARENT: child is in graph but sibling-path parent is absent
                     # → add a minimal GO_TERM stub so the hierarchy edge is not lost
@@ -96,10 +106,23 @@ async def _wire_go_hierarchy(self):
                     )
                     hierarchy_count += 1
 
+            phase_http_log(
+                "phase13a_pp_go_hierarchy", "quickgo_children_ok",
+                url, status_code=res.status_code, elapsed_ms=timed_ms() - t0,
+            )
         except Exception as e:
-            print(f"GO Hierarchy Error: {e}")
+            phase_http_log(
+                "phase13a_pp_go_hierarchy", "quickgo_children_err",
+                url, status_code=None, elapsed_ms=timed_ms() - t0,
+                err_class=type(e).__name__,
+            )
 
-    print(f"Phase 13a++: {hierarchy_count} GO hierarchy edges created ({stubs_added} stub nodes added)")
+    phase_log(
+        "phase13a_pp_go_hierarchy", "batch_complete",
+        entity_type="GO_TERM",
+        hierarchy_edges=hierarchy_count,
+        stub_nodes_added=stubs_added,
+    )
 
 # ── GENE -> GO_TERM DERIVED EDGES ────────────────────────────────
 _ASPECT_TO_REL = {

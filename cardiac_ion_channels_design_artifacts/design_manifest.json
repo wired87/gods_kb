@@ -1,0 +1,15 @@
+{
+  "graph_digest": "063811f476e3189ea4aa9eaa44344ed46605ad4f16ebd86b09797851176d63ae",
+  "node_count": 19,
+  "edge_count": 54,
+  "multigraph": true,
+  "result_specs_count": 1,
+  "per_type_files": {
+    "DISEASE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_DISEASE.json",
+    "ORGAN": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_ORGAN.json",
+    "TISSUE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_TISSUE.json",
+    "TISSUE_2D_LAYER": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_TISSUE_2D_LAYER.json"
+  },
+  "blueprint_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_blueprint.json",
+  "ctlr_compatibility": "Consumes the same nx.Graph / MultiGraph as TissueGraphController.filter_components output."
+}

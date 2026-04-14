@@ -661,7 +661,10 @@ async def enrich_bioelectric_disease_signal_pipeline(self):
                         continue
                     for chem_n in self.g.G.neighbors(gpred):
                         chem_type = self.g.G.nodes.get(chem_n, {}).get("type")
-                        if chem_type in ("MINERAL", "PHARMA_COMPOUND", "ATOMIC_STRUCTURE"):
+                        if chem_type in (
+                            "MINERAL", "PHARMA_COMPOUND", "ATOMIC_STRUCTURE",
+                            "VITAMIN", "FATTY_ACID", "COFACTOR",
+                        ):
                             self.g.add_edge(
                                 src=chem_n, trgt=actual_organ_nid,
                                 attrs={

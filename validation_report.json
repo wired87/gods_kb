@@ -1,33 +1,37 @@
 {
-  "timestamp": "2026-04-13T13:02:47.754410+00:00",
+  "timestamp": "2026-04-13T18:13:47.261121+00:00",
   "total_queries": 3,
-  "total_elapsed_sec": 479.66,
+  "total_elapsed_sec": 518.65,
   "results": [
     {
       "name": "brain_neurotransmission",
       "prompt": "Dopamine signaling in the brain and its role in Parkinson disease",
       "cfg": {
         "organs": [
-          "Brain"
+          "Brain",
+          "Nervous system",
+          "Substantia nigra",
+          "Basal ganglia",
+          "Neuron"
         ],
         "filter_physical_compound": []
       },
-      "nodes": 199,
-      "edges": 870,
+      "nodes": 474,
+      "edges": 1929,
       "node_types": {
-        "DISEASE": 137,
-        "TISSUE": 30,
-        "TISSUE_2D_LAYER": 30,
-        "ORGAN": 2
+        "DISEASE": 324,
+        "TISSUE_2D_LAYER": 72,
+        "TISSUE": 71,
+        "ORGAN": 7
       },
       "edge_relations": {
-        "NEIGHBOR_TISSUE": 435,
-        "TISSUE_ASSOCIATED_DISEASE": 168,
-        "PATHOLOGY_IN": 168,
-        "ANATOMY_HAS_TISSUE": 30,
-        "TISSUE_HAS_LAYER": 30,
-        "PART_OF_ORGAN": 30,
-        "ORGAN_ASSOCIATED_DISEASE": 9
+        "NEIGHBOR_TISSUE": 901,
+        "TISSUE_ASSOCIATED_DISEASE": 384,
+        "PATHOLOGY_IN": 384,
+        "TISSUE_HAS_LAYER": 72,
+        "ANATOMY_HAS_TISSUE": 71,
+        "PART_OF_ORGAN": 71,
+        "ORGAN_ASSOCIATED_DISEASE": 46
       },
       "validation": [
         "WARN: missing expected core types: {'GENE', 'PROTEIN'}",
@@ -35,69 +39,84 @@
         "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
       ],
       "status": "WARN",
-      "elapsed_sec": 142.65,
+      "elapsed_sec": 301.58,
       "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.json",
       "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.html",
       "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_tissue_hierarchy_map.json",
       "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_filtered_tissue_hierarchy_map.json",
+      "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_manifest.json",
+      "design_artifact_dir": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts",
       "pipeline_stats": {
-        "nodes": 199,
-        "edges": 870,
+        "nodes": 474,
+        "edges": 1929,
         "node_types": {
-          "DISEASE": 137,
-          "TISSUE": 30,
-          "TISSUE_2D_LAYER": 30,
-          "ORGAN": 2
+          "DISEASE": 324,
+          "TISSUE_2D_LAYER": 72,
+          "TISSUE": 71,
+          "ORGAN": 7
         },
         "edge_relations": {
-          "NEIGHBOR_TISSUE": 435,
-          "TISSUE_ASSOCIATED_DISEASE": 168,
-          "PATHOLOGY_IN": 168,
-          "ANATOMY_HAS_TISSUE": 30,
-          "TISSUE_HAS_LAYER": 30,
-          "PART_OF_ORGAN": 30,
-          "ORGAN_ASSOCIATED_DISEASE": 9
+          "NEIGHBOR_TISSUE": 901,
+          "TISSUE_ASSOCIATED_DISEASE": 384,
+          "PATHOLOGY_IN": 384,
+          "TISSUE_HAS_LAYER": 72,
+          "ANATOMY_HAS_TISSUE": 71,
+          "PART_OF_ORGAN": 71,
+          "ORGAN_ASSOCIATED_DISEASE": 46
         },
-        "tissue_map_nodes": 199,
-        "tissue_map_edges": 870,
-        "filtered_tissue_map_nodes": 97,
-        "filtered_tissue_map_edges": 614
+        "tissue_map_nodes": 474,
+        "tissue_map_edges": 1929,
+        "filtered_tissue_map_nodes": 306,
+        "filtered_tissue_map_edges": 1507
       },
       "error": null,
       "pipeline": {
         "cfg": {
           "organs": [
-            "Brain"
+            "Brain",
+            "Nervous system",
+            "Substantia nigra",
+            "Basal ganglia",
+            "Neuron"
           ],
           "filter_physical_compound": []
         },
         "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.html",
         "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph.json",
         "stats": {
-          "nodes": 199,
-          "edges": 870,
+          "nodes": 474,
+          "edges": 1929,
           "node_types": {
-            "DISEASE": 137,
-            "TISSUE": 30,
-            "TISSUE_2D_LAYER": 30,
-            "ORGAN": 2
+            "DISEASE": 324,
+            "TISSUE_2D_LAYER": 72,
+            "TISSUE": 71,
+            "ORGAN": 7
           },
           "edge_relations": {
-            "NEIGHBOR_TISSUE": 435,
-            "TISSUE_ASSOCIATED_DISEASE": 168,
-            "PATHOLOGY_IN": 168,
-            "ANATOMY_HAS_TISSUE": 30,
-            "TISSUE_HAS_LAYER": 30,
-            "PART_OF_ORGAN": 30,
-            "ORGAN_ASSOCIATED_DISEASE": 9
+            "NEIGHBOR_TISSUE": 901,
+            "TISSUE_ASSOCIATED_DISEASE": 384,
+            "PATHOLOGY_IN": 384,
+            "TISSUE_HAS_LAYER": 72,
+            "ANATOMY_HAS_TISSUE": 71,
+            "PART_OF_ORGAN": 71,
+            "ORGAN_ASSOCIATED_DISEASE": 46
           },
-          "tissue_map_nodes": 199,
-          "tissue_map_edges": 870,
-          "filtered_tissue_map_nodes": 97,
-          "filtered_tissue_map_edges": 614
+          "tissue_map_nodes": 474,
+          "tissue_map_edges": 1929,
+          "filtered_tissue_map_nodes": 306,
+          "filtered_tissue_map_edges": 1507
         },
         "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_tissue_hierarchy_map.json",
-        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_filtered_tissue_hierarchy_map.json"
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_graph_filtered_tissue_hierarchy_map.json",
+        "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_manifest.json",
+        "design_artifact_paths": {
+          "DISEASE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_DISEASE.json",
+          "ORGAN": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_ORGAN.json",
+          "TISSUE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_TISSUE.json",
+          "TISSUE_2D_LAYER": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_TISSUE_2D_LAYER.json",
+          "__blueprint__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_blueprint.json",
+          "__manifest__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_manifest.json"
+        }
       }
     },
     {
@@ -133,11 +152,13 @@
         "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
       ],
       "status": "WARN",
-      "elapsed_sec": 138.46,
+      "elapsed_sec": 126.67,
       "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.json",
       "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph.html",
       "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_tissue_hierarchy_map.json",
       "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_filtered_tissue_hierarchy_map.json",
+      "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_manifest.json",
+      "design_artifact_dir": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts",
       "pipeline_stats": {
         "nodes": 59,
         "edges": 128,
@@ -158,8 +179,8 @@
         },
         "tissue_map_nodes": 59,
         "tissue_map_edges": 128,
-        "filtered_tissue_map_nodes": 20,
-        "filtered_tissue_map_edges": 56
+        "filtered_tissue_map_nodes": 19,
+        "filtered_tissue_map_edges": 54
       },
       "error": null,
       "pipeline": {
@@ -191,11 +212,20 @@
           },
           "tissue_map_nodes": 59,
           "tissue_map_edges": 128,
-          "filtered_tissue_map_nodes": 20,
-          "filtered_tissue_map_edges": 56
+          "filtered_tissue_map_nodes": 19,
+          "filtered_tissue_map_edges": 54
         },
         "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_tissue_hierarchy_map.json",
-        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_filtered_tissue_hierarchy_map.json"
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_graph_filtered_tissue_hierarchy_map.json",
+        "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_manifest.json",
+        "design_artifact_paths": {
+          "DISEASE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_DISEASE.json",
+          "ORGAN": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_ORGAN.json",
+          "TISSUE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_TISSUE.json",
+          "TISSUE_2D_LAYER": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_TISSUE_2D_LAYER.json",
+          "__blueprint__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_blueprint.json",
+          "__manifest__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\cardiac_ion_channels_design_artifacts\\design_manifest.json"
+        }
       }
     },
     {
@@ -231,11 +261,13 @@
         "WARN: no ASSOCIATED_WITH_DISEASE edges (disease layer empty)"
       ],
       "status": "WARN",
-      "elapsed_sec": 198.54,
+      "elapsed_sec": 90.4,
       "json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.json",
       "html_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph.html",
       "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_tissue_hierarchy_map.json",
       "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_filtered_tissue_hierarchy_map.json",
+      "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_manifest.json",
+      "design_artifact_dir": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts",
       "pipeline_stats": {
         "nodes": 142,
         "edges": 591,
@@ -257,8 +289,8 @@
         },
         "tissue_map_nodes": 136,
         "tissue_map_edges": 591,
-        "filtered_tissue_map_nodes": 76,
-        "filtered_tissue_map_edges": 415
+        "filtered_tissue_map_nodes": 81,
+        "filtered_tissue_map_edges": 427
       },
       "error": null,
       "pipeline": {
@@ -291,11 +323,20 @@
           },
           "tissue_map_nodes": 136,
           "tissue_map_edges": 591,
-          "filtered_tissue_map_nodes": 76,
-          "filtered_tissue_map_edges": 415
+          "filtered_tissue_map_nodes": 81,
+          "filtered_tissue_map_edges": 427
         },
         "tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_tissue_hierarchy_map.json",
-        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_filtered_tissue_hierarchy_map.json"
+        "filtered_tissue_hierarchy_json_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_graph_filtered_tissue_hierarchy_map.json",
+        "design_manifest_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_manifest.json",
+        "design_artifact_paths": {
+          "DISEASE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_DISEASE.json",
+          "ORGAN": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_ORGAN.json",
+          "TISSUE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_TISSUE.json",
+          "TISSUE_2D_LAYER": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_TISSUE_2D_LAYER.json",
+          "__blueprint__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_blueprint.json",
+          "__manifest__": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\liver_drug_metabolism_design_artifacts\\design_manifest.json"
+        }
       }
     }
   ]

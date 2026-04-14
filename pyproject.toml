@@ -1,0 +1,31 @@
+# pyproject.toml — project metadata and pytest configuration for Acid Master.
+#
+# Prompt (user): Make this project a production ready system. Include test files if
+# needed inside a tests directory.
+#
+# CHAR: install runtime deps via requirements.txt / Docker; this file centralizes
+# pytest settings and documents the Python baseline for production (3.11+).
+
+[project]
+name = "acid-master"
+version = "0.1.0"
+description = "Biological knowledge graph builder and FastMCP server (generation + Stripe shopping)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [{ name = "Acid Master maintainers" }]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+addopts = "-ra"
+markers = [
+    "integration: live MCP server (set ACID_MASTER_E2E=1); skips unless env is set",
+]

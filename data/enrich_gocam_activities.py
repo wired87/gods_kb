@@ -9,7 +9,6 @@ with the class delegator in ``uniprot_kb.py``.
 from __future__ import annotations
 
 import asyncio
-import json
 import math
 import os
 import random

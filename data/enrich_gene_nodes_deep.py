@@ -1,6 +1,8 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
+Prompt (user): data-dir graph hardening — visibility when adding PPI protein stubs.
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
@@ -23,14 +25,24 @@ import httpx
 import networkx as nx
 import numpy as np
 
+from data.graph_identity import phase_log
+
 async def enrich_gene_nodes_deep(self):
-    """Fetches cofactors + Reactome pathways per PROTEIN and materializes them as edges.
-    No reference data stored on nodes — cofactors become MINERAL nodes, pathways become MOLECULE_CHAIN nodes."""
+    """
+    PHASE 2: Deep UniProt fetch per active PROTEIN — cofactors, Reactome, PPI, disease.
+
+    Inputs: ``PROTEIN`` nodes in ``active_subgraph``; UniProt JSON via ``get_uniprot_url_single_gene``.
+    Outputs: ``MINERAL``, ``MOLECULE_CHAIN``, ``DISEASE`` nodes and typed edges; optional ``PROTEIN``
+    stubs for off-graph interaction partners (``stub: True``).
+    Side effects: parallel HTTP via ``fetch_with_retry``.
+    Failures: per-protein exceptions skipped in gather; no global raise.
+    """
     protein_nodes = [(k, v) for k, v in self.g.G.nodes(data=True)
                      if v.get("type") == "PROTEIN" and self._is_active(k)]
     tasks = [self.fetch_with_retry(self.get_uniprot_url_single_gene(node_id))
              for node_id, _ in protein_nodes]
     results = await asyncio.gather(*tasks, return_exceptions=True)
+    _ppi_stubs = 0
 
     for (node_id, _node), res in zip(protein_nodes, results):
         if isinstance(res, Exception):
@@ -82,6 +94,7 @@ async def enrich_gene_nodes_deep(self):
                                 if acc_one == node_id
                                 else iact.get("interactantOne", {}).get("geneName")) or partner
                     self.g.add_node({"id": partner, "type": "PROTEIN", "label": gene_lbl, "stub": True})
+                    _ppi_stubs += 1
                 self.g.add_edge(src=node_id, trgt=partner, attrs={
                     "rel": "INTERACTS_WITH",
                     "experiments": iact.get("numberOfExperiments", 0),
@@ -112,4 +125,6 @@ async def enrich_gene_nodes_deep(self):
                 "note": comment.get("note", {}).get("texts", [{}])[0].get("value", ""),
                 "src_layer": "PROTEIN", "trgt_layer": "DISEASE",
             })
+
+    phase_log("phase2_gene_deep", "ppi_stub_summary", entity_type="PROTEIN", stub_nodes_added=_ppi_stubs)
 

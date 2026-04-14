@@ -1,0 +1,15 @@
+{
+  "graph_digest": "93400457c110a77590803bd5079cf8f9fcf52c11d588fe38edb3cc11a90a38f8",
+  "node_count": 306,
+  "edge_count": 1507,
+  "multigraph": true,
+  "result_specs_count": 1,
+  "per_type_files": {
+    "DISEASE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_DISEASE.json",
+    "ORGAN": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_ORGAN.json",
+    "TISSUE": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_TISSUE.json",
+    "TISSUE_2D_LAYER": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_TISSUE_2D_LAYER.json"
+  },
+  "blueprint_path": "C:\\Users\\Bernhard\\PycharmProjects\\acid_master\\brain_neurotransmission_design_artifacts\\design_blueprint.json",
+  "ctlr_compatibility": "Consumes the same nx.Graph / MultiGraph as TissueGraphController.filter_components output."
+}

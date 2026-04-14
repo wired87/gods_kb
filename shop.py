@@ -12,6 +12,10 @@ injection or oral.
 
 CHAR: pricing comes from an optional ``commerce`` / ``checkout`` object and/or
 environment variables — graph files carry biology only.
+
+Prompt: supplier ordering API research — legal research chemicals, proteins, and lipid
+solutions: document a real public REST integration (Quartzy) as ``LAB_PROCUREMENT_API_SPECS``
+(``list[dict]``) with base URL, auth, endpoints, and exact JSON field maps; classic distributors typically use B2B eProcurement (cXML/EDI), not public REST checkout.
 """
 from __future__ import annotations
 
@@ -22,6 +26,185 @@ from pathlib import Path
 from typing import Any, Literal
 
 AbsorptionRoute = Literal["injection", "oral"]
+
+# CHAR: integration metadata only — no embedded SKUs, lab IDs, or tokens; supply at runtime.
+LAB_PROCUREMENT_API_SPECS: list[dict[str, Any]] = [
+    {
+        "provider": "Quartzy Public API",
+        "explanation": (
+            "Lab procurement inside Quartzy: POST /order-requests opens a purchase request "
+            "for any vendor catalog line (reagents, proteins, lipids, etc.). "
+            "Jurisdiction and material legality remain the buyer's responsibility; "
+            "lab_id and type_id come from your org via GET /labs and GET /types."
+        ),
+        "documentation_urls": [
+            "https://docs.quartzy.com/api/",
+            "https://docs.quartzy.com/samples/curl",
+        ],
+        "openapi_url": "https://docs.quartzy.com/redocusaurus/public-api.yaml",
+        "base_url": "https://api.quartzy.com",
+        "authentication": {
+            "header_name": "Access-Token",
+            "header_format": "Access-Token: <token>",
+            "token_source_url": "https://app.quartzy.com/profile/access-tokens",
+        },
+        "endpoints": [
+            {
+                "name": "healthz",
+                "method": "GET",
+                "path": "/healthz",
+                "purpose": "Health check; empty JSON on success per OpenAPI.",
+            },
+            {
+                "name": "current_user",
+                "method": "GET",
+                "path": "/user",
+                "purpose": "Validate Access-Token and resolve the authenticated user.",
+            },
+            {
+                "name": "list_labs",
+                "method": "GET",
+                "path": "/labs",
+                "query_params": {
+                    "organization_id": "optional string — filter labs by organization UUID",
+                    "page": "optional integer — pagination",
+                },
+                "purpose": "List labs to obtain lab_id for order requests and types.",
+            },
+            {
+                "name": "get_lab",
+                "method": "GET",
+                "path": "/labs/{id}",
+                "path_params": {"id": "lab UUID"},
+                "purpose": "Fetch one lab by id.",
+            },
+            {
+                "name": "list_types",
+                "method": "GET",
+                "path": "/types",
+                "query_params": {
+                    "lab_id": "optional string — filter types for a lab",
+                    "name": "optional string — filter by type name",
+                    "page": "optional integer",
+                },
+                "purpose": "List request types; type_id is required on create order request.",
+            },
+            {
+                "name": "list_order_requests",
+                "method": "GET",
+                "path": "/order-requests",
+                "query_params": {
+                    "lab_id": "optional string",
+                    "page": "optional integer",
+                },
+                "purpose": "List existing order requests.",
+            },
+            {
+                "name": "create_order_request",
+                "method": "POST",
+                "path": "/order-requests",
+                "content_type": "application/json",
+                "purpose": "Create an order request (primary ordering primitive).",
+                "json_body_fields": {
+                    "required": {
+                        "lab_id": "string UUID — destination lab",
+                        "type_id": "string UUID — request type from GET /types",
+                        "name": "string — item / product name",
+                        "vendor_name": "string — supplier name",
+                        "catalog_number": "string — vendor catalog or SKU",
+                        "price": {
+                            "_shape": "object (Money)",
+                            "amount": "string (decimal as string per API examples)",
+                            "currency": "string — ISO 4217 code",
+                        },
+                        "quantity": "integer",
+                    },
+                    "optional": {
+                        "vendor_product_id": "string UUID",
+                        "required_before": "date string YYYY-MM-DD",
+                        "notes": "string",
+                    },
+                },
+            },
+            {
+                "name": "get_order_request",
+                "method": "GET",
+                "path": "/order-requests/{id}",
+                "path_params": {"id": "order request UUID"},
+                "purpose": "Retrieve one order request.",
+            },
+            {
+                "name": "update_order_request",
+                "method": "PUT",
+                "path": "/order-requests/{id}",
+                "path_params": {"id": "order request UUID"},
+                "content_type": "application/json",
+                "purpose": "Update status of an order request.",
+                "json_body_fields": {
+                    "required": {
+                        "status": (
+                            'string enum: "CREATED" | "CANCELLED" | "APPROVED" | '
+                            '"ORDERED" | "BACKORDERED" | "RECEIVED"'
+                        ),
+                    },
+                    "optional": {},
+                },
+            },
+            {
+                "name": "list_inventory_items",
+                "method": "GET",
+                "path": "/inventory-items",
+                "query_params": {
+                    "lab_id": "optional string",
+                    "page": "optional integer",
+                },
+                "purpose": "List inventory items (separate from order requests).",
+            },
+            {
+                "name": "get_inventory_item",
+                "method": "GET",
+                "path": "/inventory-items/{id}",
+                "path_params": {"id": "inventory item UUID"},
+                "purpose": "Get one inventory item.",
+            },
+            {
+                "name": "update_inventory_item_quantity",
+                "method": "PUT",
+                "path": "/inventory-items/{id}",
+                "path_params": {"id": "inventory item UUID"},
+                "content_type": "application/json",
+                "purpose": "Set quantity on an inventory item.",
+                "json_body_fields": {
+                    "required": {"quantity": "string"},
+                    "optional": {},
+                },
+            },
+        ],
+    },
+    {
+        "provider": "Twist Bioscience TAPI",
+        "explanation": (
+            "Synthetic DNA ordering (genes, gene fragments, oligo pools) for LIMS integration — "
+            "not a general catalog for bottled proteins or lipid solutions. "
+            "Onboarding: registered email(s), IP allowlist, issuer-provided tokens; "
+            "exact REST paths and payloads are in Twist-issued documentation only."
+        ),
+        "documentation_urls": [
+            "https://developers.twistdna.com/docs/tapi/29f28546ca532-order-gene-fragments-guide",
+            "https://twistbioscience.com/tapi",
+        ],
+        "openapi_url": None,
+        "base_url": None,
+        "note": "paths_and_auth_require_Twist_issued_documentation",
+        "authentication": {
+            "summary": (
+                "Account-based: email-linked tokens and IP allowlist per Twist onboarding; "
+                "no public self-serve OpenAPI equivalent to Quartzy."
+            ),
+        },
+        "endpoints": [],
+    },
+]
 
 
 def _normalize_absorption(raw: str) -> AbsorptionRoute:

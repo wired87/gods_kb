@@ -35,10 +35,9 @@ Hierarchical extraction workflow (top-down):
         ORGAN nodes (Stage A) → TISSUE discovery (UBERON children, HPA nTPM)
         + disease/harmful ontology per TISSUE (referenced to parent ORGAN)
         + NEIGHBOR_TISSUE edges between sibling tissues under same organ
-        + CELL_TYPE composition (Cell Ontology)
-        + TISSUE_2D_LAYER / CELL_POSITION micro-grid
+        + optional CELL_TYPE / 2D grid when ``workflow_create_cell_type_nodes``
     Then enrichment phases 2–22c build the full interconnected graph:
-        proteins & genes → functions → chemicals → atomic → electron_matrix
+        proteins (optional GENE stubs when ``workflow_create_gene_nodes``) → functions → chemicals → atomic → electron_matrix
         → disease and harmful results
 
 The entire graph is built stable from all relevant components and
@@ -48,10 +47,27 @@ Prompt: create a data-dir, recognize stage & phase methods, one ``data/<method>.
 
 Prompt: Allocate former ``uniprot_kb`` module to ``data/main.py``; root ``uniprot_kb`` is a thin shim; ``finalize_biological_graph`` and ``build_context_graph`` invoke ``data.*`` workflow steps directly (same behavior as prior class delegators).
 
+Prompt (user): PubChem PUG micronutrients — vitamins, fatty acids (substructure), cofactors, periodic-table minerals in separate ``data/fetch_pubchem_*.py`` modules; cascade types + tissue map + physical filter.
+
+Graph export migration (clean break): node ids for several entity families are now opaque hashes
+(see ``data/graph_identity.canonical_node_id``) — e.g. ``SPATREG_*``, ``SCANSIG_*``, ``GOCAMACT_*``,
+``EXCFREQ_*``, ``TSLAYER_*``, ``CELLPOS_*``, ``PATHFIND_*``. Serialized ``node_link_data`` JSON from
+older runs is not compatible; re-ingest or remap externally.
+
 Prompt: ``ctlr`` tissue filtering uses local ``sentence-transformers`` (see ``UniprotKB._ST_SENTENCE_MODEL``,
 ``_EMBED_DIM`` default 365); no cloud embedding API for that path.
 
 Prompt: Persist the full ``filter_physical_compound`` vocabulary on ``UniprotKB`` as class attributes (canonical slots + accepted alias tokens + alias map reference) derived from ``ds.PHYSICAL_CATEGORY_ALIASES``.
+
+Prompt (user): External reference DBs (organ-scoped): PubChem + optional NCBI Entrez, CTD batch API,
+Pharos GraphQL, KEGG REST — each in ``data/enrich_*``; descriptions carry embeddable CURIEs;
+``description_xref_wiring`` adds ``DESCRIPTION_XREF`` edges and ``embedding`` vectors (sentence-transformers).
+
+Prompt (user): ensure all ``data/`` workflow components are linkable under one API contract
+ (parameters, physical-filter slots, phase trace) for secure validation and downstream tools.
+
+Prompt (user): Remove gene and cell node creation from orchestrated workflows; keep implementations in ``data/*.py``. Default-off policy: ``UniprotKB.workflow_create_gene_nodes`` and
+    ``workflow_create_cell_type_nodes`` (set True only to restore prior behavior).
 """
 from __future__ import annotations
 
@@ -65,6 +81,7 @@ import random
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 from urllib.parse import quote
 
 import google.generativeai as genai
@@ -73,7 +90,12 @@ import networkx as nx
 import numpy as np
 from firegraph.graph import GUtils
 
-from ds import PHYSICAL_CATEGORY_ALIASES, resolve_physical_filter_slots
+from ds import (
+    PHYSICAL_CATEGORY_ALIASES,
+    classify_physical_filter_tokens,
+    coerce_physical_filter_tokens,
+    resolve_physical_filter_slots,
+)
 
 # ── ECO Evidence Ontology: differentiated reliability scoring ──────
 # EXPERIMENTAL > HIGH_THROUGHPUT > CURATED > COMPUTATIONAL
@@ -264,6 +286,7 @@ def graph_node_to_embed_text(nid: str, attrs: dict) -> str:
     for key in (
         "label", "id", "description", "go_id", "disease_id", "ensembl_id",
         "interpro_id", "uberon_id", "input_term", "biotype", "sl_id", "aspect",
+        "pubchem_cid", "kegg_pathway_id", "gene_symbol", "ctd_disease_query",
     ):
         v = attrs.get(key)
         if v is None:
@@ -306,10 +329,18 @@ class UniprotKB:
     # ── CONTEXT-DRIVEN EXPANSION: allowed edge relations for BFS ──
     # INTERACTS_WITH: PPI edges from UniProt cc_interaction let BFS traverse interaction partners
     # ASSOCIATED_WITH_DISEASE: disease links from UniProt cc_disease anchor context to pathology
+    # CHAR: BFS rels for ``build_context_graph`` — aligned with ``data/*`` edge ``rel`` names QuickGO/UniProt/CTD/Pharos/KEGG paths.
     _ALLOWED_EXPAND_RELS = frozenset({
         "ENCODED_BY", "MODULATES_TARGET", "HAS_STRUCTURE",
         "PARTICIPATES_IN", "REQUIRES_MINERAL", "CONTAINS_NUTRIENT",
         "INTERACTS_WITH", "ASSOCIATED_WITH_DISEASE",
+        "ORGAN_ASSOCIATED_VITAMIN", "ORGAN_ASSOCIATED_FATTY_ACID",
+        "ORGAN_ASSOCIATED_COFACTOR", "ORGAN_ASSOCIATED_MINERAL",
+        "DESCRIPTION_XREF", "ANNOTATED_WITH", "LOCALIZED_IN", "MAPPED_TO_GO",
+        "EXPRESSED_IN_TISSUE", "EXPRESSED_IN_CELL", "SAME_AS",
+        "ORGAN_ASSOCIATED_COMPOUND", "PHAROS_CONTEXT_TARGET",
+        "ORGAN_KEGG_PATHWAY_BRIDGE", "ORGAN_CTD_CHEMICAL_CONTEXT",
+        "CONTAINS_ALLERGEN", "CROSS_REACTIVITY",
     })
     # CHAR: node types kept when extracting organ→tissue→molecular→atomic/electron view
     _ORGAN_TISSUE_CASCADE_TYPES = frozenset({
@@ -317,10 +348,15 @@ class UniprotKB:
         "DISEASE", "GENE", "PROTEIN", "NON_CODING_GENE",
         "SEQUENCE_HASH", "3D_STRUCTURE", "PROTEIN_DOMAIN",
         "PHARMA_COMPOUND", "MINERAL", "MOLECULE_CHAIN", "VMH_METABOLITE", "FOOD_SOURCE",
+        "VITAMIN", "FATTY_ACID", "COFACTOR",
         "ATOMIC_STRUCTURE", "EXCITATION_FREQUENCY", "MICROBIAL_STRAIN",
         "COMPARTMENT", "CELLULAR_COMPONENT", "GO_TERM", "REACTOME_PATHWAY",
         "ECO_EVIDENCE", "ALLERGEN", "IMMUNE_RESPONSE",
     })
+
+    # CHAR: default off — no ``GENE`` / ``CELL_TYPE`` nodes in ``finalize_biological_graph`` unless enabled.
+    workflow_create_gene_nodes: bool = False
+    workflow_create_cell_type_nodes: bool = False
 
     # CHAR: same implementation as module ``graph_node_to_embed_text`` (kept for callers using the class).
     _node_to_text = staticmethod(graph_node_to_embed_text)
@@ -421,6 +457,8 @@ class UniprotKB:
             print(f"Error in Protein Ingestion: {e}")
 
     def _gather_genes(self, entry, protein_id, nodes, edges):
+        if not getattr(self, "workflow_create_gene_nodes", False):
+            return
         for gene in entry.get("genes", []):
             gene_val = gene.get("geneName", {}).get("value")
             if not gene_val: continue
@@ -748,6 +786,9 @@ class UniprotKB:
             graph — full networkx.Graph (self.g.G)
             tissue_hierarchy_map — networkx.Graph: seamless organ→tissue→…→electron slice
             cfg — internal workflow dict (organs + filter_physical_compound only)
+            workflow_phase_trace — list[dict]: per-phase run/skip + graph deltas (validator-friendly)
+            graph_api_validation — dict: resolved physical filter, unknown tokens, gating, module list
+            workflow_api_manifest — dict: serialisable parameter + module contract (``graph_workflow_api_manifest``)
         """
         _organs = [str(o).strip() for o in (organs or []) if str(o).strip()]
         cfg: dict = {
@@ -757,7 +798,14 @@ class UniprotKB:
         self.workflow_cfg = cfg
         self._set_physical_filter(cfg["filter_physical_compound"])
 
-        # DELTA HELPERS: track nodes/edges added per phase for progress visibility
+        # CHAR: raw tokens vs canonical slots — validators surface unknown user tokens.
+        _pf_raw = coerce_physical_filter_tokens(cfg["filter_physical_compound"])
+        _pf_slots, _pf_unknown = classify_physical_filter_tokens(_pf_raw)
+        _pf_resolved = sorted(_pf_slots) if _pf_slots else None
+
+        # DELTA HELPERS: track nodes/edges added per phase for progress + API trace
+        phase_trace: list[dict[str, Any]] = []
+
         def _snap() -> tuple[int, int]:
             return self.g.G.number_of_nodes(), self.g.G.number_of_edges()
 
@@ -767,21 +815,62 @@ class UniprotKB:
             dn, de = n1 - n0, e1 - e0
             print(f"  ↳ +{dn}N / +{de}E  →  total {n1}N / {e1}E")
 
+        def _trace_append(
+            label: str,
+            before: tuple[int, int],
+            *,
+            need_slots: tuple[str, ...] = (),
+            status: str = "completed",
+            reason: str | None = None,
+            **extra: Any,
+        ) -> None:
+            n0, e0 = before
+            n1, e1 = self.g.G.number_of_nodes(), self.g.G.number_of_edges()
+            row: dict[str, Any] = {
+                "phase": label,
+                "need_slots": list(need_slots),
+                "status": status,
+                "delta_nodes": n1 - n0,
+                "delta_edges": e1 - e0,
+            }
+            if reason:
+                row["reason"] = reason
+            row.update(extra)
+            phase_trace.append(row)
+            if status == "completed":
+                _delta(before)
+
         async def _phase(label: str, coro, *need_slots: str) -> None:
             if self._physical_enrich_blocked(*need_slots):
+                phase_trace.append({
+                    "phase": label,
+                    "need_slots": list(need_slots),
+                    "status": "skipped",
+                    "reason": "physical_filter",
+                    "delta_nodes": 0,
+                    "delta_edges": 0,
+                })
                 print(f"--- {label} (skipped — physical filter) ---")
                 return
             _b = _snap()
             await coro
-            _delta(_b)
+            _trace_append(label, _b, need_slots=need_slots)
 
         def _phase_sync(label: str, fn, *need_slots: str) -> None:
             if self._physical_enrich_blocked(*need_slots):
+                phase_trace.append({
+                    "phase": label,
+                    "need_slots": list(need_slots),
+                    "status": "skipped",
+                    "reason": "physical_filter",
+                    "delta_nodes": 0,
+                    "delta_edges": 0,
+                })
                 print(f"--- {label} (skipped — physical filter) ---")
                 return
             _b = _snap()
             fn()
-            _delta(_b)
+            _trace_append(label, _b, need_slots=need_slots)
 
         try:
             from data._bridge_reactome_nodes import _bridge_reactome_nodes
@@ -826,7 +915,12 @@ class UniprotKB:
             await _ingest_organ_layer(
                 self, cfg["organs"], fetch_protein_seeds=_stage_a_protein_seeds,
             )
-            _delta(_s)
+            _trace_append(
+                "STAGE A: Organ-Driven Seed Ingestion",
+                _s,
+                need_slots=(),
+                protein_seeds_enabled=_stage_a_protein_seeds,
+            )
 
             n_seed, e_seed = _snap()
             print(f"  Seed complete — {n_seed}N / {e_seed}E  "
@@ -874,13 +968,65 @@ class UniprotKB:
                 "PHASE 9: Microbiome Metabolism (VMH)",
                 enrich_microbiome_axis(self), "molecule", "chemical",
             )
-            await _phase(
-                "PHASE 10: Cellular Integration (HPA + Cell Ontology)",
-                enrich_cell_type_expression(self), "cell",
-            )
+            if getattr(self, "workflow_create_cell_type_nodes", False):
+                await _phase(
+                    "PHASE 10: Cellular Integration (HPA + Cell Ontology)",
+                    enrich_cell_type_expression(self), "cell",
+                )
+            else:
+                phase_trace.append({
+                    "phase": "PHASE 10: Cellular Integration (HPA + Cell Ontology)",
+                    "need_slots": ["cell"],
+                    "status": "skipped",
+                    "reason": "workflow_create_cell_type_nodes_disabled",
+                    "delta_nodes": 0,
+                    "delta_edges": 0,
+                })
+                print(
+                    "--- PHASE 10: Cellular Integration (HPA + Cell Ontology) "
+                    "(skipped — workflow_create_cell_type_nodes=False) ---",
+                )
             await _phase(
                 "PHASE 10b: Tissue Integration (HPA + Uberon + CL bridge)",
                 enrich_tissue_expression_layer(self), "tissue", "organ",
+            )
+
+            async def _phase10c_reference_databases() -> None:
+                from data.enrich_ctd_organ_associations import enrich_ctd_organ_associations
+                from data.enrich_kegg_organ_pathways import enrich_kegg_organ_pathways
+                from data.enrich_pharos_target_central import enrich_pharos_target_central
+                from data.enrich_pubchem_entrez_organ import enrich_pubchem_entrez_organ
+
+                await asyncio.gather(
+                    enrich_pubchem_entrez_organ(self),
+                    enrich_ctd_organ_associations(self),
+                    enrich_pharos_target_central(self),
+                    enrich_kegg_organ_pathways(self),
+                )
+
+            await _phase(
+                "PHASE 10c: Reference DBs (PubChem/Entrez, CTD, Pharos, KEGG)",
+                _phase10c_reference_databases(),
+                "organ", "gene", "chemical", "molecule",
+            )
+
+            async def _phase10d_pubchem_micronutrients() -> None:
+                from data.fetch_pubchem_cofactors_for_organs import fetch_pubchem_cofactors_for_organs
+                from data.fetch_pubchem_fatty_acids_for_organs import fetch_pubchem_fatty_acids_for_organs
+                from data.fetch_pubchem_minerals_for_organs import fetch_pubchem_minerals_for_organs
+                from data.fetch_pubchem_vitamins_for_organs import fetch_pubchem_vitamins_for_organs
+
+                await asyncio.gather(
+                    fetch_pubchem_vitamins_for_organs(self),
+                    fetch_pubchem_fatty_acids_for_organs(self),
+                    fetch_pubchem_cofactors_for_organs(self),
+                    fetch_pubchem_minerals_for_organs(self),
+                )
+
+            await _phase(
+                "PHASE 10d: PubChem micronutrients (vitamins / fatty acids / cofactors / minerals)",
+                _phase10d_pubchem_micronutrients(),
+                "organ", "vitamin", "fatty_acid", "cofactor", "mineral", "chemical", "molecule",
             )
 
             _phase_sync(
@@ -898,11 +1044,17 @@ class UniprotKB:
 
             # CHAR: GO ontology backbone — always on so meanings stay graph-wide
             print("--- PHASE 13a: GO-Semantic-Linking (QuickGO) ---")
-            _s = _snap(); await enrich_go_semantic_layer(self); _delta(_s)
+            _s = _snap()
+            await enrich_go_semantic_layer(self)
+            _trace_append("PHASE 13a: GO-Semantic-Linking (QuickGO)", _s, need_slots=())
             print("--- PHASE 13a+: GO Term Metadata Enrichment ---")
-            _s = _snap(); await _enrich_go_term_metadata(self); _delta(_s)
+            _s = _snap()
+            await _enrich_go_term_metadata(self)
+            _trace_append("PHASE 13a+: GO Term Metadata Enrichment", _s, need_slots=())
             print("--- PHASE 13a++: GO Ontology Hierarchy (with stub parents) ---")
-            _s = _snap(); await _wire_go_hierarchy(self); _delta(_s)
+            _s = _snap()
+            await _wire_go_hierarchy(self)
+            _trace_append("PHASE 13a++: GO Ontology Hierarchy (stub parents)", _s, need_slots=())
 
             _phase_sync(
                 "PHASE 13a+++: GENE → GO_TERM Derived Edges",
@@ -939,7 +1091,9 @@ class UniprotKB:
             )
 
             print("--- PHASE 19: Bioelectric → Disease Signal Pipeline ---")
-            _s = _snap(); await enrich_bioelectric_disease_signal_pipeline(self); _delta(_s)
+            _s = _snap()
+            await enrich_bioelectric_disease_signal_pipeline(self)
+            _trace_append("PHASE 19: Bioelectric → Disease Signal Pipeline", _s, need_slots=())
 
             _scan_slots = ("organ", "tissue", "cell", "protein")
             if scan_path:
@@ -963,14 +1117,38 @@ class UniprotKB:
                     "PHASE 22c: Pathology Finding Inference (HPO + Disease)",
                     enrich_pathology_findings(self), *_scan_slots,
                 )
+            else:
+                phase_trace.append({
+                    "phase": "PHASE 20-22c: 2D scan subgraph",
+                    "need_slots": list(_scan_slots),
+                    "status": "skipped",
+                    "reason": "no_scan_path",
+                    "delta_nodes": 0,
+                    "delta_edges": 0,
+                })
 
             self.g.print_status_G()
             tissue_hierarchy_map = build_tissue_hierarchy_map(self, cfg)
+            _allow = self._physical_allow
+            _manifest = graph_workflow_api_manifest()
+            _secure = {
+                "physical_filter_raw_tokens": list(_pf_raw),
+                "physical_filter_canonical_slots_resolved": _pf_resolved,
+                "physical_filter_unknown_tokens": list(_pf_unknown),
+                "physical_gating_active_slots": sorted(_allow) if _allow is not None else None,
+                "embedding_model_env": "ST_EMBED_MODEL",
+                "embedding_dim_env": "ST_EMBED_DIM",
+                "optional_scan_path": bool(scan_path),
+                "data_modules_wired": _manifest["finalize_biological_graph"]["phase_modules"],
+            }
             return {
                 "gutils": self.g,
                 "graph": self.g.G,
                 "tissue_hierarchy_map": tissue_hierarchy_map,
                 "cfg": cfg,
+                "workflow_phase_trace": phase_trace,
+                "graph_api_validation": _secure,
+                "workflow_api_manifest": _manifest,
             }
 
         finally:
@@ -998,6 +1176,102 @@ class UniprotKB:
         """
         from firegraph.graph.visual import create_g_visual
         return create_g_visual(self.g.G, dest_path=dest_path, ds=False, add_legend=True)
+
+
+def graph_workflow_api_manifest() -> dict[str, Any]:
+    """
+    Serialisable contract tying ``data/*`` modules to public entrypoint parameters.
+
+    CHAR: no network I/O — safe to embed in MCP responses and offline validators.
+    """
+    slots = sorted(frozenset(PHYSICAL_CATEGORY_ALIASES.values()))
+    return {
+        "version": 1,
+        "finalize_biological_graph": {
+            "parameters": {
+                "organs": {"type": "list[str]", "required": True},
+                "filter_physical_compound": {
+                    "type": "list[str]",
+                    "required": True,
+                    "semantics": "empty => full workflow; non-empty gates physical fetch phases; GO/disease context stays on",
+                },
+                "scan_path": {"type": "str | None", "required": False},
+                "modality_hint": {"type": "str | None", "required": False},
+            },
+            "phase_modules": [
+                "data._ingest_organ_layer",
+                "data.enrich_gene_nodes_deep",
+                "data.enrich_pharmacology_quantum_adme",
+                "data.enrich_molecular_structures",
+                "data.enrich_food_sources",
+                "data.enrich_genomic_data",
+                "data.enrich_functional_dynamics",
+                "data._bridge_reactome_nodes",
+                "data.enrich_pharmacogenomics",
+                "data.enrich_bioelectric_properties",
+                "data.enrich_microbiome_axis",
+                "data.enrich_cell_type_expression",
+                "data.enrich_tissue_expression_layer",
+                "data.enrich_pubchem_entrez_organ",
+                "data.enrich_ctd_organ_associations",
+                "data.enrich_pharos_target_central",
+                "data.enrich_kegg_organ_pathways",
+                "data.fetch_pubchem_vitamins_for_organs",
+                "data.fetch_pubchem_fatty_acids_for_organs",
+                "data.fetch_pubchem_cofactors_for_organs",
+                "data.fetch_pubchem_minerals_for_organs",
+                "data.compute_sequence_hashes",
+                "data.enrich_structural_layer",
+                "data.enrich_domain_decomposition",
+                "data.enrich_go_semantic_layer",
+                "data._enrich_go_term_metadata",
+                "data._wire_go_hierarchy",
+                "data._wire_gene_go_edges",
+                "data.enrich_compartment_localization",
+                "data.enrich_gocam_activities",
+                "data.detect_allergen_proteins",
+                "data.enrich_allergen_molecular_impact",
+                "data.crosslink_allergen_food_sources",
+                "data.enrich_cellular_components",
+                "data.compute_electron_density_matrices",
+                "data.enrich_bioelectric_disease_signal_pipeline",
+                "data.enrich_scan_2d_ingestion",
+                "data.enrich_scan_segmentation",
+                "data.enrich_scan_uberon_bridge",
+                "data.enrich_scan_feature_extraction",
+                "data.enrich_pathology_findings",
+                "data.build_tissue_hierarchy_map",
+            ],
+            "description_xref_and_embedding_modules": [
+                "data.description_xref_wiring",
+                "data.enrich_pubchem_entrez_organ",
+                "data.enrich_ctd_organ_associations",
+                "data.enrich_pharos_target_central",
+                "data.enrich_kegg_organ_pathways",
+                "data._pug_rest_compound_fetch",
+            ],
+        },
+        "build_context_graph": {
+            "parameters": {
+                "organs": {"type": "list[str] | None", "required": False},
+                "functions": {"type": "list[str] | None", "required": False},
+                "keywords": {"type": "list[str] | None", "required": False},
+                "max_depth": {"type": "int", "required": False, "default": 4},
+            },
+            "bfs_edge_relations": sorted(UniprotKB._ALLOWED_EXPAND_RELS),
+        },
+        "physical_component_slots": slots,
+        "physical_component_alias_map": dict(PHYSICAL_CATEGORY_ALIASES),
+        "reference_vocabularies": {
+            "human_organs_terms": "data.human_organs_vocab.HUMAN_ORGAN_CANONICAL_TERMS",
+        },
+        "support_modules": [
+            "data.graph_identity",
+            "data.description_xref_wiring",
+            "data._pug_rest_compound_fetch",
+            "data.human_organs_vocab",
+        ],
+    }
 
 
 if __name__ == "__main__":

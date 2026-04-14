@@ -1,6 +1,8 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
+Prompt (user): data-dir graph hardening — stable ``path_key`` on RAW_SCAN for downstream ids.
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """

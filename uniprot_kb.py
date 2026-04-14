@@ -9,9 +9,9 @@ from __future__ import annotations
 import runpy
 from pathlib import Path
 
-from data.main import ScanIngestionLayer, UniprotKB
+from data.main import ScanIngestionLayer, UniprotKB, graph_workflow_api_manifest
 
-__all__ = ["ScanIngestionLayer", "UniprotKB"]
+__all__ = ["ScanIngestionLayer", "UniprotKB", "graph_workflow_api_manifest"]
 
 if __name__ == "__main__":
     runpy.run_path(str(Path(__file__).resolve().parent / "data" / "main.py"), run_name="__main__")

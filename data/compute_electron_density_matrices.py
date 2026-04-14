@@ -1,7 +1,7 @@
 """
 Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
 
-Prompt (user): data-dir graph hardening — EXCITATION_FREQUENCY ids must not embed parent node ids.
+Prompt (user): data-dir graph hardening — EXCITATION_FREQUENCY uses ``EXCFREQ_*`` from SMILES + state only.
 
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.

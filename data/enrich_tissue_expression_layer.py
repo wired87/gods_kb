@@ -3,6 +3,9 @@ Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_
 
 Prompt (user): data-dir graph hardening — TISSUE_2D_LAYER and CELL_POSITION use opaque ids.
 
+Prompt (user): When ``UniprotKB.workflow_create_cell_type_nodes`` is False (default), do not create
+    ``CELL_TYPE`` / dependent grid nodes in this step; tissue/anatomy passes still run.
+
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
@@ -29,9 +32,18 @@ from data.graph_identity import canonical_node_id
 
 async def enrich_tissue_expression_layer(self):
     """
-    Tissue-Schicht: HPA Gewebe-nTPM + UBERON (OLS4) + optional CL→Gewebe-Brücke.
-    Alle Endpunkte und Helfer sind bewusst in dieser einen Methode gekapselt.
+    PHASE 10b: Tissue layer — HPA nTPM, UBERON (OLS4), Cell Ontology bridge, 2D layers, cell grid.
+
+    Inputs: graph after organ seeding; uses ``ORGAN`` / ``TISSUE`` / ``CELL_TYPE`` patterns already present.
+    Outputs: ``TISSUE`` nodes and expression edges; ``TISSUE_2D_LAYER`` as ``TSLAYER_*`` opaque ids linked
+    via ``TISSUE_HAS_LAYER``; ``CELL_POSITION`` as ``CELLPOS_*`` with ``CELL_HAS_POSITION`` / ``CELL_IN_LAYER``.
+    Side effects: HTTP to Protein Atlas and OLS4; deterministic RNG positions from MD5 seeds.
+    Id policy: layer and grid nodes use ``data.graph_identity.canonical_node_id`` (no string embedding of
+    multiple graph ids in the node key).
     """
+    # CHAR: anatomy CL-composition +2D grid are optional — matches ``finalize_biological_graph`` policy.
+    _allow_cell_type_nodes = getattr(self, "workflow_create_cell_type_nodes", False)
+
     # ── gien prompt: primärer Abschnitt Tissue-Layer (HPA + Uberon + CL-Brücke) ──
     HPA_SEARCH_DOWNLOAD = "https://www.proteinatlas.org/api/search_download.php"
     OLS4_SEARCH = "https://www.ebi.ac.uk/ols4/api/search"
@@ -612,30 +624,31 @@ async def enrich_tissue_expression_layer(self):
                     except Exception:
                         pass
 
-                # ── crawl CL cell types for this tissue ──
-                cl_hits = await _fetch_cl_for_tissue(child_ub)
-                for cl_h in cl_hits:
-                    cell_nid = f"CELL_{cl_h['cl_id']}"
-                    if not self.g.G.has_node(cell_nid):
-                        self.g.add_node({
-                            "id": cell_nid,
-                            "type": "CELL_TYPE",
-                            "label": cl_h["label"],
-                            "cl_id": cl_h["cl_id"],
-                            "description": cl_h.get("description", ""),
-                            "cl_resolved": True,
-                            "source": "OLS4_anatomy_cl_crawl",
-                        })
-                    if not self.g.G.has_edge(cell_nid, existing_tid):
-                        self.g.add_edge(
-                            src=cell_nid, trgt=existing_tid,
-                            attrs={"rel": "CELL_TYPE_PART_OF_TISSUE",
-                                   "src_layer": "CELL", "trgt_layer": "TISSUE",
-                                   "source": "OLS4_CL_tissue_crawl"},
-                        )
-                        cl_composition_edges += 1
+                if _allow_cell_type_nodes:
+                    # ── crawl CL cell types for this tissue ──
+                    cl_hits = await _fetch_cl_for_tissue(child_ub)
+                    for cl_h in cl_hits:
+                        cell_nid = f"CELL_{cl_h['cl_id']}"
+                        if not self.g.G.has_node(cell_nid):
+                            self.g.add_node({
+                                "id": cell_nid,
+                                "type": "CELL_TYPE",
+                                "label": cl_h["label"],
+                                "cl_id": cl_h["cl_id"],
+                                "description": cl_h.get("description", ""),
+                                "cl_resolved": True,
+                                "source": "OLS4_anatomy_cl_crawl",
+                            })
+                        if not self.g.G.has_edge(cell_nid, existing_tid):
+                            self.g.add_edge(
+                                src=cell_nid, trgt=existing_tid,
+                                attrs={"rel": "CELL_TYPE_PART_OF_TISSUE",
+                                       "src_layer": "CELL", "trgt_layer": "TISSUE",
+                                       "source": "OLS4_CL_tissue_crawl"},
+                            )
+                            cl_composition_edges += 1
 
-            elif child.get("is_cl"):
+            elif child.get("is_cl") and _allow_cell_type_nodes:
                 # CHAR: direct CL child of anatomy part (rare but possible)
                 cell_nid = f"CELL_{child_ub}"
                 if not self.g.G.has_node(cell_nid):
