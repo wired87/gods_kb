@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt (user): data-dir graph hardening — stable ``path_key`` on RAW_SCAN for downstream ids.
 
@@ -24,7 +24,7 @@ import google.generativeai as genai
 import httpx
 import networkx as nx
 import numpy as np
-from data.main import ScanIngestionLayer
+from data.scan import ScanIngestionLayer
 
 async def enrich_scan_2d_ingestion(self, scan_path: str, modality_hint: str | None = None):
     """

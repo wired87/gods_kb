@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt (user): data-dir graph hardening — single-pass edge scan for gene–GO derivation.
 

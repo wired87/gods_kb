@@ -251,16 +251,13 @@ class Designer:
 
     def __init__(
         self,
-        *,
-        graph: nx.Graph | nx.MultiGraph | None = None,
-        gutils: GUtils | None = None,
+        gutils: GUtils,
         result_specs: Sequence[OrganDeliverySpec | dict[str, Any]] | None = None,
         include_peptide_chains: bool = False,
         context_hops: int = 2,
         organ_match_hops: int = 4,
     ) -> None:
-        if (graph is None) == (gutils is None):
-            raise TypeError("Designer requires exactly one of graph= or gutils=.")
+        #
         self._nx: nx.Graph | nx.MultiGraph = graph if graph is not None else gutils.G  # type: ignore[union-attr]
         self._result_specs = normalize_result_specs(result_specs)
         self.include_peptide_chains = bool(include_peptide_chains)

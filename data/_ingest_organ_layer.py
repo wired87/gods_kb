@@ -1,159 +1,212 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt: Physical-layer gating for UniProt tissue protein seeds lives only in ``UniprotKB`` —
-``finalize_biological_graph`` passes ``fetch_protein_seeds`` derived from
+``main`` passes ``fetch_protein_seeds`` derived from
 ``filter_physical_compound``; this module must not call ``_physical_enrich_blocked``.
 
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
 from __future__ import annotations
+import requests
 
-import asyncio
-import hashlib
-import json
-import math
-import os
-import random
-import tempfile
-from collections import deque
-from datetime import datetime, timezone
-from pathlib import Path
-from urllib.parse import quote
+from data.protein_disease import add_disease_node
+from embedder import embed
+from firegraph.graph import GUtils
 
-import google.generativeai as genai
-import httpx
-import networkx as nx
-import numpy as np
 
-async def _ingest_organ_layer(self, organs: list[str], *, fetch_protein_seeds: bool = True) -> None:
-    """STAGE A — Organ-first top-down ingestion.
+def _props_to_dict(props):
+    return {p["key"]: p["value"] for p in (props or [])}
 
-    Prompt: Make Sure to First fetch Just Organ Data from Uniprot & co based on the input.
 
-    fetch_protein_seeds: when False, organ + disease steps still run; UniProt tissue protein
-    seeds are omitted (set by ``UniprotKB.finalize_biological_graph`` from filter_physical_compound).
+def get_proteins_for_tissue(g, organ="brain"):
+    print(f"\n[START] ingest_brain_proteins_to_graph: {organ}")
+    try:
+        url = "https://rest.uniprot.org/uniprotkb/search"
+        params = {
+            "query": f'organism_id:9606 AND tissue:"{organ}"',
+            "format": "json",
+            #"size": 500
+        }
+        print("request params:", params)
+        res = requests.get(url, params=params)
+        res.raise_for_status()
+        data = res.json()
+        print("PROT RESULTS:", len(data["results"]))
+        for entry in data["results"]:
+            acc = entry["primaryAccession"]
+            node_id = f"{acc}"
 
-    1. Resolves each organ term → UBERON ontology ID via OLS4 (exact match first, fuzzy fallback).
-    2. Creates ORGAN node in the graph (type=ORGAN, uberon_id, description).
-    3. Fetches disease/harmful ontology (HPO + MONDO) linked to each organ via OLS4;
-       creates DISEASE nodes and ORGAN_ASSOCIATED_DISEASE edges.
-    4. Protein seed fetch (parallel): UniProt (organism_id:9606) AND (tissue:{organ}) — if allowed.
-    5. Stores (uberon_id, label) in self._organ_uberon_seeds for tissue layer Block A."""
-    if not organs:
-        print("  Stage A: no organs supplied — skipping")
-        return
+            # -------------------------
+            # 🧠 CORE PROTEIN NODE
+            # -------------------------
+            gene = entry.get("genes", [{}])[0].get("geneName", {}).get("value")
+            protein_name = (
+                entry.get("proteinDescription", {})
+                .get("recommendedName", {})
+                .get("fullName", {})
+                .get("value")
+            )
+            # -------------------------
+            # 🧠 CORE PROTEIN NODE (FULL AGGREGATION)
+            # -------------------------
 
-    if self.active_subgraph is None:
-        self.active_subgraph = set()
+            gene_names = []
 
-    _OLS4_SEARCH = "https://www.ebi.ac.uk/ols4/api/search"
-    organ_nodes_created = 0
-    disease_edges = 0
+            for gentry in entry.get("genes", []):
+                name = gentry.get("geneName", {}).get("value")
+                if name:
+                    gene_names.append(name)
 
-    for organ in organs:
-        # ── 1. Resolve UBERON ID — exact match first, fuzzy fallback ──
-        uberon_meta: dict | None = None
-        try:
-            for exact in ("true", "false"):
-                res = await self.client.get(
-                    _OLS4_SEARCH,
-                    params={"q": organ, "ontology": "uberon", "exact": exact, "rows": 1},
-                    timeout=15.0,
-                )
-                if res.status_code == 200:
-                    docs = res.json().get("response", {}).get("docs", [])
-                    if docs:
-                        hit = docs[0]
-                        obo_id = hit.get("obo_id", "") or ""
-                        sf = obo_id.replace(":", "_") if obo_id else hit.get("short_form", "")
-                        if sf and sf.startswith("UBERON_"):
-                            desc_raw = hit.get("description", [])
-                            uberon_meta = {
-                                "uberon_id": sf,
-                                "label": hit.get("label", organ),
-                                "description": ". ".join(desc_raw) if isinstance(desc_raw, list) else str(desc_raw or ""),
-                            }
-                            break
-        except Exception as e:
-            print(f"  Stage A OLS4 UBERON error for '{organ}': {e}")
+                for syn in gentry.get("synonyms", []):
+                    if syn.get("value"):
+                        gene_names.append(syn["value"])
 
-        organ_uberon = uberon_meta["uberon_id"] if uberon_meta else None
-        organ_label  = uberon_meta["label"]     if uberon_meta else organ
-        organ_nid    = f"ORGAN_{organ_uberon or organ.replace(' ', '_')}"
+            # ---- evidences sammeln ----
+            evidence_ids = []
 
-        # ── 2. Create ORGAN node (anchor for the entire organ hierarchy) ──
-        if not self.g.G.has_node(organ_nid):
-            self.g.add_node({
-                "id": organ_nid,
-                "type": "ORGAN",
-                "label": organ_label,
-                "input_term": organ,
-                "uberon_id": organ_uberon or "",
-                "description": (uberon_meta or {}).get("description", ""),
-                "source": "OLS4_UBERON" if organ_uberon else "input",
-            })
-            organ_nodes_created += 1
+            def _collect_evidences(obj):
+                if isinstance(obj, dict):
+                    if "evidences" in obj:
+                        for e in obj["evidences"]:
+                            if "evidenceCode" in e:
+                                evidence_ids.append(str(e["evidenceCode"]))
+                    for v in obj.values():
+                        _collect_evidences(v)
 
-        if organ_uberon:
-            self._organ_uberon_seeds.append((organ_uberon, organ_label))
+                elif isinstance(obj, list):
+                    for i in obj:
+                        _collect_evidences(i)
 
-        # ── 3. Disease/harmful ontology for this organ (HPO + MONDO via OLS4) ──
-        for ontology in ("hp", "mondo"):
-            try:
-                res = await self.client.get(
-                    _OLS4_SEARCH,
-                    params={"q": organ, "ontology": ontology, "rows": 5, "type": "class"},
-                    timeout=10.0,
-                )
-                if res.status_code != 200:
-                    continue
-                for doc in res.json().get("response", {}).get("docs", []):
-                    obo_id = doc.get("obo_id", "")
-                    if not obo_id:
-                        continue
-                    d_nid = f"DISEASE_{obo_id.replace(':', '_')}"
-                    if not self.g.G.has_node(d_nid):
-                        dr = doc.get("description", [])
-                        self.g.add_node({
-                            "id": d_nid,
-                            "type": "DISEASE",
-                            "label": doc.get("label", obo_id),
-                            "description": ". ".join(dr) if isinstance(dr, list) else str(dr or ""),
-                            "obo_id": obo_id,
-                            "ontology": ontology.upper(),
-                            "organ_term": organ,
-                        })
-                    if not self.g.G.has_edge(organ_nid, d_nid):
-                        self.g.add_edge(
-                            src=organ_nid, trgt=d_nid,
-                            attrs={
-                                "rel": "ORGAN_ASSOCIATED_DISEASE",
-                                "src_layer": "ORGAN",
-                                "trgt_layer": "DISEASE",
-                                "ontology": ontology.upper(),
-                                "source": "OLS4",
-                            },
+            _collect_evidences(entry)
+
+            # ---- cross refs sammeln ----
+            cross_refs = []
+            cross_refs_by_db = {}
+
+            for ref in entry.get("uniProtKBCrossReferences", []):
+                db = ref.get("database")
+                rid = ref.get("id")
+
+                if rid:
+                    cross_refs.append(rid)
+
+                    if db:
+                        cross_refs_by_db.setdefault(db, []).append(rid)
+
+            # ---- isoform ids ----
+            isoform_ids = []
+            for c in entry.get("comments", []):
+                if c.get("commentType") == "ALTERNATIVE PRODUCTS":
+                    for iso in c.get("isoforms", []):
+                        isoform_ids.extend(iso.get("isoformIds", []))
+
+            # ---- locations ----
+            locations = []
+            for c in entry.get("comments", []):
+                if c.get("commentType") == "SUBCELLULAR LOCATION":
+                    for loc in c.get("subcellularLocations", []):
+                        l = loc.get("location", {}).get("value")
+                        if l:
+                            locations.append(l)
+
+            # ---- diseases ----
+            diseases = []
+            for c in entry.get("comments", []):
+                if c.get("commentType") == "DISEASE":
+                    d = c.get("disease", {})
+                    if d.get("diseaseAccession"):
+                        diseases.append(d["diseaseAccession"])
+
+            # ---- keywords ----
+            keywords = [kw.get("name") for kw in entry.get("keywords", []) if kw.get("name")]
+
+            # ---- features summary ----
+            features = []
+            for f in entry.get("features", []):
+                features.append({
+                    "type": f.get("type"),
+                    "start": f.get("location", {}).get("start", {}).get("value"),
+                    "end": f.get("location", {}).get("end", {}).get("value"),
+                })
+
+            # ---- functions (text only) ----
+            functions = []
+            for c in entry.get("comments", []):
+                if c.get("commentType") == "FUNCTION":
+                    for t in c.get("texts", []):
+                        if t.get("value"):
+                            functions.append(t["value"][:500])
+
+            # -------------------------
+            # FINAL PROTEIN NODE
+            # -------------------------
+            protein_node = {
+                "id": node_id,
+                "type": "PROTEIN",
+
+                # core
+                "accession": acc,
+                "name": protein_name,
+
+                "organism": entry.get("organism", {}).get("scientificName"),
+
+                # quality
+                "annotation_score": entry.get("annotationScore"),
+                "protein_existence": entry.get("proteinExistence"),
+
+                # 🔥 aggregated knowledge
+                "functions": functions,
+                "locations": list(set(locations)),
+
+                "isoforms": list(set(isoform_ids)),
+                "keywords": keywords,
+
+                "functional_annotation": [embed(item) for item in functions],
+                "outsrc_emb": [embed(item) for item in list(set(diseases))],
+
+                # 🔬 structure
+                "features": features,
+            }
+
+            g.add_node(protein_node)
+
+            edges={
+                # 🔗 ids only (clean)
+                "gene": list(set(gene_names)),
+                "evidence": list(set(evidence_ids)),
+                "disease": list(set(diseases)),
+                "cross_ref": list(set(cross_refs)),
+                "cross_refs_by_db": cross_refs_by_db,
+            }
+
+            for etype, eid_list in edges.items():
+                for item in eid_list:
+                    g.add_edge(
+                        src=node_id,
+                        trgt=item,
+                        attrs=dict(
+                            rel="ref",
+                            src_layer="PROTEIN",
+                            trgt_layer=etype.upper(),
                         )
-                        disease_edges += 1
-            except Exception as e:
-                print(f"  Stage A OLS4 disease error (organ='{organ}', ont={ontology}): {e}")
+                    )
 
-    # ── 4. Protein seed fetch — parallel over all organs (caller gates via fetch_protein_seeds) ──
-    if not fetch_protein_seeds:
-        print("  Stage A: UniProt tissue protein seeds skipped — physical filter excludes gene/protein")
-    else:
-        tasks = [
-            self.fetch_proteins_by_query(f"(organism_id:9606) AND (tissue:{organ})")
-            for organ in organs
-        ]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for res in results:
-            if isinstance(res, list):
-                self.active_subgraph.update(res)
+            # DISEASE
+            for disease_id in edges["diseases"]:
+                add_disease_node(
+                    g,
+                    accession=disease_id,
+                    protein_id=node_id,
+                )
+    except Exception as e:
+        print(f"ERROR get_protein for tissue: {e}")
 
-    print(f"  Stage A: {organ_nodes_created} ORGAN nodes, "
-          f"{disease_edges} ORGAN_ASSOCIATED_DISEASE edges, "
-          f"{len(self.active_subgraph)} protein seeds from {len(organs)} organ(s)")
+    print(f"[DONE] total proteins:")
+    print("g", g)
+    g.print_status_G()
+
+if __name__ == "__main__":
+    proteins = get_proteins_for_tissue(g=GUtils())
 

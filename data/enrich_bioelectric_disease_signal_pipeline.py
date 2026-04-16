@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.

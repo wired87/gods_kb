@@ -311,14 +311,10 @@ SCAN_PATHOLOGY_HPO_TERMS_BY_MODALITY: dict[str, list[str]] = {
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 EXECUTION_CFG: dict[str, dict] = {
-    "amino_acid":        _AMINO_ACID_SPECS,
     "protein_structure": _PROTEIN_STRUCTURE_SPECS,
-    "atom":              _ATOM_SPECS,
-    "chemical":          _CHEMICAL_SPECS,
 }
 
-# ALL_ROUTING_KEYWORDS — union of every category's keyword set,
-# keyed by category slug for fast reverse lookup during routing
+
 ALL_ROUTING_KEYWORDS: dict[str, set[str]] = {
     slug: specs["routing"]["keywords"]
     for slug, specs in EXECUTION_CFG.items()

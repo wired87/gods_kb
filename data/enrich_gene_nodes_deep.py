@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt (user): data-dir graph hardening — visibility when adding PPI protein stubs.
 
@@ -20,7 +20,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
-import google.generativeai as genai
 import httpx
 import networkx as nx
 import numpy as np
@@ -62,18 +61,58 @@ async def enrich_gene_nodes_deep(self):
                     "rel": "REQUIRES_MINERAL", "src_layer": "PROTEIN", "trgt_layer": "MINERAL",
                 })
 
-        # REACTOME XREFS → MOLECULE_CHAIN nodes + INVOLVED_IN_CHAIN edges
+        # helper: properties -> dict
+        def _props_to_dict(props_list):
+            if not props_list:
+                return {}
+            return {p["key"]: p["value"] for p in props_list if "key" in p and "value" in p}
+
+        # REACTOME XREFS → MOLECULE_CHAIN nodes + EDGES
         for ref in res.get("uniProtKBCrossReferences", []):
-            if ref.get("database") != "Reactome":
-                continue
-            pw_id = f"MOL_{ref['id']}"
-            self.g.add_node({"id": pw_id, "type": "MOLECULE_CHAIN",
-                             "label": ref.get("properties", {}).get("pathwayName", "Pathway"),
-                             # store the stable Reactome ID so _bridge_reactome_nodes can match
-                             "reactome_stable_id": ref["id"]})
-            self.g.add_edge(src=node_id, trgt=pw_id, attrs={
-                "rel": "INVOLVED_IN_CHAIN", "src_layer": "PROTEIN", "trgt_layer": "MOLECULE_CHAIN",
-            })
+            print("ref", ref)
+
+            ref_id = ref.get("id")
+            db = ref.get("database")
+            isoform = ref.get("isoformId")
+
+            props = _props_to_dict(ref.get("properties", []))
+
+            # unified label strategy (robust)
+            label = (
+                    props.get("PathwayName")
+                    or props.get("GeneName")
+                    or props.get("ProteinId")
+                    or props.get("Description")
+                    or ref_id
+            )
+
+            node_id_ref = f"{db}_{ref_id}"
+
+            # build full attribute payload (NO DATA LOSS)
+            node_attrs = {
+                "id": node_id_ref,
+                "type": "MOLECULE_CHAIN",
+                "label": label,
+                "source_db": db,
+                "ref_id": ref_id,
+                "isoform": isoform,
+                **props,  # flatten ALL properties
+            }
+
+            # add node
+            self.g.add_node(node_attrs)
+
+            # add edge
+            self.g.add_edge(
+                src=node_id,
+                trgt=node_id_ref,
+                attrs={
+                    "rel": "HAS_REFERENCE",
+                    "src_layer": "PROTEIN",
+                    "trgt_layer": "MOLECULE_CHAIN",
+                    "source_db": db,
+                },
+            )
 
         # PROTEIN–PROTEIN INTERACTIONS (UniProt cc_interaction / IntAct)
         # Only wire edge when the partner accession is ALREADY a node in the graph,

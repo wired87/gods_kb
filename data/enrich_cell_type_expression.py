@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt (user): No-op unless ``UniprotKB.workflow_create_cell_type_nodes`` is True (default off).
 

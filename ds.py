@@ -14,8 +14,28 @@ the acyclic leaf every consumer can import safely.
 from __future__ import annotations
 
 import re
-from typing import Iterable
-
+ORGANS = [
+    "Blood",
+    "Brain",
+    "Heart",
+    "Liver",
+    "Kidney",
+    "Lung",
+    "Muscle",
+    "Skeletal muscle",
+    "Pancreas",
+    "Spleen",
+    "Placenta",
+    "Testis",
+    "Ovary",
+    "Uterus",
+    "Colon",
+    "Small intestine",
+    "Stomach",
+    "Skin",
+    "Adipose tissue",
+    "Leukocyte"
+]
 # ── PHYSICAL COMPONENT FILTER (user aliases → coarse fetch slots) ─────────
 # CHAR: same buckets as ``UniprotKB`` physical-layer gating; ontology + disease seeding
 # stay on regardless (see ``_physical_enrich_blocked``).
@@ -60,7 +80,7 @@ PHYSICAL_CATEGORY_ALIASES: dict[str, str] = {
 }
 
 
-def coerce_physical_filter_tokens(value: str | list[str] | None) -> list[str]:
+def cleanup_key_entries(value: str | list[str] | None) -> list[str]:
     """
     Normalize ``filter_physical_compound`` input into raw string tokens (not yet alias-resolved).
 
@@ -83,63 +103,13 @@ def coerce_physical_filter_tokens(value: str | list[str] | None) -> list[str]:
         if not s:
             continue
         if re.search(r"[,;|]", s):
-            out.extend(coerce_physical_filter_tokens(s))
+            out.extend(cleanup_key_entries(s))
         else:
             out.append(s)
     return out
 
 
-def classify_physical_filter_tokens(raw_tokens: Iterable[str]) -> tuple[frozenset[str] | None, list[str]]:
-    """
-    Map raw tokens to canonical ``PHYSICAL_CATEGORY_ALIASES`` values.
-
-    Returns ``(allowed_slots, unknown_raw)`` where ``allowed_slots`` is ``None`` when
-    no valid token was recognized (caller treats as full workflow, same as empty filter).
-    """
-    slots: set[str] = set()
-    unknown: list[str] = []
-    for raw in raw_tokens:
-        key = " ".join(str(raw).strip().lower().replace("-", " ").split())
-        if not key:
-            continue
-        key_us = key.replace(" ", "_")
-        canon = PHYSICAL_CATEGORY_ALIASES.get(key_us)
-        if canon:
-            slots.add(canon)
-        else:
-            unknown.append(str(raw))
-    if not slots:
-        return None, unknown
-    return frozenset(slots), unknown
 
 
-def resolve_physical_filter_slots(
-    filter_physical_compound: str | list[str] | None,
-    *,
-    warn_unknown: bool = True,
-) -> frozenset[str] | None:
-    """
-    Return allowed internal slots, or ``None`` when input is empty or wholly unrecognized
-    (full workflow — same semantics as the former ``data.main`` helper).
-    """
-    tokens = coerce_physical_filter_tokens(filter_physical_compound)
-    if not tokens:
-        return None
-    allowed, unknown = classify_physical_filter_tokens(tokens)
-    if warn_unknown:
-        for u in unknown:
-            print(f"  WARN: unknown filter_physical_compound token {u!r} — ignored")
-    return allowed
 
 
-def resolve_physical_filter_canonical_list(
-    filter_physical_compound: str | list[str] | None,
-    *,
-    warn_unknown: bool = True,
-) -> list[str]:
-    """Stable sorted list of canonical physical slots; empty list ⇒ no gating / inherit full workflow upstream."""
-    fs = resolve_physical_filter_slots(
-        filter_physical_compound,
-        warn_unknown=warn_unknown,
-    )
-    return sorted(fs) if fs else []

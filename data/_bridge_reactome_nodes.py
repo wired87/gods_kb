@@ -1,27 +1,11 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
 """
 from __future__ import annotations
 
-import asyncio
-import hashlib
-import json
-import math
-import os
-import random
-import tempfile
-from collections import deque
-from datetime import datetime, timezone
-from pathlib import Path
-from urllib.parse import quote
-
-import google.generativeai as genai
-import httpx
-import networkx as nx
-import numpy as np
 
 def _bridge_reactome_nodes(self):
     """

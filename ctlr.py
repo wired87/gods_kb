@@ -12,7 +12,7 @@ User prompt (implementation spec):
 
     include methods:
     - embed_content:
-    enbed each entire nodes values in the graph (save under Embedding attr in the Same Node), do the Same for each Item of outsrc_specs, functional_annotations
+    enbed each entire nodes values in the graph (save under embedding attr in the Same Node), do the Same for each Item of outsrc_specs, functional_annotations
     - outsrc_nodes:
     The Goal Here IS to use each Item of outsrc_specs(to receive nodes based on their Ontology that result in that outsrc criteria
     Each Node that Matches an outsrc criteria (followig advanced search algorithms like cosing similarity (e.d. maybe more - case specific - you have the choice after carefully validation) set node.state = 1
@@ -49,15 +49,14 @@ from typing import Any
 
 import networkx as nx
 
-try:
-    import numpy as np
+from embedder.query_transformator import generate_embedding_variations
+from firegraph.graph import GUtils
 
-    _HAS_NP = True
-except ImportError:
-    np = None  # type: ignore[assignment]
-    _HAS_NP = False
 
-from data.main import graph_node_to_embed_text
+import numpy as np
+
+
+
 from uniprot_kb import UniprotKB
 
 # CHAR: local ST model + batch/dim — shared with ``UniprotKB`` constants
@@ -69,16 +68,6 @@ _st_model = None  # lazy ``SentenceTransformer`` (heavy import / weights)
 _st_lock = threading.Lock()
 
 
-def _get_sentence_model():
-    """CHAR: load once; ``SentenceTransformer`` is not cheap to construct."""
-    global _st_model
-    if _st_model is None:
-        with _st_lock:
-            if _st_model is None:
-                from sentence_transformers import SentenceTransformer
-
-                _st_model = SentenceTransformer(_ST_MODEL_NAME)
-    return _st_model
 
 
 def _truncate_renorm_rows(rows: Any, dim: int) -> list[list[float]]:
@@ -89,36 +78,26 @@ def _truncate_renorm_rows(rows: Any, dim: int) -> list[list[float]]:
     if not len(rows):
         return []
     out: list[list[float]] = []
-    if _HAS_NP:
-        for row in rows:
-            r = np.asarray(row, dtype=np.float64).ravel()[:dim]
-            if r.size < dim:
-                r = np.pad(r, (0, dim - int(r.size)))
-            n = float(np.linalg.norm(r))
-            out.append((r / max(n, 1e-12)).tolist())
-        return out
+
     for row in rows:
-        seq = [float(x) for x in row][:dim]
-        if len(seq) < dim:
-            seq.extend([0.0] * (dim - len(seq)))
-        n = math.sqrt(sum(x * x for x in seq))
-        n = max(n, 1e-12)
-        out.append([x / n for x in seq])
+        r = np.asarray(row, dtype=np.float64).ravel()[:dim]
+        if r.size < dim:
+            r = np.pad(r, (0, dim - int(r.size)))
+        n = float(np.linalg.norm(r))
+        out.append((r / max(n, 1e-12)).tolist())
     return out
+
 
 
 def _encode_texts_local(texts: list[str]) -> list[list[float]]:
     """CHAR: synchronous encode — call via ``asyncio.to_thread`` from async ctlr methods."""
+    from embedder import embed, similarity
+
     if not texts:
         return []
-    model = _get_sentence_model()
-    raw = model.encode(
-        texts,
-        batch_size=_EMBED_BATCH,
-        show_progress_bar=False,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
+    raw = []
+    for item in texts:
+        raw.append(embed(item))
     return _truncate_renorm_rows(raw, _EMBED_DIM)
 
 
@@ -151,17 +130,14 @@ _OUTSRC_CANDIDATE_TYPES = frozenset({
 
 def _l2_normalize_rows(mat: list[list[float]]) -> list[list[float]]:
     """CHAR: row-wise L2 normalize for cosine similarity as dot product."""
-    if _HAS_NP and mat:
-        a = np.asarray(mat, dtype=np.float64)
-        norms = np.linalg.norm(a, axis=1, keepdims=True)
-        norms = np.maximum(norms, 1e-12)
-        return (a / norms).tolist()
-    out: list[list[float]] = []
-    for row in mat:
-        s = math.sqrt(sum(x * x for x in row))
-        s = max(s, 1e-12)
-        out.append([x / s for x in row])
-    return out
+    a = np.asarray(mat, dtype=np.float64)
+    norms = np.linalg.norm(
+        a,
+        axis=1,
+        keepdims=True
+    )
+    norms = np.maximum(norms, 1e-12)
+    return (a / norms).tolist()
 
 
 def _cosine_top_pairs(
@@ -178,32 +154,19 @@ def _cosine_top_pairs(
     hits: set[str] = set()
     if not query_rows or not doc_rows or not doc_ids:
         return hits
-    if _HAS_NP:
-        q = np.asarray(query_rows, dtype=np.float64)
-        d = np.asarray(doc_rows, dtype=np.float64)
-        sims = q @ d.T  # (n_queries, n_docs)
-        for qi in range(sims.shape[0]):
-            row = sims[qi]
-            above = np.where(row >= threshold)[0]
-            for j in above:
-                hits.add(doc_ids[int(j)])
-            if top_k > 0:
-                idx = np.argpartition(-row, min(top_k, len(row)) - 1)[:top_k]
-                for j in idx:
-                    hits.add(doc_ids[int(j)])
-        return hits
-    # Pure-Python fallback
-    for qi, qv in enumerate(query_rows):
-        scores: list[tuple[float, int]] = []
-        for j, dv in enumerate(doc_rows):
-            s = sum(a * b for a, b in zip(qv, dv))
-            scores.append((s, j))
-            if s >= threshold:
-                hits.add(doc_ids[j])
+
+    q = np.asarray(query_rows, dtype=np.float64)
+    d = np.asarray(doc_rows, dtype=np.float64)
+    sims = q @ d.T  # (n_queries, n_docs)
+    for qi in range(sims.shape[0]):
+        row = sims[qi]
+        above = np.where(row >= threshold)[0]
+        for j in above:
+            hits.add(doc_ids[int(j)])
         if top_k > 0:
-            scores.sort(key=lambda x: -x[0])
-            for _, j in scores[:top_k]:
-                hits.add(doc_ids[j])
+            idx = np.argpartition(-row, min(top_k, len(row)) - 1)[:top_k]
+            for j in idx:
+                hits.add(doc_ids[int(j)])
     return hits
 
 
@@ -214,7 +177,7 @@ class TissueGraphController:
 
     def __init__(
         self,
-        graph: nx.Graph | nx.MultiGraph,
+        g: GUtils,
         outsrc_specs: list[str],
         functional_annotations: list[str],
         *,
@@ -225,7 +188,7 @@ class TissueGraphController:
         api_key: str | None = None,
     ) -> None:
         # Prompt-aligned params live on the instance for downstream orchestration.
-        self.graph = graph
+        self.g = g
         self.outsrc_specs = [s.strip() for s in (outsrc_specs or []) if str(s).strip()]
         self.functional_annotations = [s.strip() for s in (functional_annotations or []) if str(s).strip()]
         self.outsrc_cosine_threshold = outsrc_cosine_threshold
@@ -239,68 +202,53 @@ class TissueGraphController:
 
     async def _batch_embed(self, texts: list[str], task_type: str = "") -> list[list[float]]:
         """CHAR: local sentence-transformers encode; ``task_type`` unused (Gemini RETRIEVAL_* removed)."""
-        if not texts:
-            return []
         return await asyncio.to_thread(_encode_texts_local, texts)
 
-    async def embed_content(self) -> None:
-        """CHAR: node Document embeddings → attrs['Embedding']; query embeddings for specs and annotations."""
-        node_ids: list[str] = []
-        node_texts: list[str] = []
-        for nid, attrs in self.graph.nodes(data=True):
-            node_ids.append(str(nid))
-            node_texts.append(graph_node_to_embed_text(str(nid), dict(attrs)))
 
-        doc_vecs = await self._batch_embed(node_texts, task_type="RETRIEVAL_DOCUMENT")
-        for nid, vec in zip(node_ids, doc_vecs):
-            self.graph.nodes[nid]["Embedding"] = vec
-
-        if self.outsrc_specs:
-            self._outsrc_embeddings = _l2_normalize_rows(
-                await self._batch_embed(self.outsrc_specs, task_type="RETRIEVAL_QUERY")
-            )
-        else:
-            self._outsrc_embeddings = []
-
-        if self.functional_annotations:
-            self._functional_embeddings = _l2_normalize_rows(
-                await self._batch_embed(self.functional_annotations, task_type="RETRIEVAL_QUERY")
-            )
-        else:
-            self._functional_embeddings = []
-
-    def outsrc_nodes(self) -> None:
+    def outsrc_nodes(
+            self,
+            outsrc_criteria:list[str],
+    ) -> None:
         """CHAR: cosine match outsrc queries to ontology-class nodes → state=1 (barrier)."""
-        if not self._outsrc_embeddings:
-            return
-        cand_ids: list[str] = []
+        from embedder import embed, similarity
+
+        print("OUTSRC NODES...")
+        outsrc_embedding = [embed(item) for item in outsrc_criteria]
+
+        from embedder.query_transformator import generate_embedding_variations
+        variations = [
+            generate_embedding_variations(
+                e=item
+            )
+            for item in outsrc_embedding
+        ]
+
+        #cand_ids: list[str] = []
         cand_vecs: list[list[float]] = []
-        for nid, data in self.graph.nodes(data=True):
-            if data.get("state") == 1:
-                continue
-            if data.get("type") not in _OUTSRC_CANDIDATE_TYPES:
-                continue
-            emb = data.get("Embedding")
-            if not emb:
-                continue
-            cand_ids.append(str(nid))
-            cand_vecs.append(list(emb))
-        if not cand_ids:
-            return
-        cand_vecs = _l2_normalize_rows(cand_vecs)
-        hit_ids = _cosine_top_pairs(
-            self._outsrc_embeddings,
-            cand_vecs,
-            cand_ids,
-            self.outsrc_cosine_threshold,
-            top_k=max(3, self.functional_top_k),
-        )
-        for nid in hit_ids:
-            self.graph.nodes[nid]["state"] = 1
+        for item in variations:
+            for nid, data in self.g.G.nodes(data=True):
+                if data.get("state") == 1:
+                    continue
+                if data.get("type") not in _OUTSRC_CANDIDATE_TYPES:
+                    continue
+                emb = data.get("outsrc_embedding")
+                if not emb:
+                    print("EMBEDDINGS MSSING FOR", nid)
+                    continue
+                cand_vecs = _l2_normalize_rows(cand_vecs)
+
+                # OUTSRC
+                if any(
+                        similarity(var, emb) >= .7
+                        for var in item
+                ):
+                    print(f"node {nid} referened as outsrc... ")
+                    self.g.G.nodes[nid]["state"] = 1
+        print("OUTSRC NODES FINISED...")
 
     def _try_mark_zero(self, nid: str) -> bool:
         """CHAR: assign state=0 unless outsrc barrier (state=1). Returns True if state is0 after."""
-        n = self.graph.nodes[nid]
+        n = self.g.G.nodes[nid]
         if n.get("state") == 1:
             return False
         n["state"] = 0
@@ -313,12 +261,12 @@ class TissueGraphController:
         changed = True
         while changed:
             changed = False
-            for nid, data in list(self.graph.nodes(data=True)):
+            for nid, data in list(self.g.G.nodes(data=True)):
                 if data.get("state") != 0:
                     continue
                 nt = data.get("type")
-                for v in self.graph.neighbors(nid):
-                    vd = self.graph.nodes[v]
+                for v in self.g.G.neighbors(nid):
+                    vd = self.g.G.nodes[v]
                     if vd.get("state") == 1:
                         continue
                     vt = vd.get("type")
@@ -330,11 +278,11 @@ class TissueGraphController:
                         if vd.get("state") != 0:
                             vd["state"] = 0
                             changed = True
-            for nid, data in list(self.graph.nodes(data=True)):
+            for nid, data in list(self.g.G.nodes(data=True)):
                 if data.get("state") != 0:
                     continue
-                for v in self.graph.neighbors(nid):
-                    vd = self.graph.nodes[v]
+                for v in self.g.G.neighbors(nid):
+                    vd = self.g.G.nodes[v]
                     if vd.get("state") == 1:
                         continue
                     if vd.get("type") not in _CASCADE_TYPES:
@@ -343,54 +291,54 @@ class TissueGraphController:
                         vd["state"] = 0
                         changed = True
 
-    async def match_functional_nodes(self, functional_queries: list[str] | None = None) -> None:
+    async def match_functional_nodes(
+            self,
+            functional_queries: list[str]
+    ) -> None:
         """
         CHAR: similarity seed state=0, then neighbor + hierarchical propagation.
         When functional_queries is set, only those strings are embedded (extension rounds).
         """
-        if functional_queries is not None:
-            q_texts = [s.strip() for s in functional_queries if str(s).strip()]
-            q_vecs = _l2_normalize_rows(
-                await self._batch_embed(q_texts, task_type="RETRIEVAL_QUERY")
-            ) if q_texts else []
-        else:
-            q_vecs = self._functional_embeddings
-
-        if not q_vecs:
-            self._propagate_neighbors()
-            return
-
-        doc_ids: list[str] = []
-        doc_vecs: list[list[float]] = []
-        for nid, data in self.graph.nodes(data=True):
-            if data.get("state") == 1:
-                continue
-            emb = data.get("Embedding")
-            if not emb:
-                continue
-            doc_ids.append(str(nid))
-            doc_vecs.append(list(emb))
-
-        if not doc_ids:
-            self._propagate_neighbors()
-            return
-
-        doc_vecs = _l2_normalize_rows(doc_vecs)
-        hit_ids = _cosine_top_pairs(
-            q_vecs,
-            doc_vecs,
-            doc_ids,
-            self.functional_cosine_threshold,
-            self.functional_top_k,
+        print(f"match_functional_nodes with {functional_queries}")
+        q_vecs = _l2_normalize_rows(
+            await self._batch_embed(functional_queries, task_type="RETRIEVAL_QUERY")
         )
-        for nid in hit_ids:
-            self._try_mark_zero(nid)
 
-        self._propagate_neighbors()
+        variations = [
+            generate_embedding_variations(
+                e=item
+            )
+            for item in q_vecs
+        ]
+
+        for item in variations:
+            for nid, data in self.g.G.nodes(data=True):
+                if data.get("state") == 1:
+                    continue
+                emb = data.get("def_emb")
+                if not emb:
+                    continue
+                from embedder import embed, similarity
+
+                if any(
+                    similarity(var, emb) > .7
+                    for var in item
+                ):
+                    data["state"] = 0
+                    # todo sma efor ontological nodes
+                    n = self.g.get_neighbor_list(nid)
+                    for nnid, nattrs in n:
+                        # exclude physical components
+                        if nattrs["type"] not in ["PROTEIN"]:
+                            # connect ontological nodes:
+                            if nattrs.get("state") !=1:
+                                nattrs["state"] = 0
+        print("MATCH FUNCTIONAL NODES finished...")
+
 
     def _display_name_for(self, nid: str) -> str:
         """CHAR: human-readable token for embedding phrase."""
-        d = self.graph.nodes[nid]
+        d = self.g.G.nodes[nid]
         for key in ("label", "go_id", "disease_id"):
             v = d.get(key)
             if v:
@@ -403,7 +351,7 @@ class TissueGraphController:
         for _ in range(self.max_extend_rounds):
             batch_nids = [
                 str(nid)
-                for nid, d in self.graph.nodes(data=True)
+                for nid, d in self.g.G.nodes(data=True)
                 if d.get("state") == 0 and str(nid) not in worked_nodes
             ]
             if not batch_nids:
@@ -418,40 +366,29 @@ class TissueGraphController:
 
     def filter_components(self) -> nx.Graph | nx.MultiGraph:
         """CHAR: keep only nodes with state == 0 (strict functional closure)."""
-        keep = {nid for nid, d in self.graph.nodes(data=True) if d.get("state") == 0}
-        return self.graph.subgraph(keep).copy()
+        keep = {nid for nid, d in self.g.G.nodes(data=True) if d.get("state") == 0}
+        return self.g.G.subgraph(keep).copy()
 
 
 async def run_controller(
-    graph: nx.Graph | nx.MultiGraph,
+    g: GUtils,
     outsrc_specs: list[str],
     functional_annotations: list[str],
-    **kwargs: Any,
 ) -> nx.Graph | nx.MultiGraph:
     """
     CHAR: ordered pipeline — embed → outsrc → match → extend → filter.
     """
-    ctl = TissueGraphController(graph, outsrc_specs, functional_annotations, **kwargs)
-    await ctl.embed_content()
-    ctl.outsrc_nodes()
-    await ctl.match_functional_nodes()
-    await ctl.extend_functional_nodes()
+    ctl = TissueGraphController(g, outsrc_specs, functional_annotations)
+    ctl.outsrc_nodes(outsrc_criteria=outsrc_specs)
+    await ctl.match_functional_nodes(functional_annotations)
+    ctl.g.print_status_G()
+    print("ctlr finished run...")
     return ctl.filter_components()
 
+if __name__ == "__main__":
+    asyncio.run(run_controller(
+        g=GUtils(),
+        outsrc_specs=["heart"],
+        functional_annotations=["freeze"],
+    ))
 
-def main(
-    graph: nx.Graph | nx.MultiGraph | None = None,
-    outsrc_specs: list[str] | None = None,
-    functional_annotations: list[str] | None = None,
-    **kwargs: Any,
-) -> nx.Graph | nx.MultiGraph:
-    """
-    CHAR: synchronous wrapper; supply graph and spec lists from your workflow (no baked-in example data).
-    """
-    if graph is None or outsrc_specs is None or functional_annotations is None:
-        raise TypeError(
-            "ctlr.main() requires graph, outsrc_specs, and functional_annotations."
-        )
-    return asyncio.run(
-        run_controller(graph, outsrc_specs, functional_annotations, **kwargs)
-    )

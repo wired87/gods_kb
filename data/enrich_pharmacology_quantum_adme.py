@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 CHAR: runs in-process on the same ``UniprotKB`` instance (``self``); keep signatures aligned
 with the class delegator in ``uniprot_kb.py``.
@@ -30,7 +30,6 @@ async def enrich_pharmacology_quantum_adme(self):
     3) PubChem quantum signatures  4) Graph linking
     """
     protein_nodes = [(k, v) for k, v in self.g.G.nodes(data=True) if v.get("type") == "PROTEIN" and self._is_active(k)]
-    # CACHE: avoid re-fetching molecule meta + PubChem for same ChEMBL ID
     _seen_mol: set[str] = set()
 
     for protein_id, node in protein_nodes:

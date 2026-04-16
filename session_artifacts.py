@@ -20,7 +20,7 @@ _SESSION_ZIP_DIR = Path(gettempdir()) / "acid_master_session_zips"
 def persist_scan_in_session(session_dir: Path, file_bytes: bytes, original_filename: str) -> str:
     """
     Write optional 2D scan into ``session_dir`` and return absolute path for
-    ``UniprotKB.finalize_biological_graph(..., scan_path=...)``.
+    ``UniprotKB.main(..., scan_path=...)``.
     """
     raw_name = (original_filename or "").strip()
     if not raw_name:
@@ -33,7 +33,7 @@ def persist_scan_in_session(session_dir: Path, file_bytes: bytes, original_filen
         raise ValueError("scan_2d_filename must be a non-empty basename (no path segments).")
     if not Path(base).suffix:
         raise ValueError(
-            "scan_2d_filename must include a supported extension for ScanIngestionLayer "
+            "scan_2d_filename must include a supported extension for data.scan.ScanIngestionLayer "
             "(e.g. .dcm, .nii, .nii.gz, .png, .tif, .jpg)."
         )
     session_dir.mkdir(parents=True, exist_ok=True)

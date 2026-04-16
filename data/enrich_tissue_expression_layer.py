@@ -1,5 +1,5 @@
 """
-Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``finalize_biological_graph``.
+Workflow step extracted from ``uniprot_kb.UniprotKB`` for ``main``.
 
 Prompt (user): data-dir graph hardening — TISSUE_2D_LAYER and CELL_POSITION use opaque ids.
 
@@ -41,7 +41,7 @@ async def enrich_tissue_expression_layer(self):
     Id policy: layer and grid nodes use ``data.graph_identity.canonical_node_id`` (no string embedding of
     multiple graph ids in the node key).
     """
-    # CHAR: anatomy CL-composition +2D grid are optional — matches ``finalize_biological_graph`` policy.
+    # CHAR: anatomy CL-composition +2D grid are optional — matches ``main`` policy.
     _allow_cell_type_nodes = getattr(self, "workflow_create_cell_type_nodes", False)
 
     # ── gien prompt: primärer Abschnitt Tissue-Layer (HPA + Uberon + CL-Brücke) ──

@@ -11,26 +11,26 @@ import pytest
 from ds import (
     PHYSICAL_CATEGORY_ALIASES,
     classify_physical_filter_tokens,
-    coerce_physical_filter_tokens,
+    cleanup_key_entries,
     resolve_physical_filter_canonical_list,
     resolve_physical_filter_slots,
 )
 
 
 def test_coerce_none_and_empty_string() -> None:
-    assert coerce_physical_filter_tokens(None) == []
-    assert coerce_physical_filter_tokens("") == []
-    assert coerce_physical_filter_tokens("   ") == []
+    assert cleanup_key_entries(None) == []
+    assert cleanup_key_entries("") == []
+    assert cleanup_key_entries("   ") == []
 
 
 def test_coerce_string_separators() -> None:
-    assert coerce_physical_filter_tokens("gene, protein") == ["gene", "protein"]
-    assert coerce_physical_filter_tokens("organ;tissue") == ["organ", "tissue"]
-    assert coerce_physical_filter_tokens("cell | molecule") == ["cell", "molecule"]
+    assert cleanup_key_entries("gene, protein") == ["gene", "protein"]
+    assert cleanup_key_entries("organ;tissue") == ["organ", "tissue"]
+    assert cleanup_key_entries("cell | molecule") == ["cell", "molecule"]
 
 
 def test_coerce_list_nested_separators() -> None:
-    assert coerce_physical_filter_tokens(["a,b", "c"]) == ["a", "b", "c"]
+    assert cleanup_key_entries(["a,b", "c"]) == ["a", "b", "c"]
 
 
 def test_classify_known_aliases() -> None:

@@ -2,7 +2,7 @@
 Canonical human organ / system vocabulary for external-database enrichment steps.
 
 Prompt (user): use local defined list of all humans organs or fetch from specific api —
-this module supplies the local list; workflow organ seeds still come from ``finalize_biological_graph``.
+this module supplies the local list; workflow organ seeds still come from ``main``.
 
 CHAR: lowercase tokens for case-insensitive matching against ORGAN ``input_term`` / ``label``.
 No sample graph data — vocabulary only.
