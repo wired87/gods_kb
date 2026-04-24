@@ -12,10 +12,13 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-
+embed_models
 # IDE
 .idea/
 .vscode/
+.claude
+.venv
+.github
 
 # Generated output
 output/

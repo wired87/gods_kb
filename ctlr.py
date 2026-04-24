@@ -370,7 +370,8 @@ class TissueGraphController:
         return self.g.G.subgraph(keep).copy()
 
 
-async def run_controller(
+async def \
+        run_controller(
     g: GUtils,
     outsrc_specs: list[str],
     functional_annotations: list[str],

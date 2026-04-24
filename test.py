@@ -75,10 +75,7 @@ async def _run_one(entry: dict) -> dict:
         prompt=entry["prompt"],
         dest_html=html_path,
         dest_json=json_path,
-        #filter_physical_compound=entry.get("filter_physical_compound"),
-        #design_output_dir=str(design_dir),
         result_specs=entry.get("result_specs"),
-        organs_override=entry.get("organs"),
     )
     print(f"main workflow fin after {time.perf_counter() - t0} s")
 
