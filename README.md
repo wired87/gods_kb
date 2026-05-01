@@ -203,3 +203,33 @@ GEMINI_API_KEY=your_key_here
 ### Server
 - Classification of tissue and component classification
 - Tissue ontology mapping to AOMAR electron matrices
+
+---
+
+## TODO (implementation backlog)
+
+Each item below is written as an **implementation prompt** after a pass over the current code paths (`main.main_workflow`, `server.generation` / `server.shopping`, `designer.py`, `shop.py`, `ctlr.py`, `test.py`). Use it to drive issues, PRs, or agent tasks without re-deriving context from the repo.
+
+### Debug — align entrypoints and make failures observable
+
+- **Unify `main_workflow` with MCP `generation`:** `server.generation` currently calls `main_workflow` with `filter_physical_compound`, `design_output_dir`, and `organs_override`, but `main_workflow` in `main.py` only accepts `prompt`, `dest_html`, `dest_json`, and `result_specs`. Either extend `main_workflow` to accept and forward those arguments through `run_query_pipe` / tissue workflow / `Designer`, or narrow the server tool signature so it matches reality. Until then, `generation` will raise `TypeError` on the unexpected keyword arguments.
+- **Return contract:** `main_workflow` is annotated as `-> dict` but the success path does not `return` a payload (and the `except` branch only prints). Standardize a small result dict (paths written, session metadata, error flag / message) so `test.py`, MCP clients, and CLI share one contract.
+- **`TEST` flag and live pipeline:** `TEST = True` in `main.py` forces `TEST_QUERY_SPECS` and skips `run_query_pipe`. Define an explicit env-driven mode (e.g. `ACID_MASTER_USE_TEST_PIPE`) defaulting to live query when `GEMINI_API_KEY` is set, and document when to use the stub.
+- **Dead or misleading code:** Remove or wire `print("Err")` after `generation` in `server.py` if it is not an intentional error marker. Fix log strings with typos (`FINIESHED`, `mian_workflow`) for grep-friendly ops. In `test.py`, `design_dir` and `filtered_tissue_hierarchy_json_path` are computed but unused — either pass them into `main_workflow` once that API exists or drop them to avoid drift.
+- **End-to-end smoke:** After the signature fix, run `python test.py` and an MCP `generation` call with the same parameters to confirm one code path builds the graph once (no duplicate ingest from exported JSON), matching the intent in `test.py`’s docstring.
+
+### Designer — GitHub issue template (design + integration)
+
+Open a **GitHub issue** (or epic) that captures:
+
+- **Goal:** Run the tissue-scoped controller (`ctlr`) on the built graph, then run `designer.Designer` (or equivalent) so `result_specs` / `OrganDeliverySpec` drive organ–route formulation and artifact layout under a caller-provided directory (as `server.generation` already reserves `session_dir / "design_artifacts"`).
+- **Inputs / outputs:** Node-link graph from `GUtils`, optional `cited_guidance` and `allowed_excipient_classes`, manifest + per-type JSON as described in `designer.py` docstrings; no fabricated clinical or SKU data.
+- **Acceptance:** Document the JSON shape for `result_specs` (e.g. `target_organs`, `primary_route` ∈ intramuscular | intravenous | oral) and how `commerce_sidecar` / `shop._normalize_absorption` stay consistent (`injection` vs `oral` only on the shop side).
+- **Risks:** Large graphs — artifact size limits, hashing stability (`designer` already uses slim types for some nodes); embedding model parity with `ctlr`.
+
+### Research — public-sector / “gov shop” procurement API vs user-submitted orders
+
+- **Clarify product path:** Today `shop.py` documents **Stripe Checkout** for consumer-style payment and **Quartzy** (`LAB_PROCUREMENT_API_SPECS`) as a lab **order-request** API (B2B). Public-sector or government marketplace APIs (EU TED / eForms, national e-procurement platforms, framework agreements) are a separate integration class: often authenticated portals, signed payloads, or cXML/EDI rather than a single REST “checkout”.
+- **Research task:** For each target jurisdiction, record in structured metadata (same style as `LAB_PROCUREMENT_API_SPECS`): base URLs, auth model, whether **buyers** publish tenders vs **suppliers** submit bids, and whether order placement is machine-readable. Do not hardcode workflow-specific IDs or tokens; keep specs as integration references only.
+- **User → system → order flow:** Specify how an end user’s intent becomes a **sendable** payload: e.g. graph-derived line items + absorption/route metadata + compliance notes, then either (a) Stripe session for direct pay, (b) Quartzy `POST /order-requests` with `lab_id` / `type_id` from org setup, or (c) export for manual upload to a gov e-procurement UI until an API is approved.
+- **Compliance:** Call out that research chemicals, proteins, and lipids are jurisdiction- and license-dependent; API research docs should state that legal screening remains with the buyer, consistent with the disclaimer already in `shop.py`.

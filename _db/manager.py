@@ -253,12 +253,16 @@ class DBManager:
         if not rows:
             return True
 
+        # fetch table schema
         tbl_schema = self._duck_get_table_schema(
-            table, create_if_not_exists=bool(schema), schema=schema
+            table, schema=schema
         )
 
+
+        print("results extracted...")
         new_rows = []
-        for row in rows:
+        for i, row in enumerate(rows):
+            print("work row", i)
             new_row = {}
 
             for col, val in row.items():
@@ -271,6 +275,7 @@ class DBManager:
 
                 if col not in tbl_schema:
                     self._duck_insert_col(table, col)
+            print("---")
             new_rows.append(new_row)
 
         ok = self._duck_insert(
@@ -279,6 +284,7 @@ class DBManager:
             upsert=upsert,
             conflict_columns=("id",) if upsert and conflict_columns is None else conflict_columns,
         )
+        print("ok", ok)
         if not ok:
             db_log("error", "insert failed", table=table)
         return ok

@@ -18,73 +18,9 @@ import re
 import httpx
 
 from _db.manager import DBManager
-from graph.utils import Utils
-
-ORGANS = [
-    "Blood",
-    "Brain",
-    "Heart",
-    "Liver",
-    "Kidney",
-    "Lung",
-    "Muscle",
-    "Skeletal muscle",
-    "Pancreas",
-    "Spleen",
-    "Placenta",
-    "Testis",
-    "Ovary",
-    "Uterus",
-    "Colon",
-    "Small intestine",
-    "Stomach",
-    "Skin",
-    "Adipose tissue",
-    "Leukocyte"
-]
-# ── PHYSICAL COMPONENT FILTER (user aliases → coarse fetch slots) ─────────
-# CHAR: same buckets as ``UniprotKB`` physical-layer gating; ontology + disease seeding
-# stay on regardless (see ``_physical_enrich_blocked``).
-PHYSICAL_CATEGORY_ALIASES: dict[str, str] = {
-    "gene": "gene",
-    "genes": "gene",
-    "protein": "protein",
-    "proteins": "protein",
-    "organ": "organ",
-    "organs": "organ",
-    "tissue": "tissue",
-    "tissues": "tissue",
-    "cell": "cell",
-    "cells": "cell",
-    "cell_type": "cell",
-    "cellular_component": "cellular_component",
-    "cellular_components": "cellular_component",
-    "cellularcomponent": "cellular_component",
-    "compartment": "cellular_component",
-    "compartments": "cellular_component",
-    "chemical": "chemical",
-    "chemicals": "chemical",
-    "compound": "chemical",
-    "compounds": "chemical",
-    "molecule": "molecule",
-    "molecules": "molecule",
-    "atom": "atom",
-    "atoms": "atom",
-    "atomic": "atom",
-    "food": "food",
-    "foods": "food",
-    "vitamin": "vitamin",
-    "vitamins": "vitamin",
-    "fatty_acid": "fatty_acid",
-    "fatty_acids": "fatty_acid",
-    "fat_acid": "fatty_acid",
-    "cofactor": "cofactor",
-    "cofactors": "cofactor",
-    "co_factor": "cofactor",
-    "mineral": "mineral",
-    "minerals": "mineral",
-}
-
+from firegraph.graph import GUtils
+import dotenv
+dotenv.load_dotenv()
 
 def cleanup_key_entries(value: str | list[str] | None) -> list[str]:
     """
@@ -164,7 +100,7 @@ async def get_protein_sequence(protein: str, client: httpx.AsyncClient):
         return None
 
 import asyncio
-import json
+
 import os
 
 import httpx
@@ -172,43 +108,116 @@ import requests
 
 from ds import get_string_graph, get_protein_sequence
 from embedder import embed, similarity
-from graph import GUtils
+import re
 
 db = DBManager()
-def get_human_entries() -> dict[str, list[float]]:
-    url = "https://rest.uniprot.org/uniprotkb/stream"
-    params = {
-        "query": "organism_id:9606", # syn:32630
-        "format": "json",
-    }
 
+
+
+
+def parse_uniprot_flatfile(data_string):
+    print("[*] Starte Parsing der UniProt Daten...")
+    entries = []
+    # Splitte den String in einzelne Blöcke basierend auf dem Trenner //
+    raw_entries = data_string.strip().split('//')
+
+    for i, raw_entry in enumerate(raw_entries):
+        print("work pentry", i)
+        if not raw_entry.strip():
+            print("entry is none -> contine")
+            continue
+
+        entry_dict = {
+            "id": None,
+            "accession": None,
+            "description": "",
+            "organism": "",
+            "sequence": "",
+            "length": None
+        }
+
+        lines = raw_entry.strip().split('\n')
+        capture_sequence = False
+
+        for line in lines:
+            line = line.strip()
+
+            # ID: Identifier und Länge
+            if line.startswith('ID'):
+                parts = line.split()
+                entry_dict["id"] = parts[1]
+                entry_dict["length"] = parts[3]
+
+            # AC: Accession Number
+            elif line.startswith('AC'):
+                entry_dict["accession"] = line.replace('AC', '').replace(';', '').strip()
+
+            # DE: Description (Name des Proteins)
+            elif line.startswith('DE'):
+                entry_dict["description"] += line.replace('DE', '').strip() + " "
+
+            # OS: Organism Source
+            elif line.startswith('OS'):
+                entry_dict["organism"] += line.replace('OS', '').strip() + " "
+
+            # SQ: Start der Sequenz-Sektion
+            elif line.startswith('SQ'):
+                capture_sequence = True
+                continue
+
+            # Sequenz-Daten auslesen (Zeilen nach SQ, die eingerückt sind)
+            elif capture_sequence:
+                # Entferne Leerzeichen und Zahlen aus der Sequenzzeile
+                clean_seq = re.sub(r'[\d\s]', '', line)
+                entry_dict["sequence"] += clean_seq
+
+        # Cleanup der Texte
+        entry_dict["description"] = entry_dict["description"].strip()
+        entry_dict["organism"] = entry_dict["organism"].strip()
+        entries.append(entry_dict)
+        print(f"[OK] Eintrag geladen: {entry_dict['id']}")
+
+    print(f"[FINISHED] Insgesamt {len(entries)} Einträge konvertiert.")
+    return entries
+
+def get_data():
+    if os.getenv("LOCAL_DATA", None) is not None:
+
+        def embed_protein_fun(results):
+            for r in results:
+                protein_function = get_p_fun(r)
+                embedding = embed(protein_function)
+                r["embedding"] = embedding
+            return results
+
+        url = "https://rest.uniprot.org/uniprotkb/stream"
+        params = {
+            "query": "organism_id:9606",  # syn:32630
+            "format": "json",
+        }
+        r = requests.get(url, params=params, stream=True, timeout=990)
+        r.raise_for_status()
+        data = r.json()
+        results = embed_protein_fun(data["results"])
+    else:
+        print("Fetch sprot data lcoal...")
+        results = parse_uniprot_flatfile(open("_db/uniprot_sprot.dat", "r").read())
+        for entry in results:
+            entry["embedding"] = embed(entry["description"])
+    return results
+
+def get_human_entries() -> dict[str, list[float]]:
     # check duck db status
     if db.row_count("PROTEIN") == 0:
-        print("fetch human entries...")
-        r = requests.get(url, params=params, stream=True, timeout=900)
-        r.raise_for_status()
-
-        data = r.json()
         print("read human entries...")
-
-        results = embed_protein_fun(data.get("results", []))
-
+        results = get_data()
+        print("results extracted...")
         # save
         db.insert(table="PROTEIN", rows=results)
-
+        print("db insert")
     return db.get_rows(table_name="PROTEIN", select="primaryAccession, embedding")
 
-def embed_protein_fun(results):
-    if not os.path.exists("human_proteins.json"):
 
-        def_annotation = {}
-        for r in results:
-            protein_function = get_p_fun(r)
-            embedding = embed(protein_function)
-            r["embedding"] = embedding
-        return def_annotation
-
-    return results
 
 def get_p_fun(entry) -> str:
     functions = []
