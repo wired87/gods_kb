@@ -13,14 +13,30 @@ the acyclic leaf every consumer can import safely.
 """
 from __future__ import annotations
 
+import json
+import requests
+
+from embedder import embed
 import re
-
-import httpx
-
 from _db.manager import DBManager
-from firegraph.graph import GUtils
 import dotenv
+
+from gem_core import Gem
 dotenv.load_dotenv()
+
+gem = Gem()
+db = DBManager()
+
+_TISSLIST_URL = "https://www.uniprot.org/docs/tisslist.txt"
+_UNIPROT_SEARCH = "https://rest.uniprot.org/uniprotkb/search"
+_PUBCHEM_COMPOUND = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/JSON"
+
+_HTTP_TIMEOUT = 30
+_UNIPROT_FIELDS = "accession,protein_name,gene_names,cc_function,go,cc_disease,cc_tissue_specificity"
+_MAX_PROTEINS_PER_ORGAN = 50
+
+
+
 
 def cleanup_key_entries(value: str | list[str] | None) -> list[str]:
     """
@@ -55,18 +71,7 @@ def cleanup_key_entries(value: str | list[str] | None) -> list[str]:
 
 
 
-async def get_string_graph(protein, client: httpx.AsyncClient):
-    url = "https://string-db.org/api/json/network"
-    params = {
-        "identifiers": protein,
-        "species": 9606
-    }
-    try:
-        response = await client.get(url, params=params)
-        return response.json()
-    except Exception as e:
-        print(f"Error fetching STRING data: {e}")
-        return None
+
 
 
 
@@ -81,7 +86,6 @@ async def get_protein_sequence(protein: str, client: httpx.AsyncClient):
     params = {
         "query": f"gene:{protein} AND organism_id:9606",
         "format": "json",
-        "fields": "sequence",
         "size": 1
     }
 
@@ -93,25 +97,11 @@ async def get_protein_sequence(protein: str, client: httpx.AsyncClient):
         results = data.get("results", [])
         if not results:
             return None
-        return protein, results[0]["sequence"]["value"]
+        return protein, results#[0]["sequence"]["value"]
 
     except Exception as e:
         print(f"Error fetching UniProt sequence for {protein}: {e}")
         return None
-
-import asyncio
-
-import os
-
-import httpx
-import requests
-
-from ds import get_string_graph, get_protein_sequence
-from embedder import embed, similarity
-import re
-
-db = DBManager()
-
 
 
 
@@ -206,7 +196,75 @@ def get_data():
             entry["embedding"] = embed(entry["description"])
     return results
 
-def get_human_entries() -> dict[str, list[float]]:
+
+
+async def _fetch_organ_annotations(organs: list[str]) -> list[str]:
+    """Query UniProt REST per organ → aggregate functional annotation strings."""
+    annotations: list[str] = []
+    async with httpx.AsyncClient(timeout=_HTTP_TIMEOUT, follow_redirects=True) as client:
+        for organ in organs:
+            query = f'(cc_tissue_specificity:"{organ}") AND (reviewed:true) AND (organism_id:9606)'
+            params = {
+                "query": query,
+                "fields": _UNIPROT_FIELDS,
+                "format": "json",
+                "size": str(500),
+            }
+            try:
+                r = await client.get(_UNIPROT_SEARCH, params=params)
+                r.raise_for_status()
+                data = r.json()
+            except (httpx.HTTPError, json.JSONDecodeError):
+                continue
+
+            for entry in data.get("results", []):
+                acc = entry.get("primaryAccession", "?")
+                pname = ""
+                rec = entry.get("proteinDescription", {}).get("recommendedName")
+                if rec:
+                    pname = rec.get("fullName", {}).get("value", "")
+
+                genes = ", ".join(
+                    g.get("geneName", {}).get("value", "")
+                    for g in entry.get("genes", [])
+                    if g.get("geneName")
+                )
+
+                funcs = []
+                for comment in entry.get("comments", []):
+                    if comment.get("commentType") == "FUNCTION":
+                        for txt in comment.get("texts", []):
+                            funcs.append(txt.get("value", ""))
+
+                go_terms = []
+                for xref in entry.get("uniProtKBCrossReferences", []):
+                    if xref.get("database") == "GO":
+                        props = {p["key"]: p["value"] for p in xref.get("properties", [])}
+                        go_terms.append(props.get("GoTerm", xref.get("id", "")))
+
+                diseases = []
+                for comment in entry.get("comments", []):
+                    if comment.get("commentType") == "DISEASE":
+                        dis = comment.get("disease", {})
+                        if dis.get("diseaseId"):
+                            diseases.append(dis["diseaseId"])
+
+                line = (
+                    f"[{acc}] {pname} | genes={genes} | "
+                    f"function={'; '.join(funcs)} | "
+                    f"GO={'; '.join(go_terms[:10])} | "
+                    f"disease={'; '.join(diseases)}"
+                )
+                annotations.append(line)
+
+    return annotations
+
+
+
+
+
+
+def get_human_entries(prompt) -> dict[str, list[float]]:
     # check duck db status
     if db.row_count("PROTEIN") == 0:
         print("read human entries...")
@@ -229,93 +287,12 @@ def get_p_fun(entry) -> str:
     return " | ".join(functions)
 
 
-def load_string_graph(g:GUtils, data, min_score=0.7):
-    """
-    data: list[dict] (STRING API output)
-    min_score: filter weak edges
-    """
 
-
-    for e in data:
-        if e.get("score", 0) < min_score:
-            continue
-
-        a = e["preferredName_A"]
-        b = e["preferredName_B"]
-
-        # add nodes
-        g.add_node(dict(id=a, type="PROTEIN"))
-        g.add_node(dict(id=b, type="PROTEIN"))
-
-        # add edge
-        g.add_edge(
-            a,
-            b,
-            attr=dict(
-                rel="interacts_with",
-                src_layer="PROTEIN",
-                trgt_layer="PROTEIN",
-            )
-        )
-
-    return g
-
-async def work_human_main(g, functions:list[float], outsrc:list[float]):
-    print("work_human_main...")
-    results = get_human_entries()
-    print("work_human_main human results generated")
-
-    # SS identify mathci functionaltiy of proteins
-    print("perform ss...")
-    fun_map:list[list[str]] = []
-    for fun, out in zip(functions, outsrc):
-        fun_sub_map = []
-        for pid, embedding in results.items():
-            in_score = similarity(fun, embedding)
-            out_score = similarity(out, embedding)
-            # function wanted AND NOT OUSRC CRITERIA?
-            if in_score >= .7 and out_score < .6:
-                fun_sub_map.append(pid)
-        fun_map.append(fun_sub_map)
-
-    print("working STRING...")
-    # build STRING GRAPH
-    client = httpx.AsyncClient()
-    # loop protien id maps
-    for fun_protein_map in fun_map:
-        protein_graph = [
-            await asyncio.gather(
-                *[
-                    get_string_graph(p, client)
-                    for p in fun_protein_map
-                ]
-            )
-        ]
-
-        for item in protein_graph:
-            load_string_graph(g=g, data=item)
-
-        result = await asyncio.gather(
-            *[
-                get_protein_sequence(p["id"], client)
-                for p in g.get_nodes(filter_key="type", filter_value="PROTEIN")
-            ]
-        )
-
-        for pid, seq in result:
-            g.G.nodes[pid]["sequence"] = seq
-    g.print_status_G()
-    print("get_human_entries... done")
 
 
 
 
 if __name__ == "__main__":
-    asyncio.run(work_human_main(
-        g=GUtils(),
-        functions=[embed("pos impact amygala")],
-        outsrc=[embed("heuschnupfen")],
-    ))
     print("done")
 
 

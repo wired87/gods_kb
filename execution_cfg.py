@@ -305,17 +305,3 @@ SCAN_PATHOLOGY_HPO_TERMS_BY_MODALITY: dict[str, list[str]] = {
     "ULTRASOUND": ["echogenic lesion", "cyst", "mass"],
     "FMRI": ["abnormal activation", "reduced connectivity", "cortical dysfunction"],
 }
-
-
-# MASTER CONFIG — single import point for the entire pipeline
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-EXECUTION_CFG: dict[str, dict] = {
-    "protein_structure": _PROTEIN_STRUCTURE_SPECS,
-}
-
-
-ALL_ROUTING_KEYWORDS: dict[str, set[str]] = {
-    slug: specs["routing"]["keywords"]
-    for slug, specs in EXECUTION_CFG.items()
-}

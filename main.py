@@ -10,7 +10,7 @@ from typing import Any, Sequence
 from dotenv import load_dotenv
 
 from embedder import embed
-from ds import work_human_main
+from protein import work_human_main
 from firegraph.graph.visual import create_g_visual
 from query_pipe import TEST_QUERY_SPECS
 

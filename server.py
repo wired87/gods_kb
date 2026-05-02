@@ -12,7 +12,7 @@ from typing import Any, Sequence
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 
-from ds import cleanup_key_entries
+from protein import cleanup_key_entries
 
 from main import (
     GRAPH_HTML_BASENAME,
