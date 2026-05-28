@@ -207,9 +207,8 @@ async def hierarchy_process(fetcher, go_terms, g):
                 )
             missing_nodes.add(item["GO"])
 
-    #
+    # collect details
     await term_details(fetcher, go_terms, g)
-
     print("Err heirarchy_process ended")
 
 
