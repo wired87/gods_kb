@@ -233,3 +233,7 @@ Open a **GitHub issue** (or epic) that captures:
 - **Research task:** For each target jurisdiction, record in structured metadata (same style as `LAB_PROCUREMENT_API_SPECS`): base URLs, auth model, whether **buyers** publish tenders vs **suppliers** submit bids, and whether order placement is machine-readable. Do not hardcode workflow-specific IDs or tokens; keep specs as integration references only.
 - **User → system → order flow:** Specify how an end user’s intent becomes a **sendable** payload: e.g. graph-derived line items + absorption/route metadata + compliance notes, then either (a) Stripe session for direct pay, (b) Quartzy `POST /order-requests` with `lab_id` / `type_id` from org setup, or (c) export for manual upload to a gov e-procurement UI until an API is approved.
 - **Compliance:** Call out that research chemicals, proteins, and lipids are jurisdiction- and license-dependent; API research docs should state that legal screening remains with the buyer, consistent with the disclaimer already in `shop.py`.
+
+
+todos
+- improve workflow 

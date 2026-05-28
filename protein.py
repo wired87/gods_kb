@@ -14,6 +14,8 @@ the acyclic leaf every consumer can import safely.
 from __future__ import annotations
 
 import json
+import os
+
 import requests
 
 from embedder import embed
@@ -24,7 +26,7 @@ import dotenv
 from gem_core import Gem
 dotenv.load_dotenv()
 
-gem = Gem()
+
 db = DBManager()
 
 _TISSLIST_URL = "https://www.uniprot.org/docs/tisslist.txt"
