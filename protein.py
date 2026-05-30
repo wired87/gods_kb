@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import json
 import os
-
+import httpx
 import requests
 
 from embedder import embed
@@ -23,7 +23,6 @@ import re
 from _db.manager import DBManager
 import dotenv
 
-from gem_core import Gem
 dotenv.load_dotenv()
 
 
@@ -71,14 +70,6 @@ def cleanup_key_entries(value: str | list[str] | None) -> list[str]:
 
 
 
-
-
-
-
-
-
-import httpx
-
 async def get_protein_sequence(protein: str, client: httpx.AsyncClient):
     """
     Fetch protein sequence from UniProt by gene/protein name.
@@ -104,6 +95,11 @@ async def get_protein_sequence(protein: str, client: httpx.AsyncClient):
     except Exception as e:
         print(f"Error fetching UniProt sequence for {protein}: {e}")
         return None
+
+
+
+
+
 
 
 

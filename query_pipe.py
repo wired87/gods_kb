@@ -1,12 +1,12 @@
 from __future__ import annotations
 import asyncio
-import httpx
 
-from app_utils import BRAIN_TERMS
+from app_utils import BRAIN_TERMS, QUERY_TRANSFORM_PROMPT, gem
 from firegraph.graph.local_graph_utils import GUtils
 from keyword_handler import build_keyword_graph, extract_keywords, get_proteins_from_keywords
-from protein import get_protein_sequence
-
+from string_db import create_interaction_process
+from tissue.tissue import link_tissue_to_sub_regions
+from tissue.uberon import build_brain_tissue_subgraph
 
 TEST_QUERY_SPECS = {
         "organs": ["Brain"],
@@ -44,126 +44,6 @@ TEST_QUERY_SPECS = {
     }
 
 
-def stage1b_resolve_physical_filter(
-    filter_physical_compound: str | list[str] | None,
-    physical_aliases: dict[str, list[str]],
-) -> list[str]:
-    """
-    Stage 1b:
-    Resolve user-provided physical compound filters to canonical physical
-    categories from ds.PHYSICAL_CATEGORY_ALIASES.
-
-    Example:
-    input: ["drug", "chemical"]
-    output: ["compound"]
-    """
-    if not filter_physical_compound:
-        return []
-
-    raw_items = (
-        [filter_physical_compound]
-        if isinstance(filter_physical_compound, str)
-        else filter_physical_compound
-    )
-
-    resolved: set[str] = set()
-
-    for item in raw_items:
-        item_norm = item.lower().strip()
-
-        for canonical, aliases in physical_aliases.items():
-            alias_set = {canonical.lower(), *(a.lower() for a in aliases)}
-            if item_norm in alias_set:
-                resolved.add(canonical)
-    return sorted(resolved)
-
-
-
-
-
-
-async def create_interaction_process(g):
-    print("get_human_entries...")
-    id_map: list[str] = [
-        key
-        for key, data in g.G.nodes(data=True)
-        if data.get("type") == "PROTEIN"
-    ]
-
-    async def get_string_graph(protein, client: httpx.AsyncClient):
-        print("get_string_graph for ", protein, " ...")
-        url = "https://string-db.org/api/json/network"
-        params = {
-            "identifiers": protein,
-            "species": 9606
-        }
-        try:
-            response = await client.get(url, params=params)#
-            item = response.json()
-            print("item", item)
-            return item
-        except Exception as e:
-            print(f"Error fetching STRING data: {e}")
-            return None
-
-    def load_string_graph(g: GUtils, data, min_score=0.7):
-        print("working STRING...")
-
-        for e in data:
-            if e.get("score", 0) < min_score:
-                continue
-
-            a = e["preferredName_A"]
-            b = e["preferredName_B"]
-
-            # add nodes
-            if not g.get_node(a):
-                g.add_node(dict(id=a, type="PROTEIN", sub_type="PURE_INFLUENCE"))
-            if not g.get_node(b):
-                g.add_node(dict(id=b, type="PROTEIN", sub_type="PURE_INFLUENCE"))
-
-            # add edge
-            g.add_edge(
-                a,
-                b,
-                attrs=dict(
-                    rel="interacts_with",
-                    src_layer="PROTEIN",
-                    trgt_layer="PROTEIN",
-                )
-            )
-        print("interaction added")
-        return g
-
-    g = GUtils()
-    client = httpx.AsyncClient()
-
-    protein_graph = await asyncio.gather(
-        *[
-            get_string_graph(p, client)
-            for p in id_map
-        ]
-    )
-
-    for item in protein_graph:
-        load_string_graph(g=g, data=item)
-
-    """
-    # get sequence from rest
-    result: list[tuple[str, dict]] = await asyncio.gather(
-        *[
-            get_protein_sequence(p["id"], client)
-            for p in g.get_nodes(filter_key="type", filter_value="PROTEIN")
-        ]
-    )
-
-    for pid, seq in result:
-        g.G.nodes[pid].update(seq)
-    """
-
-    g.print_status_G()
-    print("get_human_entries... done")
-
 def build_fun_annotations(g, fun_annotations:list[str]):
     for entry in fun_annotations:
         g.add_node(
@@ -190,7 +70,7 @@ def include_organs(g, organs:list[str]):
 
 def run_query_pipe(
     function_annotations: list[str],
-    organs: list[str] = BRAIN_TERMS,
+    organ: str = "Thalamus",
     outsrc_criteria:list[str]=None,
 ) -> GUtils:
     """
@@ -203,12 +83,43 @@ def run_query_pipe(
     """
     g = GUtils()
 
+    if function_annotations is None:
+        # perform query transformation
+        asyncio.run(gem.aask_gem(content=QUERY_TRANSFORM_PROMPT))
+
+    # Build validate and include uberon
+    build_brain_tissue_subgraph(
+        g,
+        tissue=organ
+    )
+
+    # Build bridge Tissue -> Cell, Gene, ...
+    link_tissue_to_sub_regions(
+        g,
+        paths=[
+            "cell/asct-b-allen-brain.csv",
+            "cell/asct-b-allen-brain (1).csv",
+            "cell/asct-b-allen-brain (2).csv",
+        ]
+    )
+
+    # fetch cell ontology details (cl -> pcl & reverse)
+
+
+    # fetch genes & details
+
+
+    # fetch
+
+
+
+
     # FUN DEF -> G
     build_fun_annotations(g, function_annotations)
-    include_organs(g, organs)
+    include_organs(g, [organ])
 
     # GET KEYWORDS
-    build_keyword_graph(g)
+    asyncio.run(build_keyword_graph(g))
 
     # XTRACT RELEVANT KEYWORDS
     extract_keywords(g)
@@ -222,20 +133,52 @@ def run_query_pipe(
 
 
     # todo next version
-    # handle DISEASE (patient tells alergikum etc -> recognize: in conection to upregulatin of protein A -> find inhibitor AND delete protein from graph)
+    # handle KEGG DISEASE-Datenbank, OMIM, Orphanet, Reactome (patient tells alergikum etc -> recognize: in conection to upregulatin of protein A -> find inhibitor AND delete protein from graph)
     # handle outsrc criteria
+
+    # todo filter result for protein, peptide, enzyme
+
 
     dest_file="data/result.json"
     g.save_graph(dest_file)
     return g
 
 
-
 if __name__ == "__main__":
     run_query_pipe(
-        function_annotations=[
-            "learning, memory, brain"
-        ]
+        prompt="focused lerning",
     )
 
+
+"""
+
+[
+    "learning",
+    "memory",                                # GO:0007613 (Gedächtnis)
+    "associative learning",                  # GO:0008306 (Assoziatives Lernen)
+    "spatial learning",                      # GO:0043044 (Räumliches Lernen)
+    "long-term memory",                      # GO:0007616 (Langzeitgedächtnis)
+    "short-term memory",                     # GO:0007614 (Kurzzeitgedächtnis)
+    "cognition",                             # GO:0050890 (Kognition allgemein)
+
+    "synaptic plasticity",                   # GO:0048167 (Synaptische Plastizität)
+    "long-term synaptic potentiation",       # GO:0060291 (LTP - Langzeitpotenzierung)
+    "long-term synaptic depression",        # GO:0060292 (LTD - Langzeitdepression)
+    "regulation of synaptic plasticity",     # GO:0048172 (Regulation der Plastizität)
+    "synaptic vesicle exocytosis",           # GO:0016079 (Neurotransmitter-Ausschüttung)
+
+    "brain development",                     # GO:0007420 (Gehirnentwicklung)
+    "hippocampus development",               # GO:0021766 (Hippocampus-Entwicklung - Hauptort für Gedächtnis)
+    "cerebral cortex development",           # GO:0021987 (Großhirnrinde-Entwicklung)
+    "central nervous system development",    # GO:0007417 (ZNS-Entwicklung)
+    "neurogenesis",                          # GO:0022008 (Neurogenese / Bildung neuer Neuronen)
+    "synaptogenesis",                        # GO:0050808 (Synapsenbildung)
+    "axon guidance",                         # GO:0007411 (Axonwachstum / Verschaltung)
+
+    "chemical synaptic transmission",        # GO:0007268 (Chemische Signalübertragung)
+    "neurotransmitter receptor transport",   # GO:0098962 (Rezeptortransport - kritisch für LTP)
+    "glutamate receptor signaling pathway",  # GO:0007215 (Glutamat-Signalweg - der Hauptlern-Botenstoff)
+    "calcium-mediated signaling",            # GO:0019722 (Kalzium-Signale - steuern plastische Veränderungen)
+]
+"""
 

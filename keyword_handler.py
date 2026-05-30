@@ -1,7 +1,7 @@
 import numpy as np
 
 from embedder import embed, similarity, embed_batch
-from go_term import go_term_graph
+from go_term import go_term_graph, term_details, get_terms, GoApiFetcher
 from firegraph.graph.local_graph_utils import GUtils
 import asyncio
 from typing import Any, Dict, List
@@ -129,7 +129,7 @@ async def get_proteins_from_keywords(
     print("protein query finished...")
 
 
-def build_keyword_graph(
+async def build_keyword_graph(
     g:GUtils,
 ) -> list[str]:
     print("build_keyword_graph...")
@@ -325,7 +325,8 @@ def build_keyword_graph(
             )
 
         # HANDE GO TERMS
-        g = asyncio.run(go_term_graph(g))
+        async with aiohttp.ClientSession() as session:
+            await term_details(GoApiFetcher(session), get_terms(g), g)
         #g.save_graph(dest_file)
 
     g.print_status_G()

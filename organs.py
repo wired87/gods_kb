@@ -1,7 +1,7 @@
 
 from typing import List
 from embedder import embed, similarity
-from tissue import fetch_tissue_vocabulary
+from tissue.tissue import fetch_tissue_vocabulary
 
 
 async def organs_process(g, input_organs: List[str]) -> list[str]:
